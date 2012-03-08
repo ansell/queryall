@@ -1,8 +1,9 @@
 package org.queryall.query;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,6 +20,7 @@ import org.openrdf.model.vocabulary.XMLSchema;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.Rio;
@@ -130,19 +132,16 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
         nextQueryBundle.addAlternativeEndpointAndQuery(
                 hostToUse + "provenancebykey/" + StringUtils.percentEncode(nextElementKey), "");
         
-        final Collection<QueryBundle> queryBundles = new HashSet<QueryBundle>();
-        
-        queryBundles.add(nextQueryBundle);
-        
-        // TODO: remove calls to Settings.getSettings() and
-        // BlacklistController.getDefaultController() here
+        // TODO: remove calls to SettingsFactory.generateSettings() and
+        // new BlacklistController(settings) here
         RdfFetchController fetchController = null;
         Repository myRepository = null;
         RepositoryConnection myRepositoryConnection = null;
         try
         {
             final QueryAllConfiguration settings = SettingsFactory.generateSettings();
-            fetchController = new RdfFetchController(settings, new BlacklistController(settings), queryBundles);
+            fetchController =
+                    new RdfFetchController(settings, new BlacklistController(settings), Arrays.asList(nextQueryBundle));
             
             fetchController.fetchRdfForQueries();
             
@@ -264,7 +263,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
     }
     
     public static Map<URI, ProvenanceRecord> getProvenanceRecordsFromRepository(final Repository myRepository,
-            final int modelVersion) throws org.openrdf.repository.RepositoryException
+            final int configApiVersion) throws org.openrdf.repository.RepositoryException
     {
         final Map<URI, ProvenanceRecord> results = new ConcurrentHashMap<URI, ProvenanceRecord>();
         
@@ -276,12 +275,16 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
         {
             con = myRepository.getConnection();
             
-            for(final Statement nextProvider : con.getStatements(null, RDF.TYPE, provenanceTypeUri, true).asList())
+            final RepositoryResult<Statement> statements = con.getStatements(null, RDF.TYPE, provenanceTypeUri, true);
+            
+            while(statements.hasNext())
             {
+                final Statement nextProvider = statements.next();
+                
                 final URI nextSubjectUri = (URI)nextProvider.getSubject();
                 results.put(nextSubjectUri,
                         new ProvenanceRecord(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                nextSubjectUri, SettingsFactory.CONFIG_API_VERSION));
+                                nextSubjectUri, configApiVersion));
             }
         }
         catch(final OpenRDFException e)
@@ -388,11 +391,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
     @Override
     public Set<URI> getElementTypes()
     {
-        final Set<URI> results = new HashSet<URI>();
-        
-        results.add(ProvenanceRecord.provenanceTypeUri);
-        
-        return results;
+        return Collections.singleton(ProvenanceRecord.provenanceTypeUri);
     }
     
     public boolean relatedToElementTypes(final Collection<URI> typesToCheck)

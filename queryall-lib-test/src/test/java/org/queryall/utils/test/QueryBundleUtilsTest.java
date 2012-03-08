@@ -16,13 +16,13 @@ import org.junit.Test;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
-import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.test.DummyProfile;
 import org.queryall.api.test.DummyProvider;
 import org.queryall.api.test.DummyQueryType;
 import org.queryall.api.utils.ProfileIncludeExclude;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.exception.QueryAllException;
 import org.queryall.query.QueryBundle;
@@ -63,16 +63,19 @@ public class QueryBundleUtilsTest
         this.testBlacklistControllerEmpty = new BlacklistController(this.testSettingsEmpty);
         
         this.testQueryTypeEmpty = new DummyQueryType();
+        this.testQueryTypeEmpty.setKey("http://test.example.org/querybundleutilstest/querytype/empty");
         this.testChosenProvidersEmpty = new ArrayList<Provider>(0);
         this.testChosenProvidersSingleTrivial = new ArrayList<Provider>(1);
         // add an instance of DummyProvider which only implements the Provider interface, so should
         // not be recognised as HttpProvider or NoCommunicationProvider, among any others
         this.testProviderTrivial1 = new DummyProvider();
+        this.testProviderTrivial1.setKey("http://test.example.org/querybundleutilstest/trivial/1");
         this.testChosenProvidersSingleTrivial.add(this.testProviderTrivial1);
         
         this.testSortedIncludedProfilesEmpty = new ArrayList<Profile>(0);
         this.testSortedIncludedProfilesSingleAllInclude = new ArrayList<Profile>(1);
         this.testProfileSingleAllInclude = new DummyProfile();
+        this.testProfileSingleAllInclude.setKey("http://other.example.org/test/profile/singleallinclude");
         // By default this property is undefined to make it easier to layer profiles, but we want it
         // defined here to make sure that all settings are set to include
         this.testProfileSingleAllInclude
@@ -125,8 +128,12 @@ public class QueryBundleUtilsTest
                 QueryBundleUtils.generateQueryBundlesForQueryTypeAndProviders(this.testQueryTypeEmpty,
                         this.testChosenProvidersEmpty, this.testQueryParametersEmpty,
                         this.testNamespaceInputVariablesEmpty, this.testSortedIncludedProfilesEmpty,
-                        this.testSettingsEmpty, this.testBlacklistControllerEmpty, this.testHostName,
-                        this.testUseAllEndpointsTrue, this.testPageOffset1);
+                        this.testSettingsEmpty.getAllQueryTypes(), this.testSettingsEmpty,
+                        this.testBlacklistControllerEmpty, this.testHostName, this.testUseAllEndpointsTrue,
+                        this.testPageOffset1, this.testSettingsEmpty
+                                .getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
+                        this.testSettingsEmpty.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                        this.testSettingsEmpty.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
         
         Assert.assertNotNull(results);
         Assert.assertEquals(0, results.size());
@@ -149,8 +156,12 @@ public class QueryBundleUtilsTest
                 QueryBundleUtils.generateQueryBundlesForQueryTypeAndProviders(this.testQueryTypeEmpty,
                         this.testChosenProvidersSingleTrivial, this.testQueryParametersEmpty,
                         this.testNamespaceInputVariablesEmpty, this.testSortedIncludedProfilesEmpty,
-                        this.testSettingsEmpty, this.testBlacklistControllerEmpty, this.testHostName,
-                        this.testUseAllEndpointsTrue, this.testPageOffset1);
+                        this.testSettingsEmpty.getAllQueryTypes(), this.testSettingsEmpty,
+                        this.testBlacklistControllerEmpty, this.testHostName, this.testUseAllEndpointsTrue,
+                        this.testPageOffset1, this.testSettingsEmpty
+                                .getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
+                        this.testSettingsEmpty.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                        this.testSettingsEmpty.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
         
         Assert.assertNotNull(results);
         Assert.assertEquals(1, results.size());
@@ -192,8 +203,12 @@ public class QueryBundleUtilsTest
                 QueryBundleUtils.generateQueryBundlesForQueryTypeAndProviders(this.testQueryTypeEmpty,
                         this.testChosenProvidersSingleTrivial, this.testQueryParametersEmpty,
                         this.testNamespaceInputVariablesEmpty, this.testSortedIncludedProfilesSingleAllInclude,
-                        this.testSettingsEmpty, this.testBlacklistControllerEmpty, this.testHostName,
-                        this.testUseAllEndpointsTrue, this.testPageOffset1);
+                        this.testSettingsEmpty.getAllQueryTypes(), this.testSettingsEmpty,
+                        this.testBlacklistControllerEmpty, this.testHostName, this.testUseAllEndpointsTrue,
+                        this.testPageOffset1, this.testSettingsEmpty
+                                .getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
+                        this.testSettingsEmpty.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                        this.testSettingsEmpty.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
         
         Assert.assertNotNull(results);
         Assert.assertEquals(1, results.size());

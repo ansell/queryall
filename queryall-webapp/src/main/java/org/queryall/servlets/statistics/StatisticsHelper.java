@@ -130,7 +130,7 @@ public class StatisticsHelper
     // long sumErrorLatency = 0;
     // long nextLatency = 0;
     //
-    // for(RdfFetcherQueryRunnable nextResult : fetchController.getResults())
+    // for(RdfFetcherQueryRunnableImpl nextResult : fetchController.getResults())
     // {
     // nextLatency = nextResult.queryEndTime.getTime()-nextResult.queryStartTime.getTime();
     //

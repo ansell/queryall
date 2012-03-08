@@ -3,15 +3,12 @@
  */
 package org.queryall.api.provider;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.openrdf.model.URI;
 import org.queryall.api.services.QueryAllEnum;
+import org.queryall.api.services.ServiceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,94 +28,13 @@ public class ProviderEnum extends QueryAllEnum
     @SuppressWarnings("unused")
     private static final boolean INFO = ProviderEnum.LOG.isInfoEnabled();
     
-    protected static final Set<ProviderEnum> ALL_PROVIDERS = new HashSet<ProviderEnum>();
-    
+    /**
+     * @deprecated Use {@link ServiceUtils#getProviderEnumsByTypeUris(Set<URI>)} instead
+     */
+    @Deprecated
     public static Collection<ProviderEnum> byTypeUris(final Set<URI> nextTypeUris)
     {
-        if(nextTypeUris.size() == 0)
-        {
-            if(ProviderEnum.DEBUG)
-            {
-                ProviderEnum.LOG.debug("found an empty URI set for nextProviderUris=" + nextTypeUris);
-            }
-            return Collections.emptyList();
-        }
-        else
-        {
-            if(ProviderEnum.DEBUG)
-            {
-                ProviderEnum.LOG.debug("found a URI set for nextProviderUris.size()=" + nextTypeUris.size());
-                ProviderEnum.LOG.debug("ProviderEnum.ALL_PROVIDERS.size()=" + ProviderEnum.ALL_PROVIDERS.size());
-            }
-        }
-        
-        final List<ProviderEnum> results = new ArrayList<ProviderEnum>(ProviderEnum.ALL_PROVIDERS.size());
-        
-        for(final ProviderEnum nextEnum : ProviderEnum.ALL_PROVIDERS)
-        {
-            if(nextEnum.matchForTypeUris(nextTypeUris))
-            {
-                if(ProviderEnum.DEBUG)
-                {
-                    ProviderEnum.LOG.debug("found an matching URI set for nextProviderUris=" + nextTypeUris);
-                }
-                results.add(nextEnum);
-            }
-        }
-        
-        if(ProviderEnum.DEBUG)
-        {
-            ProviderEnum.LOG.debug("returning results.size()=" + results.size() + " for nextProviderUris="
-                    + nextTypeUris);
-        }
-        
-        return results;
-    }
-    
-    /**
-     * Registers the specified provider.
-     */
-    public static void register(final ProviderEnum nextProvider)
-    {
-        if(ProviderEnum.valueOf(nextProvider.getName()) != null)
-        {
-            if(ProviderEnum.DEBUG)
-            {
-                ProviderEnum.LOG.debug("Cannot register this provider again name=" + nextProvider.getName());
-            }
-        }
-        else
-        {
-            ProviderEnum.ALL_PROVIDERS.add(nextProvider);
-        }
-    }
-    
-    public static ProviderEnum register(final String name, final Set<URI> typeURIs)
-    {
-        final ProviderEnum newProviderEnum = new ProviderEnum(name, typeURIs);
-        ProviderEnum.register(newProviderEnum);
-        return newProviderEnum;
-    }
-    
-    public static ProviderEnum valueOf(final String string)
-    {
-        for(final ProviderEnum nextProviderEnum : ProviderEnum.ALL_PROVIDERS)
-        {
-            if(nextProviderEnum.getName().equals(string))
-            {
-                return nextProviderEnum;
-            }
-        }
-        
-        return null;
-    }
-    
-    /**
-     * Returns all known/registered providers.
-     */
-    public static Collection<ProviderEnum> values()
-    {
-        return Collections.unmodifiableCollection(ProviderEnum.ALL_PROVIDERS);
+        return ServiceUtils.getProviderEnumsByTypeUris(nextTypeUris);
     }
     
     /**
@@ -130,7 +46,6 @@ public class ProviderEnum extends QueryAllEnum
     public ProviderEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
-        ProviderEnum.ALL_PROVIDERS.add(this);
     }
     
     /**

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.queryall.query.RdfFetcherQueryRunnable;
+import org.queryall.query.RdfFetcherQueryRunnableImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +19,7 @@ public class BlacklistEntry
     public int numberOfFailures = 0;
     public String endpointUrl = "";
     public long totalTime = 0L;
-    private Collection<RdfFetcherQueryRunnable> errorRunnables = null;
+    private Collection<RdfFetcherQueryRunnableImpl> errorRunnables = null;
     public Collection<String> errorMessages = new ArrayList<String>();
     
     public void addErrorMessageForRunnable(final RdfFetcherQueryRunnable errorRunnable)

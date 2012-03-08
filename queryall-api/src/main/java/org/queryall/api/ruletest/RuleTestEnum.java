@@ -3,15 +3,12 @@
  */
 package org.queryall.api.ruletest;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.openrdf.model.URI;
 import org.queryall.api.services.QueryAllEnum;
+import org.queryall.api.services.ServiceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,88 +28,13 @@ public class RuleTestEnum extends QueryAllEnum
     @SuppressWarnings("unused")
     private static final boolean INFO = RuleTestEnum.LOG.isInfoEnabled();
     
-    protected static final Set<RuleTestEnum> ALL_RULE_TESTS = new HashSet<RuleTestEnum>();
-    
+    /**
+     * @deprecated Use {@link ServiceUtils#getRuleTestEnumsByTypeUris(Set<URI>)} instead
+     */
+    @Deprecated
     public static Collection<RuleTestEnum> byTypeUris(final Set<URI> nextTypeUris)
     {
-        if(nextTypeUris.size() == 0)
-        {
-            if(RuleTestEnum.DEBUG)
-            {
-                RuleTestEnum.LOG.debug("found an empty URI set for nextRuleTestUris=" + nextTypeUris);
-            }
-            
-            return Collections.emptyList();
-        }
-        
-        final List<RuleTestEnum> results = new ArrayList<RuleTestEnum>(RuleTestEnum.ALL_RULE_TESTS.size());
-        
-        for(final RuleTestEnum nextEnum : RuleTestEnum.ALL_RULE_TESTS)
-        {
-            if(nextEnum.matchForTypeUris(nextTypeUris))
-            {
-                if(RuleTestEnum.DEBUG)
-                {
-                    RuleTestEnum.LOG.debug("found an matching URI set for nextRuleTestUris=" + nextTypeUris);
-                }
-                
-                results.add(nextEnum);
-            }
-        }
-        
-        if(RuleTestEnum.DEBUG)
-        {
-            RuleTestEnum.LOG.debug("returning results.size()=" + results.size() + " for nextNormalisationRuleUris="
-                    + nextTypeUris);
-        }
-        
-        return results;
-    }
-    
-    /**
-     * Registers the specified rule test.
-     */
-    public static void register(final RuleTestEnum nextRuleTest)
-    {
-        if(RuleTestEnum.valueOf(nextRuleTest.getName()) != null)
-        {
-            if(RuleTestEnum.DEBUG)
-            {
-                RuleTestEnum.LOG.debug("Cannot register this rule test again name=" + nextRuleTest.getName());
-            }
-        }
-        else
-        {
-            RuleTestEnum.ALL_RULE_TESTS.add(nextRuleTest);
-        }
-    }
-    
-    public static RuleTestEnum register(final String name, final Set<URI> typeURIs)
-    {
-        final RuleTestEnum newRuleTestEnum = new RuleTestEnum(name, typeURIs);
-        RuleTestEnum.register(newRuleTestEnum);
-        return newRuleTestEnum;
-    }
-    
-    public static RuleTestEnum valueOf(final String string)
-    {
-        for(final RuleTestEnum nextRuleTestEnum : RuleTestEnum.ALL_RULE_TESTS)
-        {
-            if(nextRuleTestEnum.getName().equals(string))
-            {
-                return nextRuleTestEnum;
-            }
-        }
-        
-        return null;
-    }
-    
-    /**
-     * Returns all known/registered rule tests.
-     */
-    public static Collection<RuleTestEnum> values()
-    {
-        return Collections.unmodifiableCollection(RuleTestEnum.ALL_RULE_TESTS);
+        return ServiceUtils.getRuleTestEnumsByTypeUris(nextTypeUris);
     }
     
     /**
@@ -124,6 +46,5 @@ public class RuleTestEnum extends QueryAllEnum
     public RuleTestEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
-        RuleTestEnum.ALL_RULE_TESTS.add(this);
     }
 }

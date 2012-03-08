@@ -122,7 +122,7 @@ public class StringUtils
         
         if(nextRegexPattern == null)
         {
-            throw new RuntimeException("RdfUtils.matchesForRegexOnString: nextRegexPattern was null");
+            throw new RuntimeException("matchesForRegexOnString: nextRegexPattern was null");
         }
         
         final Matcher matcher = nextRegexPattern.matcher(nextQueryString);
@@ -135,7 +135,7 @@ public class StringUtils
             {
                 if(StringUtils.TRACE)
                 {
-                    StringUtils.log.trace("RdfUtils.matchesForRegexOnString: Found the text \"" + matcher.group(i + 1)
+                    StringUtils.log.trace("matchesForRegexOnString: Found the text \"" + matcher.group(i + 1)
                             + "\" starting at " + "index=" + matcher.start(i + 1) + " and ending at index="
                             + matcher.end(i + 1) + ".\n");
                 }
@@ -153,14 +153,14 @@ public class StringUtils
         {
             if(StringUtils.DEBUG)
             {
-                StringUtils.log.debug("RdfUtils.matchesForRegexOnString: could not find a match for queryString="
+                StringUtils.log.debug("matchesForRegexOnString: could not find a match for queryString="
                         + nextQueryString);
             }
         }
         else if(StringUtils.DEBUG)
         {
-            StringUtils.log.debug("RdfUtils.matchesForRegexOnString: found " + results.size()
-                    + " matches for queryString=" + nextQueryString);
+            StringUtils.log.debug("matchesForRegexOnString: found " + results.size() + " matches for queryString="
+                    + nextQueryString);
         }
         
         return results;

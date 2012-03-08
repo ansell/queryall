@@ -11,7 +11,6 @@ import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
 import org.queryall.api.profile.Profile;
-import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.utils.ProfileIncludeExclude;
 
 /**
@@ -223,8 +222,7 @@ public abstract class AbstractProfileTest
     @Test
     public final void testGetDefaultProfileIncludeExcludeOrder()
     {
-        Assert.assertEquals(ProfileIncludeExclude.UNDEFINED,
-                this.testProfile1.getDefaultProfileIncludeExcludeOrder());
+        Assert.assertEquals(ProfileIncludeExclude.UNDEFINED, this.testProfile1.getDefaultProfileIncludeExcludeOrder());
     }
     
     /**

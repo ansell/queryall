@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.queryall.api.base.QueryAllConfiguration;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,30 +12,38 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
+public class RdfFetcherSparqlQueryRunnableImpl extends RdfFetcherQueryRunnableImpl
 {
-    private static final Logger log = LoggerFactory.getLogger(RdfFetcherUriQueryRunnable.class);
+    private static final Logger log = LoggerFactory.getLogger(RdfFetcherSparqlQueryRunnableImpl.class);
     @SuppressWarnings("unused")
-    private static final boolean TRACE = RdfFetcherUriQueryRunnable.log.isTraceEnabled();
-    private static final boolean DEBUG = RdfFetcherUriQueryRunnable.log.isDebugEnabled();
+    private static final boolean TRACE = RdfFetcherSparqlQueryRunnableImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = RdfFetcherSparqlQueryRunnableImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean INFO = RdfFetcherUriQueryRunnable.log.isInfoEnabled();
+    private static final boolean INFO = RdfFetcherSparqlQueryRunnableImpl.log.isInfoEnabled();
     
-    public RdfFetcherUriQueryRunnable(final String nextEndpointUrl, final String nextQuery, final String nextDebug,
-            final String nextAcceptHeader, final QueryAllConfiguration localSettings,
+    public String graphUri = "";
+    public int maxRowsParameter = this.getLocalSettings()
+            .getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT);
+    
+    public RdfFetcherSparqlQueryRunnableImpl(final String nextEndpointUrl, final String nextGraphUri,
+            final String nextQuery, final String nextDebug, final String nextAcceptHeader,
+            final int nextMaxRowsParameter, final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController, final QueryBundle nextOriginalQueryBundle)
     {
         super(nextEndpointUrl, nextQuery, nextDebug, nextAcceptHeader, localSettings, localBlacklistController,
                 nextOriginalQueryBundle);
+        
+        this.graphUri = nextGraphUri;
+        this.maxRowsParameter = nextMaxRowsParameter;
     }
     
-    @Override
-    public String call() throws Exception
-    {
-        this.doWork();
-        
-        return this.getNormalisedResult();
-    }
+    // @Override
+    // public String call() throws Exception
+    // {
+    // this.doWork();
+    //
+    // return this.getNormalisedResult();
+    // }
     
     private void doWork()
     {
@@ -45,37 +54,42 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
             this.setQueryStartTime(new Date());
             
             String tempRawResult =
-                    fetcher.getDocumentFromUrl(this.getOriginalEndpointUrl(), "", this.getAcceptHeader());
+                    fetcher.submitSparqlQuery(this.getOriginalEndpointUrl(), "", this.getOriginalQuery(), "",
+                            this.maxRowsParameter, this.getAcceptHeader());
             
             if(fetcher.getLastWasError())
             {
-                RdfFetcherUriQueryRunnable.log.error("Failed to fetch from endpoint=" + this.getOriginalEndpointUrl());
+                RdfFetcherSparqlQueryRunnableImpl.log.error("Failed to fetch from endpoint="
+                        + this.getOriginalEndpointUrl());
                 
                 final Map<String, String> alternateEndpointsAndQueries =
                         this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
                 
-                RdfFetcherUriQueryRunnable.log.error("There are " + (alternateEndpointsAndQueries.size() - 1)
+                RdfFetcherSparqlQueryRunnableImpl.log.error("There are " + (alternateEndpointsAndQueries.size() - 1)
                         + " alternative endpoints to choose from");
                 
                 for(final String alternateEndpoint : alternateEndpointsAndQueries.keySet())
                 {
                     if(!alternateEndpoint.equals(this.getOriginalEndpointUrl()))
                     {
-                        RdfFetcherUriQueryRunnable.log.error("Trying to fetch from alternate endpoint="
+                        RdfFetcherSparqlQueryRunnableImpl.log.error("Trying to fetch from alternate endpoint="
                                 + alternateEndpoint + " originalEndpoint=" + this.getOriginalEndpointUrl());
                         
                         final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
                         
-                        if(RdfFetcherUriQueryRunnable.DEBUG)
+                        if(RdfFetcherSparqlQueryRunnableImpl.DEBUG)
                         {
-                            RdfFetcherUriQueryRunnable.log.debug("alternateQuery=" + alternateQuery);
+                            RdfFetcherSparqlQueryRunnableImpl.log.debug("alternateQuery=" + alternateQuery);
                         }
                         
                         tempRawResult =
-                                fetcher.getDocumentFromUrl(alternateEndpoint, alternateQuery, this.getAcceptHeader());
+                                fetcher.submitSparqlQuery(alternateEndpoint, "", alternateQuery, "",
+                                        this.maxRowsParameter, this.getAcceptHeader());
                         
                         if(!fetcher.getLastWasError())
                         {
+                            RdfFetcherSparqlQueryRunnableImpl.log.error("Found a success with alternateEndpoint="
+                                    + alternateEndpoint + " alternateQuery=" + alternateQuery);
                             // break on the first alternate that wasn't an error
                             this.setActualEndpointUrl(alternateEndpoint);
                             this.setActualQuery(alternateQuery);
@@ -108,7 +122,6 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
                 
                 this.setReturnedContentEncoding(fetcher.getLastReturnedContentEncoding());
                 
-                this.setWasSuccessful(true);
             }
             else
             {
@@ -118,7 +131,7 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
         }
         catch(final Exception ex)
         {
-            RdfFetcherUriQueryRunnable.log.error("Found unknown exception", ex);
+            RdfFetcherSparqlQueryRunnableImpl.log.error("Found unknown exception", ex);
             this.setWasSuccessful(false);
             this.setLastException(ex);
         }
@@ -126,6 +139,7 @@ public class RdfFetcherUriQueryRunnable extends RdfFetcherQueryRunnable
         {
             this.setQueryEndTime(new Date());
             this.setCompleted(true);
+            this.getCountDownLatch().countDown();
         }
     }
     

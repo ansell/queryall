@@ -164,9 +164,9 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
             }
         }
         
-        if(SparqlConstructRuleImpl.DEBUG)
+        if(SparqlConstructRuleImpl.TRACE)
         {
-            SparqlConstructRuleImpl.log.debug("SparqlNormalisationRuleImpl constructor: toString()=" + this.toString());
+            SparqlConstructRuleImpl.log.trace("SparqlNormalisationRuleImpl constructor: toString()=" + this.toString());
         }
     }
     
@@ -411,9 +411,9 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
         
         try
         {
-            if(SparqlConstructRuleImpl.DEBUG)
+            if(SparqlConstructRuleImpl.TRACE)
             {
-                SparqlConstructRuleImpl.log.debug("SparqlNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
+                SparqlConstructRuleImpl.log.trace("SparqlNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
             }
             
             final URI keyUri = this.getKey();

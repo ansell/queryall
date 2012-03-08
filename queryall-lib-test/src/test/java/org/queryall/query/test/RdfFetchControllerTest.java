@@ -36,7 +36,6 @@ public class RdfFetchControllerTest
     @Before
     public void setUp() throws Exception
     {
-        this.testController = new RdfFetchController();
         this.testSettings = new Settings();
         this.testBlacklistController = new BlacklistController(this.testSettings);
         
@@ -60,12 +59,71 @@ public class RdfFetchControllerTest
     
     /**
      * Test method for {@link org.queryall.query.RdfFetchController#anyNamespaceNotRecognised()}.
+     * 
+     * Tests that the test controller defaults to false when there is no input.
+     * 
+     */
+    @Test
+    public final void testAnyNamespaceNotRecognisedEmpty()
+    {
+        this.testController = new RdfFetchController();
+        
+        Assert.assertFalse(this.testController.anyNamespaceNotRecognised());
+    }
+    
+    /**
+     * Test method for {@link org.queryall.query.RdfFetchController#anyNamespaceNotRecognised()}.
+     * 
+     * Tests that the test controller returns true if there are two providers and two query types,
+     * and one of the query type and provider combinations would have matched without the namespace
+     * condition.
+     * 
      */
     @Ignore
     @Test
-    public final void testAnyNamespaceNotRecognised()
+    public final void testAnyNamespaceNotRecognisedMultipleWithAndWithoutMatchingNamespace()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        this.testController = new RdfFetchController();
+        
+        // FIXME: Implement this test!
+        
+        Assert.assertTrue(this.testController.anyNamespaceNotRecognised());
+    }
+    
+    /**
+     * Test method for {@link org.queryall.query.RdfFetchController#anyNamespaceNotRecognised()}.
+     * 
+     * Tests that the test controller returns false when there is a single namespace specific
+     * provider and namespace specific query type without a matching namespace in the given inputs.
+     * 
+     */
+    @Ignore
+    @Test
+    public final void testAnyNamespaceNotRecognisedSingleMatchingNamespace()
+    {
+        this.testController = new RdfFetchController();
+        
+        // FIXME: Implement this test!
+        
+        Assert.assertFalse(this.testController.anyNamespaceNotRecognised());
+    }
+    
+    /**
+     * Test method for {@link org.queryall.query.RdfFetchController#anyNamespaceNotRecognised()}.
+     * 
+     * Tests that the test controller returns true when there is a single namespace specific
+     * provider and namespace specific query type without a matching namespace in the given inputs.
+     * 
+     */
+    @Ignore
+    @Test
+    public final void testAnyNamespaceNotRecognisedSingleNotMatchingNamespace()
+    {
+        this.testController = new RdfFetchController();
+        
+        // FIXME: Implement this test!
+        
+        Assert.assertTrue(this.testController.anyNamespaceNotRecognised());
     }
     
     /**
@@ -178,7 +236,7 @@ public class RdfFetchControllerTest
     @Test
     public final void testRdfFetchController()
     {
-        Assert.assertNotNull(this.testController);
+        this.testController = new RdfFetchController();
         
         Assert.assertNull(this.testController.getSettings());
         Assert.assertNull(this.testController.getBlacklistController());
@@ -349,6 +407,73 @@ public class RdfFetchControllerTest
     public final void testSetFetchThreadGroup()
     {
         Assert.fail("Not yet implemented"); // TODO
+    }
+    
+    /**
+     * Test that a negative pageOffset results in getPageOffset returning 1.
+     */
+    @Test
+    public final void testSetPageOffsetNegative()
+    {
+        this.testController = new RdfFetchController();
+        
+        this.testController.setPageOffset(-1);
+        
+        Assert.assertEquals(1, this.testController.getPageOffset());
+    }
+    
+    /**
+     * Test that a pageOffset of One results in getPageOffset returning 1.
+     */
+    @Test
+    public final void testSetPageOffsetOne()
+    {
+        this.testController = new RdfFetchController();
+        
+        this.testController.setPageOffset(1);
+        
+        Assert.assertEquals(1, this.testController.getPageOffset());
+    }
+    
+    /**
+     * Test that a pageOffset of two results in getPageOffset returning two.
+     */
+    @Test
+    public final void testSetPageOffsetTwo()
+    {
+        this.testController = new RdfFetchController();
+        
+        this.testController.setPageOffset(2);
+        
+        Assert.assertEquals(2, this.testController.getPageOffset());
+    }
+    
+    /**
+     * Test that large pageOffsets are allowed, as the configuration file only specifies the maximum
+     * for the display interface. Higher values should be allowed, although they may be restricted
+     * by custom interfaces.
+     */
+    @Test
+    public final void testSetPageOffsetTwoThousand()
+    {
+        this.testController = new RdfFetchController();
+        
+        this.testController.setPageOffset(2000);
+        
+        Assert.assertEquals(2000, this.testController.getPageOffset());
+    }
+    
+    /**
+     * Test that a pageOffset of Zero results in getPageOffset returning 1.
+     */
+    @Test
+    public final void testSetPageOffsetZero()
+    {
+        this.testController = new RdfFetchController();
+        
+        this.testController.setPageOffset(0);
+        
+        Assert.assertEquals(1, this.testController.getPageOffset());
     }
     
     /**

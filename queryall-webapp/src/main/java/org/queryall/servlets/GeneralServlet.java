@@ -184,7 +184,8 @@ public class GeneralServlet extends HttpServlet
             final Collection<String> debugStrings = new ArrayList<String>(multiProviderQueryBundles.size() + 5);
             
             // We do not use the default catalina writer as it may not be UTF-8 compliant depending
-            // on unchangeable environment variables
+            // on unchangeable environment variables, instead we wrap up the catalina binary output
+            // stream as a guaranteed UTF-8 Writer
             final Writer out = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
             
             // Create a new in memory repository for each request

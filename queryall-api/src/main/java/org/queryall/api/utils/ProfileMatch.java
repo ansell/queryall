@@ -9,7 +9,6 @@ import java.util.List;
 import org.openrdf.model.URI;
 import org.queryall.api.base.ProfilableInterface;
 import org.queryall.api.profile.Profile;
-import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
@@ -65,8 +64,10 @@ public enum ProfileMatch
         }
         
         final boolean returnValue =
-                includeNonProfileMatched && (ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE == profilableObject.getProfileIncludeExcludeOrder() || ProfileIncludeExclude.UNDEFINED == profilableObject
-                        .getProfileIncludeExcludeOrder());
+                includeNonProfileMatched
+                        && (ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE == profilableObject
+                                .getProfileIncludeExcludeOrder() || ProfileIncludeExclude.UNDEFINED == profilableObject
+                                .getProfileIncludeExcludeOrder());
         
         return returnValue;
     }
@@ -170,8 +171,8 @@ public enum ProfileMatch
     
     public static ProfileMatch usedWithProfilable(final Profile profile, final ProfilableInterface profilableObject)
     {
-        Collection<URI> includeList = null;
-        Collection<URI> excludeList = null;
+        Collection<URI> includeList;
+        Collection<URI> excludeList;
         boolean allowImplicitInclusions = false;
         
         if(profilableObject instanceof Provider)

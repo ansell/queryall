@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -1301,6 +1302,6 @@ public class SettingsFactory
             SettingsFactory.log.error("getStatementCollectionPropertiesFromConfig: error", ex);
         }
         
-        return new HashSet<Statement>();
+        return Collections.emptyList();
     }
 }

@@ -55,9 +55,9 @@ public abstract class BaseTransformingRuleImpl extends BaseRuleImpl implements T
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(TransformingRuleSchema.getTransformingRuleTypeUri()))
             {
-                if(BaseTransformingRuleImpl.DEBUG)
+                if(BaseTransformingRuleImpl.TRACE)
                 {
-                    BaseTransformingRuleImpl.log.debug("Found transforming rule schema type URI");
+                    BaseTransformingRuleImpl.log.trace("Found transforming rule schema type URI");
                 }
                 
                 this.setKey(keyToUse);

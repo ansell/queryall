@@ -3,15 +3,12 @@
  */
 package org.queryall.api.rdfrule;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.openrdf.model.URI;
 import org.queryall.api.services.QueryAllEnum;
+import org.queryall.api.services.ServiceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,90 +28,13 @@ public class NormalisationRuleEnum extends QueryAllEnum
     @SuppressWarnings("unused")
     private static final boolean INFO = NormalisationRuleEnum.LOG.isInfoEnabled();
     
-    protected static final Set<NormalisationRuleEnum> ALL_NORMALISATION_RULES = new HashSet<NormalisationRuleEnum>();
-    
+    /**
+     * @deprecated Use {@link ServiceUtils#getNormalisationRuleEnumsByTypeUris(Set<URI>)} instead
+     */
+    @Deprecated
     public static Collection<NormalisationRuleEnum> byTypeUris(final Set<URI> nextTypeUris)
     {
-        if(nextTypeUris.size() == 0)
-        {
-            if(NormalisationRuleEnum.DEBUG)
-            {
-                NormalisationRuleEnum.LOG.debug("found an empty URI set for nextNormalisationRuleUris=" + nextTypeUris);
-            }
-            
-            return Collections.emptyList();
-        }
-        
-        final List<NormalisationRuleEnum> results =
-                new ArrayList<NormalisationRuleEnum>(NormalisationRuleEnum.ALL_NORMALISATION_RULES.size());
-        
-        for(final NormalisationRuleEnum nextEnum : NormalisationRuleEnum.ALL_NORMALISATION_RULES)
-        {
-            if(nextEnum.matchForTypeUris(nextTypeUris))
-            {
-                if(NormalisationRuleEnum.DEBUG)
-                {
-                    NormalisationRuleEnum.LOG.debug("found an matching URI set for nextNormalisationRuleUris="
-                            + nextTypeUris);
-                }
-                results.add(nextEnum);
-            }
-        }
-        
-        if(NormalisationRuleEnum.DEBUG)
-        {
-            NormalisationRuleEnum.LOG.debug("returning results.size()=" + results.size()
-                    + " for nextNormalisationRuleUris=" + nextTypeUris);
-        }
-        
-        return results;
-    }
-    
-    /**
-     * Registers the specified normalisation rule.
-     */
-    public static void register(final NormalisationRuleEnum nextRdfRule)
-    {
-        if(NormalisationRuleEnum.valueOf(nextRdfRule.getName()) != null)
-        {
-            if(NormalisationRuleEnum.DEBUG)
-            {
-                NormalisationRuleEnum.LOG.debug("Cannot register this normalisation rule again name="
-                        + nextRdfRule.getName());
-            }
-        }
-        else
-        {
-            NormalisationRuleEnum.ALL_NORMALISATION_RULES.add(nextRdfRule);
-        }
-    }
-    
-    public static NormalisationRuleEnum register(final String name, final Set<URI> typeURIs)
-    {
-        final NormalisationRuleEnum newRdfRuleEnum = new NormalisationRuleEnum(name, typeURIs);
-        NormalisationRuleEnum.register(newRdfRuleEnum);
-        return newRdfRuleEnum;
-    }
-    
-    public static NormalisationRuleEnum valueOf(final String string)
-    {
-        for(final NormalisationRuleEnum nextRdfRuleEnum : NormalisationRuleEnum.ALL_NORMALISATION_RULES)
-        {
-            if(nextRdfRuleEnum.getName().equals(string))
-            {
-                return nextRdfRuleEnum;
-            }
-        }
-        
-        return null;
-    }
-    
-    /**
-     * Returns all known/registered normalisation rules.
-     */
-    public static Collection<NormalisationRuleEnum> values()
-    {
-        return Collections.unmodifiableCollection(NormalisationRuleEnum.ALL_NORMALISATION_RULES);
+        return ServiceUtils.getNormalisationRuleEnumsByTypeUris(nextTypeUris);
     }
     
     /**
@@ -126,6 +46,5 @@ public class NormalisationRuleEnum extends QueryAllEnum
     public NormalisationRuleEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
-        NormalisationRuleEnum.ALL_NORMALISATION_RULES.add(this);
     }
 }

@@ -5,11 +5,11 @@ package org.queryall.api.services;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public abstract class AbstractServiceLoader<K, S>
     @SuppressWarnings("unused")
     private static final boolean INFO = AbstractServiceLoader.LOG.isInfoEnabled();
     
-    protected Map<K, S> services = Collections.synchronizedMap(new HashMap<K, S>());
+    protected Map<K, S> services = new ConcurrentHashMap<K, S>();
     
     protected AbstractServiceLoader(final Class<S> serviceClass)
     {

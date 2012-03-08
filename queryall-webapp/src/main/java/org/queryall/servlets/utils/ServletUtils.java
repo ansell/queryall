@@ -8,7 +8,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +48,8 @@ import org.queryall.utils.RdfUtils;
 import org.queryall.utils.RuleUtils;
 import org.queryall.utils.SettingsFactory;
 import org.queryall.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -56,6 +57,7 @@ import org.queryall.utils.StringUtils;
  */
 public class ServletUtils
 {
+    private static final Logger log = LoggerFactory.getLogger(ServletUtils.class);
     
     /**
      * @param response
@@ -84,12 +86,12 @@ public class ServletUtils
                 
                 if(GeneralServlet.INFO)
                 {
-                    GeneralServlet.log.info("Sending redirect using redirectCode=" + redirectCode
-                            + " to redirectString=" + redirectString.toString());
+                    ServletUtils.log.info("Sending redirect using redirectCode=" + redirectCode + " to redirectString="
+                            + redirectString.toString());
                 }
                 if(GeneralServlet.DEBUG)
                 {
-                    GeneralServlet.log.debug("contextPath=" + contextPath);
+                    ServletUtils.log.debug("contextPath=" + contextPath);
                 }
                 response.setStatus(redirectCode);
                 // Cannot use response.sendRedirect as it will change the status to 302, which may
@@ -128,12 +130,12 @@ public class ServletUtils
         }
         catch(final UnnormalisableRuleException e)
         {
-            GeneralServlet.log.error("Found unnormalisable rule exception while normalising the pool", e);
+            ServletUtils.log.error("Found unnormalisable rule exception while normalising the pool", e);
             throw new QueryAllException("Found unnormalisable rule exception while normalising the pool", e);
         }
         catch(final QueryAllException e)
         {
-            GeneralServlet.log.error("Found queryall checked exception while normalising the pool", e);
+            ServletUtils.log.error("Found queryall checked exception while normalising the pool", e);
             throw e;
         }
     }
@@ -156,7 +158,7 @@ public class ServletUtils
         nextQueryDebug.setTotalTimeMilliseconds(nextTotalTime);
         nextQueryDebug.setQueryString(queryString);
         
-        final Collection<URI> queryTitles = new HashSet<URI>();
+        final Collection<URI> queryTitles = new ArrayList<URI>();
         
         for(final QueryBundle nextInitialQueryBundle : multiProviderQueryBundles)
         {
@@ -234,7 +236,7 @@ public class ServletUtils
                 
                 if(GeneralServlet.TRACE)
                 {
-                    GeneralServlet.log.trace("GeneralServlet: normalised result string : "
+                    ServletUtils.log.trace("GeneralServlet: normalised result string : "
                             + nextResult.getNormalisedResult());
                 }
                 
@@ -259,9 +261,9 @@ public class ServletUtils
                 {
                     final RepositoryConnection tempRepositoryConnection = tempRepository.getConnection();
                     
-                    GeneralServlet.log.debug("GeneralServlet: getAllStatementsFromRepository(tempRepository).size()="
+                    ServletUtils.log.debug("GeneralServlet: getAllStatementsFromRepository(tempRepository).size()="
                             + RdfUtils.getAllStatementsFromRepository(tempRepository).size());
-                    GeneralServlet.log.debug("GeneralServlet: tempRepositoryConnection.size()="
+                    ServletUtils.log.debug("GeneralServlet: tempRepositoryConnection.size()="
                             + tempRepositoryConnection.size());
                 }
                 
@@ -274,7 +276,7 @@ public class ServletUtils
                 
                 if(GeneralServlet.TRACE)
                 {
-                    GeneralServlet.log
+                    ServletUtils.log
                             .trace("GeneralServlet: Adding static RDF/XML string nextPotentialQueryBundle.getQueryType().getKey()="
                                     + nextPotentialQueryBundle.getQueryType().getKey()
                                     + " nextStaticString="
@@ -309,13 +311,13 @@ public class ServletUtils
                     }
                     else if(nextPotentialQueryBundle.getQueryType() != null)
                     {
-                        GeneralServlet.log.warn("Found a query type that was not an instance of OutputQueryType");
+                        ServletUtils.log.warn("Found a query type that was not an instance of OutputQueryType");
                     }
                 }
                 catch(final org.openrdf.rio.RDFParseException rdfpe)
                 {
-                    GeneralServlet.log.error("GeneralServlet: RDFParseException: static RDF " + rdfpe.getMessage());
-                    GeneralServlet.log.error("GeneralServlet: nextStaticString=" + nextStaticString);
+                    ServletUtils.log.error("GeneralServlet: RDFParseException: static RDF " + rdfpe.getMessage());
+                    ServletUtils.log.error("GeneralServlet: nextStaticString=" + nextStaticString);
                 }
             }
         }
@@ -365,7 +367,7 @@ public class ServletUtils
         
         if(GeneralServlet.TRACE)
         {
-            GeneralServlet.log.trace("GeneralServlet: Finished with pretend query bundle rdf generation");
+            ServletUtils.log.trace("GeneralServlet: Finished with pretend query bundle rdf generation");
         }
     }
     
@@ -398,9 +400,9 @@ public class ServletUtils
         {
             myRepositoryConnection = myRepository.getConnection();
             
-            final Collection<String> currentStaticStrings = new HashSet<String>();
+            final Collection<String> currentStaticStrings = new ArrayList<String>();
             
-            Collection<URI> staticQueryTypesForUnknown = new ArrayList<URI>(1);
+            Collection<URI> staticQueryTypesForUnknown;
             
             // TODO: attempt to generate a non-empty namespaceEntryMap in this case??
             if(fetchController.anyNamespaceNotRecognised())
@@ -418,7 +420,7 @@ public class ServletUtils
             {
                 if(GeneralServlet.DEBUG)
                 {
-                    GeneralServlet.log.debug("GeneralServlet: nextStaticQueryTypeForUnknown="
+                    ServletUtils.log.debug("GeneralServlet: nextStaticQueryTypeForUnknown="
                             + nextStaticQueryTypeForUnknown);
                 }
                 
@@ -426,7 +428,11 @@ public class ServletUtils
                 
                 if(nextIncludeType == null)
                 {
-                    throw new QueryAllException("Could not find query type for static unknown query type nextStaticQueryTypeForUnknown="+nextStaticQueryTypeForUnknown.stringValue()+" fetchController.anyNamespaceNotRecognised()="+fetchController.anyNamespaceNotRecognised());
+                    throw new QueryAllException(
+                            "Could not find query type for static unknown query type nextStaticQueryTypeForUnknown="
+                                    + nextStaticQueryTypeForUnknown.stringValue()
+                                    + " fetchController.anyNamespaceNotRecognised()="
+                                    + fetchController.anyNamespaceNotRecognised());
                 }
                 
                 // If we didn't understand the query
@@ -437,7 +443,8 @@ public class ServletUtils
                     final Map<String, String> attributeList =
                             QueryCreator.getAttributeListFor(nextIncludeType, null, queryParameters,
                                     localSettings.getStringProperty(WebappConfig.HOST_NAME), realHostName, pageOffset,
-                                    localSettings);
+                                    localSettings.getStringProperty(WebappConfig.HOST_NAME),
+                                    localSettings.getDefaultHostAddress(), localSettings.getSeparator());
                     
                     // This is a last ditch solution to giving some meaningful feedback, as we
                     // assume that the unknown query type will handle the input, so we pass it in as
@@ -470,21 +477,21 @@ public class ServletUtils
                     }
                     catch(final org.openrdf.rio.RDFParseException rdfpe)
                     {
-                        GeneralServlet.log.error("GeneralServlet: RDFParseException: static RDF " + rdfpe.getMessage());
-                        GeneralServlet.log.error("GeneralServlet: nextBackupString=" + nextBackupString);
+                        ServletUtils.log.error("GeneralServlet: RDFParseException: static RDF " + rdfpe.getMessage());
+                        ServletUtils.log.error("GeneralServlet: nextBackupString=" + nextBackupString);
                     }
                 }
                 else
                 {
-                    GeneralServlet.log
-                            .warn("Attempted to include a query type that was not parsed as an output query type key="
+                    ServletUtils.log
+                            .warn("Attempted to include a static, unknown-query/namespace, type that was not parsed as both an input and output query type key="
                                     + nextIncludeType.getKey() + " types=" + nextIncludeType.getElementTypes());
                 }
             }
             
             if(currentStaticStrings.size() == 0)
             {
-                GeneralServlet.log.error("Could not find anything at all to match at query level queryString="
+                ServletUtils.log.error("Could not find anything at all to match at query level queryString="
                         + queryParameters.get(Constants.QUERY));
                 
                 if(requestedContentType.equals("application/rdf+xml") || requestedContentType.equals("text/html"))
@@ -499,7 +506,7 @@ public class ServletUtils
             
             if(GeneralServlet.TRACE)
             {
-                GeneralServlet.log.trace("GeneralServlet: ending !fetchController.queryKnown() section");
+                ServletUtils.log.trace("GeneralServlet: ending !fetchController.queryKnown() section");
             }
         }
         finally
@@ -572,10 +579,10 @@ public class ServletUtils
             redirectString.append(localSettings.getStringProperty(WebappConfig.JSON_URL_PREFIX));
         }
         else
-        // or throw an error if we don't recognise it
         {
-            throw new IllegalArgumentException(
-                    "GeneralServlet.getRedirectString: did not recognise requestedContentType=" + requestedContentType);
+            ServletUtils.log
+                    .warn("Did not recognise requested content type, so not adding a redirect URL prefix for it. requestedContentType="
+                            + requestedContentType);
         }
         
         if(requestQueryOptions.isQueryPlanRequest())
@@ -619,6 +626,12 @@ public class ServletUtils
         {
             redirectString.append(localSettings.getStringProperty(WebappConfig.JSON_URL_SUFFIX));
         }
+        else
+        {
+            ServletUtils.log
+                    .warn("Did not recognise requested content type, so not adding a redirect URL suffix for it. requestedContentType="
+                            + requestedContentType);
+        }
     }
     
     /**
@@ -648,16 +661,16 @@ public class ServletUtils
     {
         if(GeneralServlet.INFO)
         {
-            GeneralServlet.log.info("GeneralServlet: query started on " + serverName + " requesterIpAddress="
+            ServletUtils.log.info("GeneralServlet: query started on " + serverName + " requesterIpAddress="
                     + requesterIpAddress + " queryString=" + queryString + " explicitPageOffset="
                     + containsExplicitPageOffset + " pageOffset=" + pageOffset + " isPretendQuery=" + isPretendQuery);
-            GeneralServlet.log.info("GeneralServlet: requestedContentType=" + requestedContentType + " acceptHeader="
+            ServletUtils.log.info("GeneralServlet: requestedContentType=" + requestedContentType + " acceptHeader="
                     + acceptHeader + " userAgent=" + userAgentHeader);
-            GeneralServlet.log.info("GeneralServlet: locale=" + locale + " characterEncoding=" + characterEncoding);
+            ServletUtils.log.info("GeneralServlet: locale=" + locale + " characterEncoding=" + characterEncoding);
             
             if(!originalRequestedContentType.equals(requestedContentType))
             {
-                GeneralServlet.log
+                ServletUtils.log
                         .info("GeneralServlet: originalRequestedContentType was overwritten originalRequestedContentType="
                                 + originalRequestedContentType + " requestedContentType=" + requestedContentType);
             }
@@ -690,14 +703,13 @@ public class ServletUtils
         // By default it starts with only 16 characters if we don't set a number here
         final java.io.StringWriter cleanOutput = new java.io.StringWriter(2000);
         
-        // TODO: Make this process generic to allow output to arbitrary formats
+        // TODO: Make this process generic to allow output to arbitrary formats instead of just
         if(requestedContentType.equals(Constants.TEXT_HTML))
         {
             if(GeneralServlet.DEBUG)
             {
-                GeneralServlet.log.debug("GeneralServlet: about to call html rendering method");
-                GeneralServlet.log
-                        .debug("GeneralServlet: fetchController.queryKnown()=" + fetchController.queryKnown());
+                ServletUtils.log.debug("GeneralServlet: about to call html rendering method");
+                ServletUtils.log.debug("GeneralServlet: fetchController.queryKnown()=" + fetchController.queryKnown());
             }
             
             try
@@ -708,20 +720,19 @@ public class ServletUtils
             }
             catch(final OpenRDFException ordfe)
             {
-                GeneralServlet.log.error("GeneralServlet: couldn't render HTML because of an RDF exception", ordfe);
+                ServletUtils.log.error("GeneralServlet: couldn't render HTML because of an RDF exception", ordfe);
             }
             catch(final Exception ex)
             {
-                GeneralServlet.log.error("GeneralServlet: couldn't render HTML because of an unknown exception", ex);
+                ServletUtils.log.error("GeneralServlet: couldn't render HTML because of an unknown exception", ex);
             }
         }
         else
         {
             if(GeneralServlet.DEBUG)
             {
-                GeneralServlet.log.debug("GeneralServlet: about to call rdf rendering method");
-                GeneralServlet.log
-                        .debug("GeneralServlet: fetchController.queryKnown()=" + fetchController.queryKnown());
+                ServletUtils.log.debug("GeneralServlet: about to call rdf rendering method");
+                ServletUtils.log.debug("GeneralServlet: fetchController.queryKnown()=" + fetchController.queryKnown());
             }
             
             RdfUtils.toWriter(convertedPool, cleanOutput, writerFormat);

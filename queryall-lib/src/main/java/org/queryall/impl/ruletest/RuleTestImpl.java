@@ -1,7 +1,7 @@
 package org.queryall.impl.ruletest;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
@@ -33,9 +33,9 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
     @SuppressWarnings("unused")
     private static final boolean INFO = RuleTestImpl.log.isInfoEnabled();
     
-    private Collection<URI> rdfRuleUris = new HashSet<URI>();
+    private Collection<URI> rdfRuleUris = new ArrayList<URI>();
     
-    private Collection<URI> stages = new HashSet<URI>();
+    private Collection<URI> stages = new ArrayList<URI>();
     
     public RuleTestImpl()
     {
@@ -234,7 +234,7 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
             RuleTestImpl.log.debug("Could not clear collection");
         }
         
-        this.rdfRuleUris = new HashSet<URI>();
+        this.rdfRuleUris = new ArrayList<URI>();
         
         return true;
     }
@@ -258,7 +258,7 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
             RuleTestImpl.log.debug("Could not clear collection");
         }
         
-        this.stages = new HashSet<URI>();
+        this.stages = new ArrayList<URI>();
         
         return true;
     }

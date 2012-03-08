@@ -36,7 +36,6 @@ import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.namespace.RegexValidatingNamespaceEntry;
 import org.queryall.api.namespace.ValidatingNamespaceEntry;
 import org.queryall.api.profile.Profile;
-import org.queryall.api.profile.ProfileSchema;
 import org.queryall.api.provider.HttpProvider;
 import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.HttpSparqlProvider;
@@ -1074,8 +1073,7 @@ public class RdfUtilsTest
                             nextProvider.getIsDefaultSource());
                     
                     Assert.assertEquals("Profile include exclude order was not parsed correctly",
-                            ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE,
-                            nextProvider.getProfileIncludeExcludeOrder());
+                            ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE, nextProvider.getProfileIncludeExcludeOrder());
                     
                     Assert.assertEquals("Namespaces were not parsed correctly", 1, nextProvider.getNamespaces().size());
                     Assert.assertEquals("Query Types were not parsed correctly", 1, nextProvider
@@ -1194,8 +1192,7 @@ public class RdfUtilsTest
                             nextQueryType.getInRobotsTxt());
                     
                     Assert.assertEquals("Query type profile include exclude order was not parsed correctly",
-                            ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE,
-                            nextQueryType.getProfileIncludeExcludeOrder());
+                            ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE, nextQueryType.getProfileIncludeExcludeOrder());
                     
                     Assert.assertEquals("Query type public identifiers size was not parsed correctly", 1, nextQueryType
                             .getPublicIdentifierTags().size());
@@ -1297,8 +1294,7 @@ public class RdfUtilsTest
                             nextQueryType.getInRobotsTxt());
                     
                     Assert.assertEquals("Query type profile include exclude order was not parsed correctly",
-                            ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE,
-                            nextQueryType.getProfileIncludeExcludeOrder());
+                            ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE, nextQueryType.getProfileIncludeExcludeOrder());
                     
                     Assert.assertEquals("Query type public identifiers size was not parsed correctly", 1, nextQueryType
                             .getPublicIdentifierTags().size());

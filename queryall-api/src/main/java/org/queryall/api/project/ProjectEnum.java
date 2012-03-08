@@ -4,12 +4,11 @@
 package org.queryall.api.project;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.openrdf.model.URI;
 import org.queryall.api.services.QueryAllEnum;
+import org.queryall.api.services.ServiceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,86 +28,13 @@ public class ProjectEnum extends QueryAllEnum
     @SuppressWarnings("unused")
     private static final boolean INFO = ProjectEnum.LOG.isInfoEnabled();
     
-    protected static final Set<ProjectEnum> ALL_PROJECTS = new HashSet<ProjectEnum>();
-    
+    /**
+     * @deprecated Use {@link ServiceUtils#getProjectEnumsByTypeUris(Set<URI>)} instead
+     */
+    @Deprecated
     public static Collection<ProjectEnum> byTypeUris(final Set<URI> nextTypeUris)
     {
-        if(nextTypeUris.size() == 0)
-        {
-            if(ProjectEnum.DEBUG)
-            {
-                ProjectEnum.LOG.debug("found an empty URI set for nextProjectUris=" + nextTypeUris);
-            }
-            return Collections.emptySet();
-        }
-        
-        final Set<ProjectEnum> results = new HashSet<ProjectEnum>();
-        
-        for(final ProjectEnum nextEnum : ProjectEnum.ALL_PROJECTS)
-        {
-            if(nextEnum.matchForTypeUris(nextTypeUris))
-            {
-                if(ProjectEnum.DEBUG)
-                {
-                    ProjectEnum.LOG.debug("found a matching URI set for nextProjectUris=" + nextTypeUris);
-                }
-                results.add(nextEnum);
-            }
-        }
-        
-        if(ProjectEnum.DEBUG)
-        {
-            ProjectEnum.LOG
-                    .debug("returning results.size()=" + results.size() + " for nextProjectUris=" + nextTypeUris);
-        }
-        
-        return results;
-    }
-    
-    /**
-     * Registers the specified project.
-     */
-    public static void register(final ProjectEnum nextProject)
-    {
-        if(ProjectEnum.valueOf(nextProject.getName()) != null)
-        {
-            if(ProjectEnum.DEBUG)
-            {
-                ProjectEnum.LOG.debug("Cannot register this project again name=" + nextProject.getName());
-            }
-        }
-        else
-        {
-            ProjectEnum.ALL_PROJECTS.add(nextProject);
-        }
-    }
-    
-    public static ProjectEnum register(final String name, final Set<URI> typeURIs)
-    {
-        final ProjectEnum newProjectEnum = new ProjectEnum(name, typeURIs);
-        ProjectEnum.register(newProjectEnum);
-        return newProjectEnum;
-    }
-    
-    public static ProjectEnum valueOf(final String string)
-    {
-        for(final ProjectEnum nextProjectEnum : ProjectEnum.ALL_PROJECTS)
-        {
-            if(nextProjectEnum.getName().equals(string))
-            {
-                return nextProjectEnum;
-            }
-        }
-        
-        return null;
-    }
-    
-    /**
-     * Returns all known/registered projects.
-     */
-    public static Collection<ProjectEnum> values()
-    {
-        return Collections.unmodifiableCollection(ProjectEnum.ALL_PROJECTS);
+        return ServiceUtils.getProjectEnumsByTypeUris(nextTypeUris);
     }
     
     /**
@@ -120,6 +46,5 @@ public class ProjectEnum extends QueryAllEnum
     public ProjectEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
-        ProjectEnum.ALL_PROJECTS.add(this);
     }
 }

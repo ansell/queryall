@@ -20,13 +20,19 @@ public class EnumServiceLoader extends AbstractServiceLoader<String, QueryAllEnu
     @SuppressWarnings("unused")
     private static final boolean INFO = EnumServiceLoader.LOG.isInfoEnabled();
     
-    private static EnumServiceLoader defaultRegistry;
+    private static volatile EnumServiceLoader defaultRegistry;
     
-    public static synchronized EnumServiceLoader getInstance()
+    public static EnumServiceLoader getInstance()
     {
         if(EnumServiceLoader.defaultRegistry == null)
         {
-            EnumServiceLoader.defaultRegistry = new EnumServiceLoader();
+            synchronized(EnumServiceLoader.class)
+            {
+                if(EnumServiceLoader.defaultRegistry == null)
+                {
+                    EnumServiceLoader.defaultRegistry = new EnumServiceLoader();
+                }
+            }
         }
         
         return EnumServiceLoader.defaultRegistry;
@@ -41,11 +47,11 @@ public class EnumServiceLoader extends AbstractServiceLoader<String, QueryAllEnu
     @Override
     public Collection<QueryAllEnum> getAll()
     {
-        if(EnumServiceLoader.DEBUG)
+        if(EnumServiceLoader.TRACE)
         {
             for(final String nextKey : this.services.keySet())
             {
-                EnumServiceLoader.LOG.debug("nextKey={} nextValue={}", nextKey, this.services.get(nextKey));
+                EnumServiceLoader.LOG.trace("nextKey={} nextValue={}", nextKey, this.services.get(nextKey));
             }
         }
         

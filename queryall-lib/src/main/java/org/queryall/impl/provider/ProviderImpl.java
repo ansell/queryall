@@ -40,11 +40,11 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
     @SuppressWarnings("unused")
     private static final boolean INFO = ProviderImpl.log.isInfoEnabled();
     
-    private Collection<URI> namespaces = new HashSet<URI>();
+    private Collection<URI> namespaces = new ArrayList<URI>();
     
-    private Collection<URI> includedInQueryTypes = new HashSet<URI>();
+    private Collection<URI> includedInQueryTypes = new ArrayList<URI>();
     
-    private Collection<URI> normalisationUris = new HashSet<URI>();
+    private Collection<URI> normalisationUris = new ArrayList<URI>();
     
     private URI redirectOrProxy = ProviderSchema.getProviderRedirect();
     
@@ -126,9 +126,9 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
             }
         }
         
-        if(ProviderImpl.DEBUG)
+        if(ProviderImpl.TRACE)
         {
-            ProviderImpl.log.debug("Provider.fromRdf: would have returned... keyToUse=" + keyToUse + " result="
+            ProviderImpl.log.trace("Provider.fromRdf: would have returned... keyToUse=" + keyToUse + " result="
                     + this.toString());
         }
     }

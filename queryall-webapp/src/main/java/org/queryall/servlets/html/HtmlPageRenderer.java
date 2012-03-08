@@ -32,9 +32,11 @@ import org.slf4j.LoggerFactory;
  * 
  * Originally created for Pubby using Jena by...
  * 
- * @author Richard Cyganiak (richard@cyganiak.de) Ported to Sesame for Bio2RDF by...
+ * @author Richard Cyganiak (richard@cyganiak.de)
+ * 
+ *         Ported to Sesame for Bio2RDF by...
+ * 
  * @author Peter Ansell (p_ansell@yahoo.com)
- * @version $Id: HtmlPageRenderer.java 944 2011-02-08 10:23:08Z p_ansell $
  */
 
 public class HtmlPageRenderer
@@ -80,16 +82,6 @@ public class HtmlPageRenderer
         if(localSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_HOSTNAME))
         {
             realHostName = localSettings.getStringProperty(WebappConfig.HARDCODED_REQUEST_HOSTNAME);
-        }
-        
-        if(HtmlPageRenderer.TRACE)
-        {
-            HtmlPageRenderer.log.trace("renderHtml: about to create VelocityHelper class");
-        }
-        
-        if(HtmlPageRenderer.TRACE)
-        {
-            HtmlPageRenderer.log.trace("renderHtml: finished creating VelocityHelper class");
         }
         
         final Context velocityContext = new VelocityContext();
@@ -234,9 +226,10 @@ public class HtmlPageRenderer
         // existing label available
         // and if not schedule a thread to retrieve a label for the item so that for other uses it
         // can be shown
-        
-        HtmlPageRenderer.log.info("HtmlPageRenderer: allStatements.size()=" + allStatements.size());
-        
+        if(HtmlPageRenderer.INFO)
+        {
+            HtmlPageRenderer.log.info("HtmlPageRenderer: allStatements.size()={}", allStatements.size());
+        }
         // TODO: what should be shown if there are no RDF statements? A 404 error doesn't seem
         // appropriate because the query might be quite legitimate and no triples is the valid
         // response
@@ -339,7 +332,7 @@ public class HtmlPageRenderer
         
         if(HtmlPageRenderer.TRACE)
         {
-            HtmlPageRenderer.log.trace("renderHtml: about to render XHTML to nextWriter=" + nextWriter);
+            HtmlPageRenderer.log.trace("renderHtml: about to render XHTML");
         }
         
         try
@@ -350,6 +343,7 @@ public class HtmlPageRenderer
                 {
                     HtmlPageRenderer.log.debug("renderHtml: fetchController.queryKnown(), using results template");
                 }
+                
                 final String templateLocation = localSettings.getStringProperty(WebappConfig.RESULTS_TEMPLATE);
                 // final VelocityEngine nextEngine =
                 // (VelocityEngine)servletContext.getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
@@ -367,9 +361,6 @@ public class HtmlPageRenderer
                 velocityContext.put("queryKnown", fetchController.queryKnown());
                 
                 final String templateLocation = localSettings.getStringProperty(WebappConfig.ERROR_TEMPLATE);
-                
-                // final VelocityEngine nextEngine =
-                // (VelocityEngine)servletContext.getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
                 
                 VelocityHelper.renderXHTML(nextEngine, velocityContext, templateLocation, nextWriter);
             }
@@ -403,10 +394,15 @@ public class HtmlPageRenderer
                 resolvedUri, realHostName, contextPath, pageoffset, debugStrings);
     }
     
-    public static void renderIndexPage(final QueryAllConfiguration localSettings, final VelocityEngine nextEngine,
-            final java.io.Writer nextWriter, final Collection<String> debugStrings, String realHostName,
-            String contextPath) throws OpenRDFException
+    public static void renderIndexPage(final VelocityEngine nextEngine, final QueryAllConfiguration localSettings,
+            final java.io.Writer nextWriter, String realHostName, String contextPath,
+            final Collection<String> debugStrings) throws OpenRDFException
     {
+        if(localSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_CONTEXT))
+        {
+            contextPath = localSettings.getStringProperty(WebappConfig.HARDCODED_REQUEST_CONTEXT);
+        }
+        
         if(contextPath == null || contextPath.equals("/"))
         {
             contextPath = "";
@@ -415,11 +411,6 @@ public class HtmlPageRenderer
         {
             // take off the first slash and add one to the end for our purposes
             contextPath = contextPath.substring(1) + "/";
-        }
-        
-        if(localSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_CONTEXT))
-        {
-            contextPath = localSettings.getStringProperty(WebappConfig.HARDCODED_REQUEST_CONTEXT);
         }
         
         if(localSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_HOSTNAME))
@@ -481,8 +472,7 @@ public class HtmlPageRenderer
         }
         catch(final Exception ex)
         {
-            HtmlPageRenderer.log.error("renderIndexPage: caught exception while rendering XHTML");
-            HtmlPageRenderer.log.error(ex.getMessage());
+            HtmlPageRenderer.log.error("renderIndexPage: caught exception while rendering XHTML", ex);
             
             try
             {

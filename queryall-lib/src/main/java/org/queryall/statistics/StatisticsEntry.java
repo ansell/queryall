@@ -1,8 +1,9 @@
 package org.queryall.statistics;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.openrdf.OpenRDFException;
@@ -21,7 +22,7 @@ import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.impl.base.BaseQueryAllImpl;
-import org.queryall.query.HttpUrlQueryRunnable;
+import org.queryall.query.HttpUrlQueryRunnableImpl;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -375,23 +376,23 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
     
     private String acceptHeader = "";
     
-    private Collection<String> configLocations = new HashSet<String>();
+    private Collection<String> configLocations = new ArrayList<String>();
     
     private String configVersion = "";
     
     private int connecttimeout = -1;
     
-    private Collection<String> errorproviderUris = new HashSet<String>();
+    private Collection<String> errorproviderUris = new ArrayList<String>();
     
     private String lastServerRestart = "";
     
-    private Collection<String> namespaceUris = new HashSet<String>();
+    private Collection<String> namespaceUris = new ArrayList<String>();
     
-    private Collection<String> profileUris = new HashSet<String>();
+    private Collection<String> profileUris = new ArrayList<String>();
     
     private String queryString = "";
     
-    private Collection<String> querytypeUris = new HashSet<String>();
+    private Collection<String> querytypeUris = new ArrayList<String>();
     
     private int readtimeout = -1;
     
@@ -406,7 +407,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
     private double stdeverrorlatency = 0.0;
     
     private double stdevlatency = 0.0;
-    private Collection<String> successfulproviderUris = new HashSet<String>();
+    private Collection<String> successfulproviderUris = new ArrayList<String>();
     private long sumerrorlatency = 0;
     private int sumerrors = 0;
     private long sumLatency = -1;
@@ -680,7 +681,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
      * @return
      * @throws OpenRDFException
      */
-    public HttpUrlQueryRunnable generateThread(final QueryAllConfiguration localSettings,
+    public HttpUrlQueryRunnableImpl generateThread(final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController, final int modelVersion) throws OpenRDFException
     {
         // TODO: Convert this to new structure
@@ -720,7 +721,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
          *                             + sparqlInsertQuery); }
          * 
          *                             return new
-         *                             HttpUrlQueryRunnable(localSettings.getStringProperty
+         *                             HttpUrlQueryRunnableImpl(localSettings.getStringProperty
          *                             ("statisticsServerMethod", ""),
          *                             localSettings.getStringProperty("statisticsServerUrl", ""),
          *                             sparqlInsertQuery, "* / *", localSettings,
@@ -735,7 +736,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
          *                             + postInformation); }
          * 
          *                             return new
-         *                             HttpUrlQueryRunnable(localSettings.getStringProperty
+         *                             HttpUrlQueryRunnableImpl(localSettings.getStringProperty
          *                             ("statisticsServerMethod", ""),
          *                             localSettings.getStringProperty("statisticsServerUrl", ""),
          *                             postInformation, "* / *", localSettings,
@@ -789,11 +790,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
     @Override
     public Set<URI> getElementTypes()
     {
-        final Set<URI> results = new HashSet<URI>();
-        
-        results.add(StatisticsEntry.statisticsTypeUri);
-        
-        return results;
+        return Collections.singleton(StatisticsEntry.statisticsTypeUri);
     }
     
     /**

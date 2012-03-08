@@ -142,9 +142,9 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(XsltTransformingRuleImpl.DEBUG)
+            if(XsltTransformingRuleImpl.TRACE)
             {
-                XsltTransformingRuleImpl.log.debug("XsltNormalisationRuleImpl: nextStatement: "
+                XsltTransformingRuleImpl.log.trace("XsltNormalisationRuleImpl: nextStatement: "
                         + nextStatement.toString());
             }
             
@@ -175,9 +175,9 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
             }
         }
         
-        if(XsltTransformingRuleImpl.DEBUG)
+        if(XsltTransformingRuleImpl.TRACE)
         {
-            XsltTransformingRuleImpl.log.debug("XsltNormalisationRuleImpl constructor: toString()=" + this.toString());
+            XsltTransformingRuleImpl.log.trace("XsltNormalisationRuleImpl constructor: toString()=" + this.toString());
         }
     }
     
@@ -369,9 +369,9 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
         
         try
         {
-            if(XsltTransformingRuleImpl.DEBUG)
+            if(XsltTransformingRuleImpl.TRACE)
             {
-                XsltTransformingRuleImpl.log.debug("XsltNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
+                XsltTransformingRuleImpl.log.trace("XsltNormalisationRuleImpl.toRdf: keyToUse=" + keyToUse);
             }
             
             final URI keyUri = this.getKey();

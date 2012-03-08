@@ -1,5 +1,6 @@
 package org.queryall.query;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -18,7 +19,7 @@ public class QueryDebug
     private long totalTimeMilliseconds = 0;
     private String clientIPAddress = "";
     private String queryString = "";
-    private Collection<URI> matchingQueryTitles = new HashSet<URI>();
+    private Collection<URI> matchingQueryTitles = new ArrayList<URI>();
     
     /**
      * @return the clientIPAddress
