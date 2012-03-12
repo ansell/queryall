@@ -67,7 +67,8 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
     
     public static Set<URI> myTypes()
     {
-        return PrefixMappingNormalisationRuleImpl.PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES;
+        return Collections
+                .unmodifiableSet(PrefixMappingNormalisationRuleImpl.PREFIX_MAPPING_NORMALISATION_RULE_IMPL_TYPES);
     }
     
     private String inputPrefix = "";

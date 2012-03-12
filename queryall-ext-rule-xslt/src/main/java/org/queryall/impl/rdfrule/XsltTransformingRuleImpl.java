@@ -6,6 +6,7 @@ package org.queryall.impl.rdfrule;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -205,7 +206,7 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
     @Override
     protected Set<URI> setupValidStages()
     {
-        return XsltTransformingRuleImpl.XSLT_TRANSFORMING_RULE_IMPL_VALID_STAGES;
+        return Collections.unmodifiableSet(XsltTransformingRuleImpl.XSLT_TRANSFORMING_RULE_IMPL_VALID_STAGES);
     }
     
     /*

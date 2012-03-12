@@ -144,6 +144,14 @@ public class RdfFetchController
         {
             if(nextThread.getCompleted())
             {
+                URI queryKey = null;
+                
+                if(nextThread.getOriginalQueryBundle() != null
+                        && nextThread.getOriginalQueryBundle().getQueryType() != null)
+                {
+                    queryKey = nextThread.getOriginalQueryBundle().getQueryType().getKey();
+                }
+                
                 if(!nextThread.getWasSuccessful())
                 {
                     if(nextThread.getLastException() != null)
@@ -153,20 +161,23 @@ public class RdfFetchController
                                 + nextThread.getActualEndpointUrl() + " message="
                                 + nextThread.getLastException().getMessage());
                         
-                        URI queryKey = null;
-                        
-                        if(nextThread.getOriginalQueryBundle() != null
-                                && nextThread.getOriginalQueryBundle().getQueryType() != null)
-                        {
-                            queryKey = nextThread.getOriginalQueryBundle().getQueryType().getKey();
-                        }
-                        
                         nextThread.setResultDebugString("FAILURE: originalendpoint="
                                 + nextThread.getOriginalEndpointUrl() + " actualendpoint="
                                 + nextThread.getActualEndpointUrl() + " querykey=" + queryKey + " query="
                                 + nextThread.getOriginalQuery() + " message="
                                 + nextThread.getLastException().getMessage());
                         
+                    }
+                    else
+                    {
+                        RdfFetchController.log.error("Found unknown error for originalendpoint="
+                                + nextThread.getOriginalEndpointUrl() + " actualendpoint="
+                                + nextThread.getActualEndpointUrl());
+                        
+                        nextThread.setResultDebugString("FAILURE: originalendpoint="
+                                + nextThread.getOriginalEndpointUrl() + " actualendpoint="
+                                + nextThread.getActualEndpointUrl() + " querykey=" + queryKey + " query="
+                                + nextThread.getOriginalQuery() + " (no message)");
                     }
                     
                     this.errorResults.add(nextThread);
@@ -189,6 +200,10 @@ public class RdfFetchController
                     
                     nextThread.setNormalisedResult(convertedResult);
                     
+                    nextThread.setResultDebugString("SUCCESS: originalendpoint=" + nextThread.getOriginalEndpointUrl()
+                            + " actualendpoint=" + nextThread.getActualEndpointUrl() + " querykey=" + queryKey
+                            + " query=" + nextThread.getOriginalQuery());
+                    
                     if(RdfFetchController.DEBUG)
                     {
                         RdfFetchController.log.debug("RdfFetchController.fetchRdfForQueries: Query successful query="
@@ -201,16 +216,6 @@ public class RdfFetchController
                                             + nextResult + " convertedResult=" + convertedResult);
                         }
                     }
-                    
-                    URI queryKey = null;
-                    
-                    if(nextThread.getOriginalQueryBundle() != null
-                            && nextThread.getOriginalQueryBundle().getQueryType() != null)
-                    {
-                        queryKey = nextThread.getOriginalQueryBundle().getQueryType().getKey();
-                    }
-                    
-                    nextThread.setResultDebugString("SUCCESS: queryKey=" + queryKey);
                     
                     this.getSuccessfulResults().add(nextThread);
                 }

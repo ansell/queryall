@@ -1,6 +1,7 @@
 package org.queryall.impl.rdfrule;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.PatternSyntaxException;
@@ -350,7 +351,7 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
     @Override
     protected Set<URI> setupValidStages()
     {
-        return RegexTransformingRuleImpl.REGEX_TRANSFORMING_RULE_IMPL_VALID_STAGES;
+        return Collections.unmodifiableSet(RegexTransformingRuleImpl.REGEX_TRANSFORMING_RULE_IMPL_VALID_STAGES);
     }
     
     @Override

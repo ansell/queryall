@@ -2,6 +2,7 @@ package org.queryall.impl.rdfrule;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -322,7 +323,7 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
     @Override
     protected Set<URI> setupValidStages()
     {
-        return SparqlConstructRuleImpl.SPARQL_CONSTRUCT_RULE_VALID_STAGES;
+        return Collections.unmodifiableSet(SparqlConstructRuleImpl.SPARQL_CONSTRUCT_RULE_VALID_STAGES);
     }
     
     @Override

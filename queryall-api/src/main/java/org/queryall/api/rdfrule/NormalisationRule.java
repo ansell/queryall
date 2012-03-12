@@ -59,7 +59,7 @@ public interface NormalisationRule extends BaseQueryAllInterface, Comparable<Nor
      * Gets the order that this rule will be processed in. If rules have the same integer for their
      * order, they can be processed in any order.
      * 
-     * @return The integer denoting the order in which this rule will be processed.
+     * @return The positive integer denoting the order in which this rule will be processed.
      */
     int getOrder();
     
@@ -102,7 +102,7 @@ public interface NormalisationRule extends BaseQueryAllInterface, Comparable<Nor
      * stages.
      * 
      * @param order
-     *            An integer denoting the order in which this rule will be applied.
+     *            A positive integer denoting the order in which this rule will be applied.
      */
     void setOrder(int order);
     

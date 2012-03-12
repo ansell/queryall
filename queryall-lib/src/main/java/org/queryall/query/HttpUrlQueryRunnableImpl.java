@@ -159,9 +159,8 @@ public class HttpUrlQueryRunnableImpl extends RdfFetcherQueryRunnableImpl // ext
                 this.setRawResult(tempRawResult);
                 
                 // make the normalised Result the same as the raw result unless people actually want
-                // to
-                // normalise it
-                this.setNormalisedResult(this.getRawResult());
+                // to normalise it
+                // this.setNormalisedResult(this.getRawResult());
                 
                 this.setReturnedContentType(fetcher.getLastReturnedContentType());
                 

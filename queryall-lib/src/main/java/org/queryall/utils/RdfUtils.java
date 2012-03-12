@@ -2898,12 +2898,12 @@ public final class RdfUtils
             {
                 RdfUtils.log.debug("insertResultIntoRepository: nextResult.normalisedResult.length()="
                         + nextResult.getNormalisedResult().length());
-            }
-            
-            if(RdfUtils.TRACE)
-            {
-                RdfUtils.log.trace("insertResultIntoRepository: nextResult.normalisedResult="
-                        + nextResult.getNormalisedResult());
+                
+                if(RdfUtils.TRACE)
+                {
+                    RdfUtils.log.trace("insertResultIntoRepository: nextResult.normalisedResult="
+                            + nextResult.getNormalisedResult());
+                }
             }
             
             if(nextReaderFormat != null && nextResult.getNormalisedResult().length() > 0)
@@ -2913,6 +2913,10 @@ public final class RdfUtils
                                 .getKey());
                 
                 myRepositoryConnection.commit();
+            }
+            else
+            {
+                RdfUtils.log.warn("Not adding anything for next result as the result was empty");
             }
             
             if(RdfUtils.DEBUG)

@@ -49,7 +49,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     
     private Set<URI> stages = new HashSet<URI>(10);
     
-    private final Set<URI> validStages = new HashSet<URI>(10);
+    private final Set<URI> validStages;
     
     private int order = 100;
     
@@ -57,7 +57,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     {
         super();
         
-        this.validStages.addAll(this.setupValidStages());
+        this.validStages = Collections.unmodifiableSet(this.setupValidStages());
     }
     
     // keyToUse is the URI of the next instance that can be found in
@@ -67,7 +67,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        this.validStages.addAll(this.setupValidStages());
+        this.validStages = Collections.unmodifiableSet(this.setupValidStages());
         
         final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
@@ -328,7 +328,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     @Override
     public final Set<URI> getValidStages()
     {
-        return Collections.unmodifiableSet(this.validStages);
+        return this.validStages;
     }
     
     /*
@@ -408,9 +408,14 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
     }
     
     @Override
-    public final void setOrder(final int order)
+    public final void setOrder(final int nextOrder)
     {
-        this.order = order;
+        if(nextOrder < 0)
+        {
+            throw new IllegalArgumentException("Order variable must be positive");
+        }
+        
+        this.order = nextOrder;
     }
     
     @Override
@@ -527,7 +532,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
                     "Cannot check if this rule to be used in this stage as it was not recognised.", this, stage);
         }
         
-        return this.validStages.contains(stage) && this.stages.contains(stage);
+        return this.getValidStages().contains(stage) && this.stages.contains(stage);
     }
     
     @Override
@@ -539,6 +544,6 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
                     "Cannot check if this rule is valid in this stage as it was not recognised.", this, stage);
         }
         
-        return this.validStages.contains(stage);
+        return this.getValidStages().contains(stage);
     }
 }
