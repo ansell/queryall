@@ -33,8 +33,8 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements RdfF
     private String returnedContentEncoding = null;
     private QueryBundle originalQueryBundle = null;
     
-    private boolean wasSuccessful = false;
-    private boolean completed = false;
+    private volatile boolean wasSuccessful = false;
+    private volatile boolean completed = false;
     private Exception lastException = null;
     private String resultDebugString = "";
     
@@ -169,18 +169,24 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements RdfF
     @Override
     public String getNormalisedResult()
     {
-        if(this.normalisedResult == null || this.normalisedResult.length() == 0)
+        if(this.normalisedResult == null || this.normalisedResult.isEmpty())
         {
             if(RdfFetcherQueryRunnableImpl.DEBUG)
             {
+                
                 RdfFetcherQueryRunnableImpl.log
-                        .debug("RdfFetcherQueryRunnableImpl.getNormalisedResult: no normalisation occurred, returning raw result instead");
+                        .debug("getNormalisedResult: no normalisation occurred, returning raw result instead");
             }
             
             return this.rawResult;
         }
         else
         {
+            if(RdfFetcherQueryRunnableImpl.TRACE)
+            {
+                RdfFetcherQueryRunnableImpl.log.trace("getNormalisedResult: returning normalised result");
+            }
+            
             return this.normalisedResult;
         }
     }

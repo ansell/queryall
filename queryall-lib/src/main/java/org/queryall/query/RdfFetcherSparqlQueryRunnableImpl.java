@@ -6,6 +6,7 @@ import java.util.Map;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.exception.QueryAllException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,12 +123,19 @@ public class RdfFetcherSparqlQueryRunnableImpl extends RdfFetcherQueryRunnableIm
                 
                 this.setReturnedContentEncoding(fetcher.getLastReturnedContentEncoding());
                 
+                this.setWasSuccessful(true);
             }
             else
             {
                 this.setWasSuccessful(false);
                 this.setLastException(fetcher.getLastException());
             }
+        }
+        catch(final QueryAllException qae)
+        {
+            RdfFetcherSparqlQueryRunnableImpl.log.error("Found QueryAllException", qae);
+            this.setWasSuccessful(false);
+            this.setLastException(qae);
         }
         catch(final Exception ex)
         {

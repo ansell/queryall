@@ -204,11 +204,14 @@ public final class RuleUtils
      * @throws QueryAllException
      *             , UnnormalisableRuleException
      */
-    public static Object normaliseByStage(final URI stage, Object input,
+    public static Object normaliseByStage(final URI stage, final Object input,
             final List<NormalisationRule> normalisationRules, final List<Profile> includedProfiles,
             final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules)
         throws QueryAllException, UnnormalisableRuleException, ValidationFailedException
     {
+        // Take the input reference, and pass it through the rules to return it as the result
+        Object result = input;
+        
         if(RuleUtils.TRACE)
         {
             RuleUtils.log.trace("normaliseByStage: before applying normalisation rules");
@@ -230,13 +233,13 @@ public final class RuleUtils
                 {
                     if(nextRule instanceof TransformingRule)
                     {
-                        input = ((TransformingRule)nextRule).normaliseByStage(stage, input);
+                        result = ((TransformingRule)nextRule).normaliseByStage(stage, result);
                     }
                     else if(nextRule instanceof ValidatingRule)
                     {
-                        final boolean result = ((ValidatingRule)nextRule).normaliseByStage(stage, input);
+                        final boolean validationResult = ((ValidatingRule)nextRule).normaliseByStage(stage, result);
                         
-                        if(!result)
+                        if(!validationResult)
                         {
                             throw new ValidationFailedException("Validation failed", (ValidatingRule)nextRule);
                         }
@@ -269,7 +272,7 @@ public final class RuleUtils
             }
         }
         
-        return input;
+        return result;
     }
     
     /**
@@ -345,7 +348,7 @@ public final class RuleUtils
                             nextInputTestResult =
                                     (String)transformingRule.normaliseByStage(
                                             NormalisationRuleSchema.getRdfruleStageQueryVariables(),
-                                            nextTestInputString);
+                                            nextInputTestResult);
                         }
                         catch(final InvalidStageException e)
                         {
@@ -367,7 +370,7 @@ public final class RuleUtils
                             result =
                                     validatingRule.normaliseByStage(
                                             NormalisationRuleSchema.getRdfruleStageQueryVariables(),
-                                            nextTestInputString);
+                                            nextInputTestResult);
                         }
                         catch(final InvalidStageException e)
                         {
