@@ -2,6 +2,7 @@ package org.queryall.impl.rdfrule;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -220,7 +221,7 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
     @Override
     protected Set<URI> setupValidStages()
     {
-        return SparqlAskRuleImpl.SPARQL_ASK_RULE_VALID_STAGES;
+        return Collections.unmodifiableSet(SparqlAskRuleImpl.SPARQL_ASK_RULE_VALID_STAGES);
     }
     
     @Override
