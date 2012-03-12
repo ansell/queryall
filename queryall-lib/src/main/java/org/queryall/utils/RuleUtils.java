@@ -312,6 +312,8 @@ public final class RuleUtils
     /**
      * Runs StringRuleTests against the Query Variables stage and the Before Results Import stage
      * 
+     * FIXME: Implement string rule tests for After Results To Document stage
+     * 
      * @param allNormalisationRules
      * @param allPassed
      * @param nextStringRuleTest
@@ -331,10 +333,10 @@ public final class RuleUtils
         final String nextTestInputString = nextStringRuleTest.getTestInputString();
         final String nextTestOutputString = nextStringRuleTest.getTestOutputString();
         
-        String nextInputTestResult = nextTestInputString;
-        
         if(nextStringRuleTest.getStages().contains(NormalisationRuleSchema.getRdfruleStageQueryVariables()))
         {
+            String nextInputTestResult = nextTestInputString;
+            
             for(final NormalisationRule nextRule : RuleUtils.getSortedRulesByUris(allNormalisationRules,
                     nextStringRuleTest.getRuleUris(), SortOrder.LOWEST_ORDER_FIRST))
             {
@@ -423,7 +425,7 @@ public final class RuleUtils
         
         if(nextStringRuleTest.getStages().contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()))
         {
-            String nextOutputTestResult = nextTestInputString;
+            String nextOutputTestResult = nextTestOutputString;
             
             for(final NormalisationRule nextRule : RuleUtils.getSortedRulesByUris(allNormalisationRules,
                     nextStringRuleTest.getRuleUris(), SortOrder.HIGHEST_ORDER_FIRST))
@@ -433,7 +435,7 @@ public final class RuleUtils
                     final TransformingRule transformingRule = (TransformingRule)nextRule;
                     nextOutputTestResult =
                             (String)transformingRule.normaliseByStage(
-                                    NormalisationRuleSchema.getRdfruleStageBeforeResultsImport(), nextTestInputString);
+                                    NormalisationRuleSchema.getRdfruleStageBeforeResultsImport(), nextOutputTestResult);
                 }
                 else if(nextRule instanceof ValidatingRule)
                 {
@@ -441,10 +443,15 @@ public final class RuleUtils
                     
                     final boolean result =
                             validatingRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageQueryVariables(),
-                                    nextTestInputString);
+                                    nextOutputTestResult);
                     
                     if(!result)
                     {
+                        if(RuleUtils.DEBUG)
+                        {
+                            RuleUtils.log.debug("TEST-FAIL: validating rule failed validatingRule.getKey()="
+                                    + validatingRule.getKey());
+                        }
                         allPassed = false;
                     }
                 }
@@ -457,6 +464,7 @@ public final class RuleUtils
                 
             }
             
+            // the output test should regenerate the input string from the output string
             if(allPassed && nextOutputTestResult.equals(nextTestInputString))
             {
                 if(RuleUtils.DEBUG)
