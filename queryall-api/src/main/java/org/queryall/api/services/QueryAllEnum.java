@@ -1,6 +1,7 @@
 package org.queryall.api.services;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.openrdf.model.URI;
@@ -17,8 +18,8 @@ public abstract class QueryAllEnum
     @SuppressWarnings("unused")
     private static final boolean INFO = QueryAllEnum.LOG.isInfoEnabled();
     
-    private Set<URI> typeURIs;
-    private String name;
+    private final Set<URI> typeURIs;
+    private final String name;
     
     /**
      * Create a new QueryType enum using the given name, which must be unique, and the given URIs to
@@ -29,8 +30,8 @@ public abstract class QueryAllEnum
      */
     public QueryAllEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
-        this.setName(nextName);
-        this.setTypeURIs(nextTypeURIs);
+        this.name = nextName;
+        this.typeURIs = new HashSet<URI>(nextTypeURIs);
     }
     
     /*
@@ -136,42 +137,7 @@ public abstract class QueryAllEnum
      */
     protected boolean matchForTypeUris(final Set<URI> nextTypeURIs)
     {
-        boolean matching = true;
-        
-        for(final URI nextURI : nextTypeURIs)
-        {
-            // Default implementation of this method is to check whether the given URIs are all in
-            // the type URIs for this Enum
-            // This behaviour can be overriden to provide different behaviour in implementations
-            if(!this.getTypeURIs().contains(nextURI))
-            {
-                matching = false;
-            }
-        }
-        
-        return matching;
-    }
-    
-    /**
-     * The name can only be set using the constructor.
-     * 
-     * @param nextName
-     *            the name to set
-     */
-    protected final void setName(final String nextName)
-    {
-        this.name = nextName;
-    }
-    
-    /**
-     * The type can only be set using the constructor.
-     * 
-     * @param nextTypeURIs
-     *            the typeURIs to set
-     */
-    protected final void setTypeURIs(final Set<URI> nextTypeURIs)
-    {
-        this.typeURIs = nextTypeURIs;
+        return this.typeURIs.containsAll(nextTypeURIs);
     }
     
     /**
