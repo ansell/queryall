@@ -22,6 +22,14 @@ public class EnumServiceLoader extends AbstractServiceLoader<String, QueryAllEnu
     
     private static volatile EnumServiceLoader defaultRegistry;
     
+    /**
+     * Returns the default instance of EnumServiceLoader.
+     * 
+     * It the caller needs to modify the service loader contents they should create their own
+     * instance, to minimise confusion for other code that calls this method.
+     * 
+     * @return The default instance of EnumServiceLoader
+     */
     public static EnumServiceLoader getInstance()
     {
         if(EnumServiceLoader.defaultRegistry == null)
@@ -58,6 +66,10 @@ public class EnumServiceLoader extends AbstractServiceLoader<String, QueryAllEnu
         return super.getAll();
     }
     
+    /**
+     * Returns the key for the given service, even if the given service does not exist in this
+     * service loader.
+     */
     @Override
     protected String getKey(final QueryAllEnum service)
     {
