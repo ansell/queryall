@@ -198,7 +198,10 @@ public class HttpUrlQueryRunnableImpl extends RdfFetcherQueryRunnableImpl // ext
         {
             this.setQueryEndTime(new Date());
             this.setCompleted(true);
-            this.getCountDownLatch().countDown();
+            if(this.getCountDownLatch() != null)
+            {
+                this.getCountDownLatch().countDown();
+            }
         }
     }
     
