@@ -2832,7 +2832,7 @@ public final class RdfUtils
     }
     
     public static void insertResultIntoRepository(final RdfFetcherQueryRunnable nextResult,
-            final Repository myRepository, final String assumedResponseContentType, final String defaultHostAddress)
+            final Repository myRepository, final String defaultAssumedResponseContentType, final String defaultHostAddress)
         throws RepositoryException, java.io.IOException
     {
         if(RdfUtils.TRACE)
@@ -2856,8 +2856,12 @@ public final class RdfUtils
             
             if(nextReaderFormat == null)
             {
-                final String assumedContentType =
-                        nextResult.getOriginalQueryBundle().getProvider().getAssumedContentType();
+                String assumedContentType = null;
+                
+                if(nextResult.getOriginalQueryBundle() != null && nextResult.getOriginalQueryBundle().getProvider() != null)
+                {
+                    assumedContentType = nextResult.getOriginalQueryBundle().getProvider().getAssumedContentType();
+                }
                 
                 if(assumedContentType != null && assumedContentType.trim().length() > 0)
                 {
@@ -2866,7 +2870,7 @@ public final class RdfUtils
                 
                 if(nextReaderFormat == null)
                 {
-                    nextReaderFormat = Rio.getParserFormatForMIMEType(assumedResponseContentType);
+                    nextReaderFormat = Rio.getParserFormatForMIMEType(defaultAssumedResponseContentType);
                 }
                 
                 if(nextReaderFormat == null)
@@ -2877,7 +2881,7 @@ public final class RdfUtils
                                     + " nextResult.assumedContentType="
                                     + assumedContentType
                                     + " Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="
-                                    + assumedResponseContentType);
+                                    + defaultAssumedResponseContentType);
                     // throw new
                     // RuntimeException("Utilities: Not attempting to parse because there are no content types to use for interpretation");
                 }
@@ -2908,10 +2912,18 @@ public final class RdfUtils
             
             if(nextReaderFormat != null && nextResult.getNormalisedResult().length() > 0)
             {
-                myRepositoryConnection.add(new java.io.StringReader(nextResult.getNormalisedResult()),
-                        defaultHostAddress, nextReaderFormat, nextResult.getOriginalQueryBundle().getProvider()
-                                .getKey());
-                
+                if(nextResult.getOriginalQueryBundle() != null
+                        && nextResult.getOriginalQueryBundle().getProvider() != null)
+                {
+                    myRepositoryConnection.add(new java.io.StringReader(nextResult.getNormalisedResult()),
+                            defaultHostAddress, nextReaderFormat, nextResult.getOriginalQueryBundle().getProvider()
+                                    .getKey());
+                }
+                else
+                {
+                    myRepositoryConnection.add(new java.io.StringReader(nextResult.getNormalisedResult()),
+                            defaultHostAddress, nextReaderFormat);
+                }
                 myRepositoryConnection.commit();
             }
             else

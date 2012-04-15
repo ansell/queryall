@@ -204,17 +204,22 @@ public class RdfFetchController
                             + " actualendpoint=" + nextThread.getActualEndpointUrl() + " querykey=" + queryKey
                             + " query=" + nextThread.getOriginalQuery());
                     
-                    if(RdfFetchController.DEBUG)
+                    if(RdfFetchController.TRACE)
                     {
-                        RdfFetchController.log.debug("RdfFetchController.fetchRdfForQueries: Query successful query="
-                                + nextThread.getOriginalQueryBundle().getQueryType().getKey());
-                        
-                        if(RdfFetchController.TRACE)
-                        {
-                            RdfFetchController.log
-                                    .trace("RdfFetchController.fetchRdfForQueries: Query successful nextResult="
-                                            + nextResult + " convertedResult=" + convertedResult);
-                        }
+                        RdfFetchController.log
+                                .debug("RdfFetchController.fetchRdfForQueries: Query successful nextThread.getOriginalEndpointUrl()={} query={}",
+                                        nextThread.getOriginalEndpointUrl(), nextThread.getOriginalQueryBundle()
+                                                .getQueryType().getKey());
+                        RdfFetchController.log
+                                .trace("RdfFetchController.fetchRdfForQueries: Query successful nextResult={} convertedResult={}",
+                                        nextResult, convertedResult);
+                    }
+                    else if(RdfFetchController.DEBUG)
+                    {
+                        RdfFetchController.log
+                                .debug("RdfFetchController.fetchRdfForQueries: Query successful nextThread.getOriginalEndpointUrl()={} query={}",
+                                        nextThread.getOriginalEndpointUrl(), nextThread.getOriginalQueryBundle()
+                                                .getQueryType().getKey());
                     }
                     
                     this.getSuccessfulResults().add(nextThread);
