@@ -60,7 +60,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<queryall.version>1.3-SNAPSHOT</queryall.version>
 		<sesame.version>2.6.5</sesame.version>
-		<sesametools.version>1.7-SNAPSHOT</sesametools.version>
+		<sesametools.version>1.6</sesametools.version>
 		<slf4j.version>1.6.4</slf4j.version>
 	</properties>
 	<build>
