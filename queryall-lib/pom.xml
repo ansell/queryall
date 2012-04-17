@@ -12,125 +12,60 @@
 	<packaging>jar</packaging>
 	<name>queryall lib</name>
 	<url>http://sourceforge.net/apps/mediawiki/bio2rdf/</url>
-	<inceptionYear>2007</inceptionYear>
-	<developers>
-		<developer>
-			<id>p_ansell</id>
-			<email>p_ansell@yahoo.com</email>
-			<name>Peter Ansell</name>
-		</developer>
-	</developers>
-	<licenses>
-		<license>
-			<name>GNU Affero General Public License 3.0</name>
-			<url>http://www.gnu.org/licenses/agpl-3.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-	<mailingLists>
-		<mailingList>
-			<name>Bio2RDF Google Group</name>
-			<archive>https://groups.google.com/group/bio2rdf/</archive>
-			<post>bio2rdf@googlegroups.com</post>
-			<subscribe>https://groups.google.com/group/bio2rdf/subscribe</subscribe>
-			<unsubscribe>https://groups.google.com/group/bio2rdf/subscribe</unsubscribe>
-		</mailingList>
-	</mailingLists>
-	<scm>
-		<connection>scm:git:git://bio2rdf.git.sourceforge.net/gitroot/queryall/queryall</connection>
-		<developerConnection>scm:git:ssh://p_ansell@bio2rdf.git.sourceforge.net/gitroot/queryall/queryall</developerConnection>
-		<url>http://bio2rdf.git.sourceforge.net/</url>
-	</scm>
 	<dependencies>
 		<dependency>
 			<groupId>org.queryall</groupId>
 			<artifactId>queryall-api</artifactId>
 			<version>${queryall.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-model</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-repository-sail</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-rio-ntriples</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-sail-memory</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-query</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>info.aduna.commons</groupId>
 			<artifactId>aduna-commons-iteration</artifactId>
-			<version>2.10.0</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-sail-api</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-rio-api</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-repository-api</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-queryparser-sparql</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-rio-rdfxml</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
 			<scope>runtime</scope>
 			<!-- Optional, because it is used as a backup format if none others match -->
 			<optional>true</optional>
@@ -139,12 +74,38 @@
 			<!-- see http://weblogs.java.net/blog/kohsuke/archive/2009/03/my_project_of_t.html -->
 			<groupId>org.kohsuke.metainf-services</groupId>
 			<artifactId>metainf-services</artifactId>
-			<version>1.1</version>
-			<type>jar</type>
 			<scope>compile</scope>
 			<!-- Optional because it is only needed for compilation, and is not needed 
 				at runtime -->
 			<optional>true</optional>
 		</dependency>
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>

@@ -10,6 +10,8 @@
 	</parent>
 	<artifactId>queryall-lib-test</artifactId>
 	<name>queryall-lib-test</name>
+	<description>Created to separate the tests from the multiple modules that they rely on.</description>
+	<inceptionYear>2011</inceptionYear>
 	<dependencies>
 		<dependency>
 			<groupId>org.queryall</groupId>
@@ -29,84 +31,109 @@
 			<groupId>org.queryall</groupId>
 			<artifactId>queryall-lib</artifactId>
 			<version>${queryall.version}</version>
-			<type>jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-rule-xslt</artifactId>
+			<version>${queryall.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-rule-sparql</artifactId>
+			<version>${queryall.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-rule-regex</artifactId>
+			<version>${queryall.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-rule-prefixmap</artifactId>
+			<version>${queryall.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-provider-http</artifactId>
+			<version>${queryall.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-provider-rdf</artifactId>
+			<version>${queryall.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-querytype-rdf</artifactId>
+			<version>${queryall.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-ext-querytype-regex</artifactId>
+			<version>${queryall.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
-			<version>${slf4j.version}</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-query</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-repository-sail</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-sail-api</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-rio-api</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-repository-api</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-model</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-sail-memory</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
@@ -118,109 +145,65 @@
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-rio-rdfxml</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-rio-n3</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-rio-trix</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-rio-trig</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.fortytwo.sesametools</groupId>
 			<artifactId>rdfjson</artifactId>
-			<version>${sesametools.version}</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.fortytwo.sesametools</groupId>
 			<artifactId>nquads</artifactId>
-			<version>${sesametools.version}</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-queryparser-sparql</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.queryall</groupId>
-			<artifactId>queryall-ext-rule-xslt</artifactId>
-			<version>${queryall.version}</version>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.queryall</groupId>
-			<artifactId>queryall-ext-rule-sparql</artifactId>
-			<version>${queryall.version}</version>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.queryall</groupId>
-			<artifactId>queryall-ext-rule-regex</artifactId>
-			<version>${queryall.version}</version>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.queryall</groupId>
-			<artifactId>queryall-ext-rule-prefixmap</artifactId>
-			<version>${queryall.version}</version>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.queryall</groupId>
-			<artifactId>queryall-ext-provider-http</artifactId>
-			<version>${queryall.version}</version>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.queryall</groupId>
-			<artifactId>queryall-ext-provider-rdf</artifactId>
-			<version>${queryall.version}</version>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.queryall</groupId>
-			<artifactId>queryall-ext-querytype-rdf</artifactId>
-			<version>${queryall.version}</version>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.queryall</groupId>
-			<artifactId>queryall-ext-querytype-regex</artifactId>
-			<version>${queryall.version}</version>
-			<type>jar</type>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	<description>Created to separate the tests from the multiple modules that they rely on.</description>
-	<inceptionYear>2011</inceptionYear>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>
