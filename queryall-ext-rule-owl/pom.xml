@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>org.queryall</groupId>
 			<artifactId>queryall-api</artifactId>
-			<version>${queryall.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 </project>
