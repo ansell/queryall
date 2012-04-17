@@ -4,43 +4,13 @@
 	<parent>
 		<groupId>org.queryall</groupId>
 		<artifactId>queryall-parent</artifactId>
-		<version>1.3-SNAPSHOT</version>
+		<version>1.3</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>queryall-webapp</artifactId>
 	<packaging>jar</packaging>
 	<name>Queryall Webapp library</name>
-	<url>http://sourceforge.net/apps/mediawiki/bio2rdf/</url>
-	<inceptionYear>2007</inceptionYear>
-	<developers>
-		<developer>
-			<id>p_ansell</id>
-			<email>p_ansell@yahoo.com</email>
-			<name>Peter Ansell</name>
-		</developer>
-	</developers>
-	<licenses>
-		<license>
-			<name>GNU Affero General Public License 3.0</name>
-			<url>http://www.gnu.org/licenses/agpl-3.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-	<mailingLists>
-		<mailingList>
-			<name>Bio2RDF Google Group</name>
-			<archive>https://groups.google.com/group/bio2rdf/</archive>
-			<post>bio2rdf@googlegroups.com</post>
-			<subscribe>https://groups.google.com/group/bio2rdf/subscribe</subscribe>
-			<unsubscribe>https://groups.google.com/group/bio2rdf/subscribe</unsubscribe>
-		</mailingList>
-	</mailingLists>
-	<scm>
-		<connection>scm:git:git://bio2rdf.git.sourceforge.net/gitroot/queryall/queryall-webapp</connection>
-		<developerConnection>scm:git:ssh://p_ansell@bio2rdf.git.sourceforge.net/gitroot/queryall/queryall-webapp</developerConnection>
-		<url>http://bio2rdf.git.sourceforge.net/</url>
-	</scm>
 	<dependencies>
 		<dependency>
 			<groupId>org.queryall</groupId>

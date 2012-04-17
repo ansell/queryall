@@ -4,14 +4,13 @@
 	<parent>
 		<groupId>org.queryall</groupId>
 		<artifactId>queryall-parent</artifactId>
-		<version>1.3-SNAPSHOT</version>
+		<version>1.3</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>queryall-lib</artifactId>
 	<packaging>jar</packaging>
 	<name>queryall lib</name>
-	<url>http://sourceforge.net/apps/mediawiki/bio2rdf/</url>
 	<dependencies>
 		<dependency>
 			<groupId>org.queryall</groupId>
