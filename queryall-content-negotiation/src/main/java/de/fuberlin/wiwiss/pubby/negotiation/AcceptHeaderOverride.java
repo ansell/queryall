@@ -2,7 +2,7 @@ package de.fuberlin.wiwiss.pubby.negotiation;
 
 import java.util.regex.Pattern;
 
-class AcceptHeaderOverride
+public class AcceptHeaderOverride
 {
     private Pattern userAgentPattern;
     private String original;
@@ -20,7 +20,6 @@ class AcceptHeaderOverride
         return this.replacement;
     }
     
-    @SuppressWarnings("unused")
     boolean matches(final String acceptHeader)
     {
         return this.matches(acceptHeader, null);

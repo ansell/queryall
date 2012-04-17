@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 public class EnumServiceLoader extends AbstractServiceLoader<String, QueryAllEnum>
 {
     private static final Logger LOG = LoggerFactory.getLogger(EnumServiceLoader.class);
-    @SuppressWarnings("unused")
     private static final boolean TRACE = EnumServiceLoader.LOG.isTraceEnabled();
+    @SuppressWarnings("unused")
     private static final boolean DEBUG = EnumServiceLoader.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean INFO = EnumServiceLoader.LOG.isInfoEnabled();

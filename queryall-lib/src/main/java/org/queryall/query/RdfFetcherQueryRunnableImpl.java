@@ -15,9 +15,7 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements RdfF
 // Callable<String>
 {
     private static final Logger log = LoggerFactory.getLogger(RdfFetcherQueryRunnableImpl.class);
-    @SuppressWarnings("unused")
     private static final boolean TRACE = RdfFetcherQueryRunnableImpl.log.isTraceEnabled();
-    @SuppressWarnings("unused")
     private static final boolean DEBUG = RdfFetcherQueryRunnableImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
     private static final boolean INFO = RdfFetcherQueryRunnableImpl.log.isInfoEnabled();

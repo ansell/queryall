@@ -2832,8 +2832,8 @@ public final class RdfUtils
     }
     
     public static void insertResultIntoRepository(final RdfFetcherQueryRunnable nextResult,
-            final Repository myRepository, final String defaultAssumedResponseContentType, final String defaultHostAddress)
-        throws RepositoryException, java.io.IOException
+            final Repository myRepository, final String defaultAssumedResponseContentType,
+            final String defaultHostAddress) throws RepositoryException, java.io.IOException
     {
         if(RdfUtils.TRACE)
         {
@@ -2858,7 +2858,8 @@ public final class RdfUtils
             {
                 String assumedContentType = null;
                 
-                if(nextResult.getOriginalQueryBundle() != null && nextResult.getOriginalQueryBundle().getProvider() != null)
+                if(nextResult.getOriginalQueryBundle() != null
+                        && nextResult.getOriginalQueryBundle().getProvider() != null)
                 {
                     assumedContentType = nextResult.getOriginalQueryBundle().getProvider().getAssumedContentType();
                 }
