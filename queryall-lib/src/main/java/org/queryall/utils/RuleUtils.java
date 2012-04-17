@@ -6,7 +6,6 @@ package org.queryall.utils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,9 +14,16 @@ import org.queryall.api.profile.Profile;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
+import org.queryall.api.rdfrule.TransformingRule;
+import org.queryall.api.rdfrule.ValidatingRule;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.ruletest.StringRuleTest;
 import org.queryall.api.utils.SortOrder;
+import org.queryall.exception.InvalidStageException;
+import org.queryall.exception.QueryAllException;
+import org.queryall.exception.UnnormalisableRuleException;
+import org.queryall.exception.UntestableRuleException;
+import org.queryall.exception.ValidationFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,19 +33,27 @@ import org.slf4j.LoggerFactory;
 public final class RuleUtils
 {
     private static final Logger log = LoggerFactory.getLogger(RuleUtils.class);
-    private static final boolean _TRACE = RuleUtils.log.isTraceEnabled();
-    private static final boolean _DEBUG = RuleUtils.log.isDebugEnabled();
-    private static final boolean _INFO = RuleUtils.log.isInfoEnabled();
+    private static final boolean TRACE = RuleUtils.log.isTraceEnabled();
+    private static final boolean DEBUG = RuleUtils.log.isDebugEnabled();
+    private static final boolean INFO = RuleUtils.log.isInfoEnabled();
     
+    /**
+     * 
+     * @param allNormalisationRules
+     * @param neededRules
+     * @param sortOrder
+     * @return A sorted list of rules from allNormalisationRules using the URIs from neededRules and
+     *         the SortOrder given by sortOrder
+     */
     public static List<NormalisationRule> getSortedRulesByUris(final Map<URI, NormalisationRule> allNormalisationRules,
-            final Collection<URI> rdfNormalisationsNeeded, final SortOrder sortOrder)
+            final Collection<URI> neededRules, final SortOrder sortOrder)
     {
         final List<NormalisationRule> results = new ArrayList<NormalisationRule>();
         // final List<NormalisationRule> intermediateResults = new ArrayList<NormalisationRule>();
         // final Map<URI, NormalisationRule> allNormalisationRules =
         // this.getAllNormalisationRules();
         
-        for(final URI nextProviderNormalisationRule : rdfNormalisationsNeeded)
+        for(final URI nextProviderNormalisationRule : neededRules)
         {
             if(allNormalisationRules.containsKey(nextProviderNormalisationRule))
             {
@@ -47,7 +61,7 @@ public final class RuleUtils
             }
             else
             {
-                if(RuleUtils._DEBUG)
+                if(RuleUtils.DEBUG)
                 {
                     RuleUtils.log.debug("Could not find requested Normalisation Rule nextProviderNormalisationRule="
                             + nextProviderNormalisationRule.stringValue());
@@ -55,7 +69,7 @@ public final class RuleUtils
             }
         }
         
-        if(RuleUtils._TRACE)
+        if(RuleUtils.TRACE)
         {
             RuleUtils.log.trace("Settings: rule sorting started");
         }
@@ -63,14 +77,14 @@ public final class RuleUtils
         {
             Collections.sort(results);
             
-            if(RuleUtils._DEBUG)
+            if(RuleUtils.DEBUG)
             {
                 int testOrder = -1;
                 for(final NormalisationRule nextRule : results)
                 {
                     if(testOrder == -1)
                     {
-                        if(RuleUtils._TRACE)
+                        if(RuleUtils.TRACE)
                         {
                             RuleUtils.log.trace("Settings: rule sorting verification starting at nextRule.getOrder()="
                                     + nextRule.getOrder());
@@ -84,7 +98,7 @@ public final class RuleUtils
                     }
                     else if(testOrder < nextRule.getOrder())
                     {
-                        if(RuleUtils._TRACE)
+                        if(RuleUtils.TRACE)
                         {
                             RuleUtils.log.trace("Settings: rule verification stepping from testOrder=" + testOrder
                                     + " to nextRule.getOrder()=" + nextRule.getOrder());
@@ -92,13 +106,13 @@ public final class RuleUtils
                         testOrder = nextRule.getOrder();
                     }
                 }
-            } // end if(_TRACE)
+            } // end if(TRACE)
         }
         else if(sortOrder == SortOrder.HIGHEST_ORDER_FIRST)
         {
             Collections.sort(results, Collections.reverseOrder());
             
-            if(RuleUtils._DEBUG)
+            if(RuleUtils.DEBUG)
             {
                 int testOrder = -1;
                 
@@ -106,7 +120,7 @@ public final class RuleUtils
                 {
                     if(testOrder == -1)
                     {
-                        if(RuleUtils._TRACE)
+                        if(RuleUtils.TRACE)
                         {
                             RuleUtils.log.trace("Settings: rule sorting verification starting at nextRule.getOrder()="
                                     + nextRule.getOrder());
@@ -120,7 +134,7 @@ public final class RuleUtils
                     }
                     else if(testOrder > nextRule.getOrder())
                     {
-                        if(RuleUtils._TRACE)
+                        if(RuleUtils.TRACE)
                         {
                             RuleUtils.log.trace("Settings: rule verification stepping from testOrder=" + testOrder
                                     + " to nextRule.getOrder()=" + nextRule.getOrder());
@@ -128,14 +142,14 @@ public final class RuleUtils
                         testOrder = nextRule.getOrder();
                     }
                 }
-            } // end if(_TRACE)
+            } // end if(TRACE)
         }
         else
         {
             RuleUtils.log.error("Settings: sortOrder was not recognised sortOrder=" + sortOrder);
         }
         
-        if(RuleUtils._TRACE)
+        if(RuleUtils.TRACE)
         {
             RuleUtils.log.trace("Settings: rule sorting finished");
         }
@@ -143,10 +157,18 @@ public final class RuleUtils
         return results;
     }
     
+    /**
+     * 
+     * @param providers
+     * @param allNormalisationRules
+     * @param sortOrder
+     * @return An ordered list of rules based on all of the rules that are defined for the given
+     *         providers and the SortOrder given by sortOrder
+     */
     public static List<NormalisationRule> getSortedRulesForProviders(final Collection<Provider> providers,
             final Map<URI, NormalisationRule> allNormalisationRules, final SortOrder sortOrder)
     {
-        final List<NormalisationRule> results = new LinkedList<NormalisationRule>();
+        final List<NormalisationRule> results = new ArrayList<NormalisationRule>();
         
         for(final Provider nextProvider : providers)
         {
@@ -179,12 +201,18 @@ public final class RuleUtils
      * @param includeNonProfileMatchedRdfRules
      * @param basicRdfXml
      * @return
+     * @throws QueryAllException
+     *             , UnnormalisableRuleException
      */
-    public static Object normaliseByStage(final URI stage, Object input,
+    public static Object normaliseByStage(final URI stage, final Object input,
             final List<NormalisationRule> normalisationRules, final List<Profile> includedProfiles,
             final boolean recogniseImplicitRdfRuleInclusions, final boolean includeNonProfileMatchedRdfRules)
+        throws QueryAllException, UnnormalisableRuleException, ValidationFailedException
     {
-        if(RuleUtils._TRACE)
+        // Take the input reference, and pass it through the rules to return it as the result
+        Object result = input;
+        
+        if(RuleUtils.TRACE)
         {
             RuleUtils.log.trace("normaliseByStage: before applying normalisation rules");
         }
@@ -195,30 +223,56 @@ public final class RuleUtils
         for(final NormalisationRule nextRule : normalisationRules)
         {
             if(nextRule.isUsedWithProfileList(includedProfiles, recogniseImplicitRdfRuleInclusions,
-                    includeNonProfileMatchedRdfRules))
+                    includeNonProfileMatchedRdfRules) && nextRule.usedInStage(stage))
             {
-                if(RuleUtils._TRACE)
+                if(RuleUtils.TRACE)
                 {
                     RuleUtils.log.trace("normaliseByStage: nextRule.order=" + nextRule.getOrder());
                 }
-                
-                input = nextRule.normaliseByStage(stage, input);
+                try
+                {
+                    if(nextRule instanceof TransformingRule)
+                    {
+                        result = ((TransformingRule)nextRule).normaliseByStage(stage, result);
+                    }
+                    else if(nextRule instanceof ValidatingRule)
+                    {
+                        final boolean validationResult = ((ValidatingRule)nextRule).normaliseByStage(stage, result);
+                        
+                        if(!validationResult)
+                        {
+                            throw new ValidationFailedException("Validation failed", (ValidatingRule)nextRule);
+                        }
+                        
+                        // if the validation did not fail, we return the input object unchanged.
+                    }
+                    else
+                    {
+                        throw new UnnormalisableRuleException("NormalisationRule type not supported", nextRule);
+                    }
+                }
+                catch(final InvalidStageException ise)
+                {
+                    RuleUtils.log
+                            .error("Found invalid stage exception after we checked whether the rule was used in this stage. This should not happen.",
+                                    ise);
+                }
             }
         }
         
-        if(RuleUtils._DEBUG)
+        if(RuleUtils.DEBUG)
         {
             final long end = System.currentTimeMillis();
             
             RuleUtils.log.debug(String.format("%s: timing=%10d", "normaliseByStage", (end - start)));
             
-            if(RuleUtils._TRACE)
+            if(RuleUtils.TRACE)
             {
                 RuleUtils.log.trace("normaliseByStage: after applying normalisation rules");
             }
         }
         
-        return input;
+        return result;
     }
     
     /**
@@ -226,103 +280,223 @@ public final class RuleUtils
      * 
      * @param myRuleTests
      * @return true if all of the tests passed, otherwise it returns false
+     * @throws QueryAllException
      */
     public static boolean runRuleTests(final Collection<RuleTest> myRuleTests,
-            final Map<URI, NormalisationRule> allNormalisationRules)
+            final Map<URI, NormalisationRule> allNormalisationRules) throws QueryAllException
     {
         boolean allPassed = true;
         
         for(final RuleTest nextRuleTest : myRuleTests)
         {
-            final String nextTestInputString = ((StringRuleTest)nextRuleTest).getTestInputString();
-            final String nextTestOutputString = ((StringRuleTest)nextRuleTest).getTestOutputString();
-            
-            String nextInputTestResult = nextTestInputString;
-            
-            if(nextRuleTest.getStages().contains(NormalisationRuleSchema.getRdfruleStageQueryVariables()))
+            if(nextRuleTest instanceof StringRuleTest)
             {
-                for(final NormalisationRule nextRule : RuleUtils.getSortedRulesByUris(allNormalisationRules,
-                        nextRuleTest.getRuleUris(), SortOrder.LOWEST_ORDER_FIRST))
-                {
-                    nextInputTestResult =
-                            (String)nextRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageQueryVariables(),
-                                    nextTestInputString);
-                }
+                final StringRuleTest nextStringRuleTest = (StringRuleTest)nextRuleTest;
                 
-                if(nextInputTestResult.equals(nextTestOutputString))
-                {
-                    if(RuleUtils._DEBUG)
-                    {
-                        RuleUtils.log.debug("TEST-PASS input test pass: nextTestInputString=" + nextTestInputString
-                                + " nextInputTestResult=" + nextInputTestResult);
-                    }
-                }
-                else
+                if(!RuleUtils.runStringRuleTest(allNormalisationRules, nextStringRuleTest))
                 {
                     allPassed = false;
-                    
-                    if(RuleUtils._INFO)
-                    {
-                        RuleUtils.log
-                                .info("TEST-FAIL: input test did not result in the output string: nextTestInputString="
-                                        + nextTestInputString + " actual output :: nextInputTestResult="
-                                        + nextInputTestResult + " expected output :: nextTestOutputString="
-                                        + nextTestOutputString);
-                        RuleUtils.log.info("TEST-FAIL: nextRuleTest.toString()=" + nextRuleTest.toString());
-                    }
                 }
-            }
-            
-            if(nextRuleTest.getStages().contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()))
+            } // end if(nextRuleTest instanceof StringRuleTest
+            else
             {
-                String nextOutputTestResult = nextTestInputString;
-                
-                for(final NormalisationRule nextRule : RuleUtils.getSortedRulesByUris(allNormalisationRules,
-                        nextRuleTest.getRuleUris(), SortOrder.HIGHEST_ORDER_FIRST))
-                {
-                    nextOutputTestResult =
-                            (String)nextRule.normaliseByStage(
-                                    NormalisationRuleSchema.getRdfruleStageBeforeResultsImport(), nextTestInputString);
-                    
-                    if(nextOutputTestResult.equals(nextTestInputString))
-                    {
-                        if(RuleUtils._DEBUG)
-                        {
-                            RuleUtils.log.debug("TEST-PASS output test pass: nextTestInputString="
-                                    + nextTestInputString + " actual output :: nextOutputTestResult="
-                                    + nextOutputTestResult + " expected output :: nextTestOutputString="
-                                    + nextTestOutputString);
-                        }
-                    }
-                    else
-                    {
-                        allPassed = false;
-                        
-                        if(RuleUtils._INFO)
-                        {
-                            RuleUtils.log
-                                    .info("TEST-FAIL: output test did not result in the input string: nextTestInputString="
-                                            + nextTestInputString
-                                            + " actual output :: nextOutputTestResult="
-                                            + nextOutputTestResult
-                                            + " expected output :: nextTestOutputString="
-                                            + nextTestOutputString);
-                            RuleUtils.log.info("TEST-FAIL: nextRuleTest.toString()=" + nextRuleTest.toString());
-                        }
-                    }
-                }
-            } // end if(this.stages.contains(rdfruleStageBeforeResultsImport)
+                RuleUtils.log.error("Could not run rule test as we have not implemented it yet class="
+                        + nextRuleTest.getClass().getName());
+                allPassed = false;
+            }
         } // end for(nextRuleTest
         
         return allPassed;
     }
     
     /**
+     * Runs StringRuleTests against the Query Variables stage and the Before Results Import stage
+     * 
+     * FIXME: Implement string rule tests for After Results To Document stage
+     * 
+     * @param allNormalisationRules
+     * @param allPassed
+     * @param nextStringRuleTest
+     * @return
+     * @throws InvalidStageException
+     * @throws QueryAllException
+     * @throws RuntimeException
+     * @throws ValidationFailedException
+     * @throws UntestableRuleException
+     */
+    public static boolean runStringRuleTest(final Map<URI, NormalisationRule> allNormalisationRules,
+            final StringRuleTest nextStringRuleTest) throws InvalidStageException, QueryAllException, RuntimeException,
+        ValidationFailedException, UntestableRuleException
+    {
+        boolean allPassed = true;
+        
+        final String nextTestInputString = nextStringRuleTest.getTestInputString();
+        final String nextTestOutputString = nextStringRuleTest.getTestOutputString();
+        
+        if(nextStringRuleTest.getStages().contains(NormalisationRuleSchema.getRdfruleStageQueryVariables()))
+        {
+            String nextInputTestResult = nextTestInputString;
+            
+            for(final NormalisationRule nextRule : RuleUtils.getSortedRulesByUris(allNormalisationRules,
+                    nextStringRuleTest.getRuleUris(), SortOrder.LOWEST_ORDER_FIRST))
+            {
+                if(nextRule.usedInStage(NormalisationRuleSchema.getRdfruleStageQueryVariables()))
+                {
+                    if(nextRule instanceof TransformingRule)
+                    {
+                        final TransformingRule transformingRule = (TransformingRule)nextRule;
+                        try
+                        {
+                            nextInputTestResult =
+                                    (String)transformingRule.normaliseByStage(
+                                            NormalisationRuleSchema.getRdfruleStageQueryVariables(),
+                                            nextInputTestResult);
+                        }
+                        catch(final InvalidStageException e)
+                        {
+                            RuleUtils.log
+                                    .error("InvalidStageException found from hardcoded stage URI insertion after check that stage was used and valid, bad things may happen now!",
+                                            e);
+                            throw new QueryAllException("Found fatal InvalidStageException in hardcoded stage URI use",
+                                    e);
+                        }
+                    }
+                    else if(nextRule instanceof ValidatingRule)
+                    {
+                        final ValidatingRule validatingRule = (ValidatingRule)nextRule;
+                        
+                        boolean result = false;
+                        
+                        try
+                        {
+                            result =
+                                    validatingRule.normaliseByStage(
+                                            NormalisationRuleSchema.getRdfruleStageQueryVariables(),
+                                            nextInputTestResult);
+                        }
+                        catch(final InvalidStageException e)
+                        {
+                            RuleUtils.log
+                                    .error("InvalidStageException found from hardcoded stage URI insertion after check that stage was used and valid, bad things may happen now!",
+                                            e);
+                            throw new QueryAllException("Found fatal InvalidStageException in hardcoded stage URI use",
+                                    e);
+                        }
+                        
+                        if(!result)
+                        {
+                            RuleUtils.log.error("ValidatingRule failed nextRule.getKey()="
+                                    + nextRule.getKey().stringValue());
+                            allPassed = false;
+                        }
+                    }
+                    else
+                    {
+                        throw new UntestableRuleException(
+                                "NormalisationRule type not supported for testing in this implementation", nextRule,
+                                nextStringRuleTest);
+                    }
+                }
+            }
+            
+            if(allPassed && nextInputTestResult.equals(nextTestOutputString))
+            {
+                if(RuleUtils.DEBUG)
+                {
+                    RuleUtils.log.debug("TEST-PASS input test pass: nextTestInputString=" + nextTestInputString
+                            + " nextInputTestResult=" + nextInputTestResult);
+                }
+            }
+            else
+            {
+                allPassed = false;
+                
+                if(RuleUtils.INFO)
+                {
+                    RuleUtils.log
+                            .info("TEST-FAIL: input test did not result in the output string: nextTestInputString="
+                                    + nextTestInputString + " actual output was nextInputTestResult="
+                                    + nextInputTestResult + " expected output was nextTestOutputString="
+                                    + nextTestOutputString);
+                    RuleUtils.log.info("TEST-FAIL: nextRuleTest.toString()=" + nextStringRuleTest.toString());
+                }
+            }
+        }
+        
+        if(nextStringRuleTest.getStages().contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()))
+        {
+            String nextOutputTestResult = nextTestOutputString;
+            
+            for(final NormalisationRule nextRule : RuleUtils.getSortedRulesByUris(allNormalisationRules,
+                    nextStringRuleTest.getRuleUris(), SortOrder.HIGHEST_ORDER_FIRST))
+            {
+                if(nextRule instanceof TransformingRule)
+                {
+                    final TransformingRule transformingRule = (TransformingRule)nextRule;
+                    nextOutputTestResult =
+                            (String)transformingRule.normaliseByStage(
+                                    NormalisationRuleSchema.getRdfruleStageBeforeResultsImport(), nextOutputTestResult);
+                }
+                else if(nextRule instanceof ValidatingRule)
+                {
+                    final ValidatingRule validatingRule = (ValidatingRule)nextRule;
+                    
+                    final boolean result =
+                            validatingRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageQueryVariables(),
+                                    nextOutputTestResult);
+                    
+                    if(!result)
+                    {
+                        if(RuleUtils.DEBUG)
+                        {
+                            RuleUtils.log.debug("TEST-FAIL: validating rule failed validatingRule.getKey()="
+                                    + validatingRule.getKey());
+                        }
+                        allPassed = false;
+                    }
+                }
+                else
+                {
+                    throw new UntestableRuleException(
+                            "NormalisationRule type not supported for testing in this implementation", nextRule,
+                            nextStringRuleTest);
+                }
+                
+            }
+            
+            // the output test should regenerate the input string from the output string
+            if(allPassed && nextOutputTestResult.equals(nextTestInputString))
+            {
+                if(RuleUtils.DEBUG)
+                {
+                    RuleUtils.log.debug("TEST-PASS output test pass: nextTestInputString=" + nextTestInputString
+                            + " actual output :: nextOutputTestResult=" + nextOutputTestResult
+                            + " expected output :: nextTestOutputString=" + nextTestOutputString);
+                }
+            }
+            else
+            {
+                allPassed = false;
+                
+                if(RuleUtils.INFO)
+                {
+                    RuleUtils.log
+                            .info("TEST-FAIL: output test did not result in the input string: nextTestInputString="
+                                    + nextTestInputString + " actual output :: nextOutputTestResult="
+                                    + nextOutputTestResult + " expected output :: nextTestOutputString="
+                                    + nextTestOutputString);
+                    RuleUtils.log.info("TEST-FAIL: nextRuleTest.toString()=" + nextStringRuleTest.toString());
+                }
+            }
+        } // end if(this.stages.contains(rdfruleStageBeforeResultsImport)
+        return allPassed;
+    }
+    
+    /**
 	 * 
 	 */
-    public RuleUtils()
+    private RuleUtils()
     {
-        // TODO Auto-generated constructor stub
     }
     
 }

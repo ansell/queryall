@@ -10,12 +10,29 @@ import org.openrdf.repository.Repository;
 import org.queryall.api.utils.QueryAllNamespaces;
 
 /**
+ * The base of all QueryAll objects.
+ * 
+ * Contains the basic elements necessary to identify objects and keep track of RDF statements from
+ * the objects definitions that were not recognised, but need to be stored for future serialisation
+ * of the object.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public interface BaseQueryAllInterface
 {
+    /**
+     * Adds an unrecognised statement to the internal list for either parsing by a more specific
+     * subclass or for storage to include in the serialised version in future.
+     * 
+     * @param unrecognisedStatement
+     */
     void addUnrecognisedStatement(Statement unrecognisedStatement);
     
+    /**
+     * Defaults to ProjectSchema.getProjectNotCuratedUri().
+     * 
+     * @return A URI indicating the current curation status for this item.
+     */
     URI getCurationStatus();
     
     /**
@@ -24,19 +41,54 @@ public interface BaseQueryAllInterface
      **/
     QueryAllNamespaces getDefaultNamespace();
     
+    /**
+     * 
+     * @return The description, mapping to the RDF Schema Comment property.
+     */
+    String getDescription();
+    
+    /**
+     * This list may not be the only list of URIs that a class recognises, but it should map to
+     * those URIs which are relevant for the currently stored object
+     * 
+     * NOTE: This should only be overridden by final concrete implementations to match their list of
+     * implemented types.
+     * 
+     * @return The set of URIs that this object recognises for the current object.
+     */
     Set<URI> getElementTypes();
     
     /**
      * Returns the org.openrdf.model.URI string key for the object, and this can optionally be used
-     * in the toRdf method
+     * in the toRdf method.
      **/
     URI getKey();
     
+    /**
+     * 
+     * @return The title for the object, mapping to the Dublin Core Title property
+     */
     String getTitle();
     
+    /**
+     * Return the collection of statements that are currently unrecognised.
+     * 
+     * @return An unmodifiable collection of statements representing the currently unrecognised
+     *         statements
+     */
     Collection<Statement> getUnrecognisedStatements();
     
+    /**
+     * This method resets the internal unrecognised statements collection to empty, as is necessary
+     * before a subclass starts parsing the remaining unrecognised statements.
+     * 
+     * @return The current list of unrecognised statements before the reset
+     */
+    Collection<Statement> resetUnrecognisedStatements();
+    
     void setCurationStatus(URI curationStatus);
+    
+    void setDescription(String description);
     
     /**
      * Sets the URI for the object. If it is not a valid org.openrdf.model.URI an
@@ -52,10 +104,16 @@ public interface BaseQueryAllInterface
     void setTitle(String title);
     
     /**
-     * Changes the object into RDF, and inserts the relevant triples into myRepository using the URI
-     * contextUri as the context URI.
+     * Changes the object into RDF, and inserts the relevant triples into myRepository using the
+     * URIs in contextUris as the context URIs.
      * 
-     * The Configuration API version to attempt to use for the rdf export is given as modelVersion.
-     **/
-    boolean toRdf(Repository myRepository, URI contextUri, int modelVersion) throws OpenRDFException;
+     * The Configuration API version to attempt to use for the RDF export is given as modelVersion.
+     * 
+     * @param myRepository
+     * @param modelVersion
+     * @param contextUris
+     * @return
+     * @throws OpenRDFException
+     */
+    boolean toRdf(Repository myRepository, int modelVersion, URI... contextUris) throws OpenRDFException;
 }

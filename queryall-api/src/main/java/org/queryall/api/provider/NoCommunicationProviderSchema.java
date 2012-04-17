@@ -1,5 +1,6 @@
 package org.queryall.api.provider;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -10,6 +11,7 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.sail.memory.model.MemValueFactory;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,15 +20,16 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class NoCommunicationProviderSchema
+@MetaInfServices(QueryAllSchema.class)
+public class NoCommunicationProviderSchema extends QueryAllSchema
 {
-    static final Logger log = LoggerFactory.getLogger(NoCommunicationProviderSchema.class);
+    static final Logger LOG = LoggerFactory.getLogger(NoCommunicationProviderSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = NoCommunicationProviderSchema.log.isTraceEnabled();
+    private static final boolean TRACE = NoCommunicationProviderSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = NoCommunicationProviderSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = NoCommunicationProviderSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = NoCommunicationProviderSchema.log.isInfoEnabled();
+    private static final boolean INFO = NoCommunicationProviderSchema.LOG.isInfoEnabled();
     
     private static URI providerNoCommunicationProviderUri;
     
@@ -41,6 +44,11 @@ public class NoCommunicationProviderSchema
     }
     
     /**
+     * A pre-instantiated schema object for NoCommunicationProviderSchema.
+     */
+    public static final QueryAllSchema NO_COMMUNICATION_PROVIDER_SCHEMA = new NoCommunicationProviderSchema();
+    
+    /**
      * @return the providerNoCommunicationProviderUri
      */
     public static URI getProviderNoCommunicationTypeUri()
@@ -48,11 +56,36 @@ public class NoCommunicationProviderSchema
         return NoCommunicationProviderSchema.providerNoCommunicationProviderUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param providerNoCommunicationProviderUri
+     *            the providerNoCommunicationProviderUri to set
+     */
+    public static void setProviderNoCommunicationProviderUri(final URI providerHttpProviderUri)
+    {
+        NoCommunicationProviderSchema.providerNoCommunicationProviderUri = providerHttpProviderUri;
+    }
+    
+    /**
+     * Default constructor, uses the name of this class as the name.
+     */
+    public NoCommunicationProviderSchema()
+    {
+        this(NoCommunicationProviderSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public NoCommunicationProviderSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contextUri)
         throws OpenRDFException
     {
-        ProviderSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = new MemValueFactory();
@@ -82,7 +115,7 @@ public class NoCommunicationProviderSchema
                 con.rollback();
             }
             
-            NoCommunicationProviderSchema.log.error("RepositoryException: " + re.getMessage());
+            NoCommunicationProviderSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {
@@ -93,14 +126,5 @@ public class NoCommunicationProviderSchema
         }
         
         return false;
-    }
-    
-    /**
-     * @param providerNoCommunicationProviderUri
-     *            the providerNoCommunicationProviderUri to set
-     */
-    public static void setProviderNoCommunicationProviderUri(final URI providerHttpProviderUri)
-    {
-        NoCommunicationProviderSchema.providerNoCommunicationProviderUri = providerHttpProviderUri;
     }
 }

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -24,7 +23,7 @@ import org.queryall.api.provider.SparqlProvider;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.query.RdfFetchController;
 import org.queryall.query.RdfFetcherQueryRunnable;
-import org.queryall.query.RdfFetcherSparqlQueryRunnable;
+import org.queryall.query.RdfFetcherSparqlQueryRunnableImpl;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,9 +38,9 @@ public class ProvidersIPListServlet extends HttpServlet
 	 */
     private static final long serialVersionUID = -7006535158409121292L;
     public static final Logger log = LoggerFactory.getLogger(ProvidersIPListServlet.class);
-    public static final boolean _TRACE = ProvidersIPListServlet.log.isTraceEnabled();
-    public static final boolean _DEBUG = ProvidersIPListServlet.log.isDebugEnabled();
-    public static final boolean _INFO = ProvidersIPListServlet.log.isInfoEnabled();
+    public static final boolean TRACE = ProvidersIPListServlet.log.isTraceEnabled();
+    public static final boolean DEBUG = ProvidersIPListServlet.log.isDebugEnabled();
+    public static final boolean INFO = ProvidersIPListServlet.log.isInfoEnabled();
     
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
@@ -57,7 +56,7 @@ public class ProvidersIPListServlet extends HttpServlet
         
         final Set<String> resultsSet = new HashSet<String>();
         
-        final Collection<RdfFetcherQueryRunnable> sparqlThreads = new LinkedList<RdfFetcherQueryRunnable>();
+        final Collection<RdfFetcherQueryRunnable> sparqlThreads = new ArrayList<RdfFetcherQueryRunnable>();
         
         for(final Provider nextProvider : localSettings.getAllProviders().values())
         {
@@ -104,8 +103,8 @@ public class ProvidersIPListServlet extends HttpServlet
                             
                             try
                             {
-                                final RdfFetcherSparqlQueryRunnable testQueryRunnable =
-                                        new RdfFetcherSparqlQueryRunnable(nextEndpoint, sparqlGraphUri,
+                                final RdfFetcherQueryRunnable testQueryRunnable =
+                                        new RdfFetcherSparqlQueryRunnableImpl(nextEndpoint, sparqlGraphUri,
                                                 "CONSTRUCT { ?s ?p ?o . } WHERE { ?s ?p ?o . } LIMIT 5", "nextDebug",
                                                 "application/rdf+xml", 5, localSettings, localBlacklistController, null);
                                 sparqlThreads.add(testQueryRunnable);
@@ -156,7 +155,7 @@ public class ProvidersIPListServlet extends HttpServlet
         
         try
         {
-            RdfFetchController.fetchRdfForQueries(sparqlThreads);
+            new RdfFetchController().fetchRdfForQueriesWithoutNormalisation(sparqlThreads);
         }
         catch(final InterruptedException e)
         {

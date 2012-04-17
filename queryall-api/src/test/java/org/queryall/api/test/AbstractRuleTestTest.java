@@ -14,6 +14,8 @@ import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.ruletest.RuleTest;
 
 /**
+ * Abstract unit test for the RuleTest API.
+ * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public abstract class AbstractRuleTestTest
@@ -23,7 +25,7 @@ public abstract class AbstractRuleTestTest
     private URI testRdfRuleUri2;
     
     /**
-     * Returns a new instance of the RuleTest Implementation for each call
+     * Returns a new instance of the RuleTest Implementation for each call.
      * 
      * @return
      */
@@ -109,4 +111,31 @@ public abstract class AbstractRuleTestTest
         Assert.assertEquals("getStages test failed", 4, this.testRuleTest1.getStages().size());
     }
     
+    @Test
+    public void testResetRuleUris()
+    {
+        Assert.assertEquals(0, this.testRuleTest1.getRuleUris().size());
+        
+        this.testRuleTest1.addRuleUri(this.testRdfRuleUri2);
+        
+        Assert.assertEquals(1, this.testRuleTest1.getRuleUris().size());
+        
+        Assert.assertTrue(this.testRuleTest1.resetRuleUris());
+        
+        Assert.assertEquals(0, this.testRuleTest1.getRuleUris().size());
+    }
+    
+    @Test
+    public void testResetStages()
+    {
+        Assert.assertEquals(0, this.testRuleTest1.getStages().size());
+        
+        this.testRuleTest1.addStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+        
+        Assert.assertEquals(1, this.testRuleTest1.getStages().size());
+        
+        Assert.assertTrue(this.testRuleTest1.resetStages());
+        
+        Assert.assertEquals(0, this.testRuleTest1.getStages().size());
+    }
 }

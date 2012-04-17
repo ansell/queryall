@@ -3,6 +3,7 @@
  */
 package org.queryall.api.provider;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -12,6 +13,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.namespace.NamespaceEntrySchema;
 import org.queryall.api.querytype.QueryTypeSchema;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
@@ -24,15 +26,16 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ProviderSchema
+@MetaInfServices(QueryAllSchema.class)
+public class ProviderSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(ProviderSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProviderSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = ProviderSchema.log.isTraceEnabled();
+    private static final boolean TRACE = ProviderSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = ProviderSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = ProviderSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = ProviderSchema.log.isInfoEnabled();
+    private static final boolean INFO = ProviderSchema.LOG.isInfoEnabled();
     
     private static URI providerNoCommunication;
     
@@ -60,7 +63,7 @@ public class ProviderSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.PROVIDER.getBaseURI();
         
@@ -81,6 +84,8 @@ public class ProviderSchema
         // elements title
         ProviderSchema.setProviderTitle(f.createURI(baseUri, "Title"));
     }
+    
+    public static final QueryAllSchema PROVIDER_SCHEMA = new ProviderSchema();
     
     /**
      * @return the providerAssumedContentType
@@ -185,12 +190,138 @@ public class ProviderSchema
     // HashSet<String>();
     // public boolean onlyIncludeProviderQueryIfInformationReturned = true;
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param nextProviderAssumedContentType
+     *            the providerAssumedContentType to set
+     */
+    public static void setProviderAssumedContentType(final URI nextProviderAssumedContentType)
+    {
+        ProviderSchema.providerAssumedContentType = nextProviderAssumedContentType;
+    }
+    
+    /**
+     * @param nextProviderHandledNamespace
+     *            the providerHandledNamespace to set
+     */
+    public static void setProviderHandlesNamespace(final URI nextProviderHandledNamespace)
+    {
+        ProviderSchema.providerHandlesNamespace = nextProviderHandledNamespace;
+    }
+    
+    /**
+     * @param nextProviderIncludedInQuery
+     *            the providerIncludedInQuery to set
+     */
+    public static void setProviderIncludedInQuery(final URI nextProviderIncludedInQuery)
+    {
+        ProviderSchema.providerIncludedInQuery = nextProviderIncludedInQuery;
+    }
+    
+    /**
+     * @param nextProviderIsDefaultSource
+     *            the providerIsDefaultSource to set
+     */
+    public static void setProviderIsDefaultSource(final URI nextProviderIsDefaultSource)
+    {
+        ProviderSchema.providerIsDefaultSource = nextProviderIsDefaultSource;
+    }
+    
+    /**
+     * @param nextProviderNeedsRdfNormalisation
+     *            the providerNeedsRdfNormalisation to set
+     */
+    public static void setProviderNeedsRdfNormalisation(final URI nextProviderNeedsRdfNormalisation)
+    {
+        ProviderSchema.providerNeedsRdfNormalisation = nextProviderNeedsRdfNormalisation;
+    }
+    
+    /**
+     * @param nextProviderNoCommunication
+     *            the providerNoCommunication to set
+     */
+    public static void setProviderNoCommunication(final URI nextProviderNoCommunication)
+    {
+        ProviderSchema.providerNoCommunication = nextProviderNoCommunication;
+    }
+    
+    /**
+     * @param nextProviderProxy
+     *            the providerProxy to set
+     */
+    public static void setProviderProxy(final URI nextProviderProxy)
+    {
+        ProviderSchema.providerProxy = nextProviderProxy;
+    }
+    
+    /**
+     * @param nextProviderRedirect
+     *            the providerRedirect to set
+     */
+    public static void setProviderRedirect(final URI nextProviderRedirect)
+    {
+        ProviderSchema.providerRedirect = nextProviderRedirect;
+    }
+    
+    /**
+     * @param nextProviderResolutionMethod
+     *            the providerResolutionMethod to set
+     */
+    public static void setProviderResolutionMethod(final URI nextProviderResolutionMethod)
+    {
+        ProviderSchema.providerResolutionMethod = nextProviderResolutionMethod;
+    }
+    
+    /**
+     * @param nextProviderResolutionStrategy
+     *            the providerResolutionStrategy to set
+     */
+    public static void setProviderResolutionStrategy(final URI nextProviderResolutionStrategy)
+    {
+        ProviderSchema.providerResolutionStrategy = nextProviderResolutionStrategy;
+    }
+    
+    /**
+     * @param nextProviderTitle
+     *            the providerTitle to set
+     */
+    public static void setProviderTitle(final URI nextProviderTitle)
+    {
+        ProviderSchema.providerTitle = nextProviderTitle;
+    }
+    
+    /**
+     * @param nextProviderTypeUri
+     *            the providerTypeUri to set
+     */
+    public static void setProviderTypeUri(final URI nextProviderTypeUri)
+    {
+        ProviderSchema.providerTypeUri = nextProviderTypeUri;
+    }
+    
+    /**
+     * Default constructor, uses the name of this class as the name.
+     */
+    public ProviderSchema()
+    {
+        this(ProviderSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public ProviderSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contextUri)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -294,7 +425,7 @@ public class ProviderSchema
                 con.rollback();
             }
             
-            ProviderSchema.log.error("RepositoryException: " + re.getMessage());
+            ProviderSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {
@@ -305,113 +436,5 @@ public class ProviderSchema
         }
         
         return false;
-    }
-    
-    /**
-     * @param providerAssumedContentType
-     *            the providerAssumedContentType to set
-     */
-    public static void setProviderAssumedContentType(final URI providerAssumedContentType)
-    {
-        ProviderSchema.providerAssumedContentType = providerAssumedContentType;
-    }
-    
-    /**
-     * @param providerHandledNamespace
-     *            the providerHandledNamespace to set
-     */
-    public static void setProviderHandlesNamespace(final URI providerHandledNamespace)
-    {
-        ProviderSchema.providerHandlesNamespace = providerHandledNamespace;
-    }
-    
-    /**
-     * @param providerIncludedInQuery
-     *            the providerIncludedInQuery to set
-     */
-    public static void setProviderIncludedInQuery(final URI providerIncludedInQuery)
-    {
-        ProviderSchema.providerIncludedInQuery = providerIncludedInQuery;
-    }
-    
-    /**
-     * @param providerIsDefaultSource
-     *            the providerIsDefaultSource to set
-     */
-    public static void setProviderIsDefaultSource(final URI providerIsDefaultSource)
-    {
-        ProviderSchema.providerIsDefaultSource = providerIsDefaultSource;
-    }
-    
-    /**
-     * @param providerNeedsRdfNormalisation
-     *            the providerNeedsRdfNormalisation to set
-     */
-    public static void setProviderNeedsRdfNormalisation(final URI providerNeedsRdfNormalisation)
-    {
-        ProviderSchema.providerNeedsRdfNormalisation = providerNeedsRdfNormalisation;
-    }
-    
-    /**
-     * @param providerNoCommunication
-     *            the providerNoCommunication to set
-     */
-    public static void setProviderNoCommunication(final URI providerNoCommunication)
-    {
-        ProviderSchema.providerNoCommunication = providerNoCommunication;
-    }
-    
-    /**
-     * @param providerProxy
-     *            the providerProxy to set
-     */
-    public static void setProviderProxy(final URI providerProxy)
-    {
-        ProviderSchema.providerProxy = providerProxy;
-    }
-    
-    /**
-     * @param providerRedirect
-     *            the providerRedirect to set
-     */
-    public static void setProviderRedirect(final URI providerRedirect)
-    {
-        ProviderSchema.providerRedirect = providerRedirect;
-    }
-    
-    /**
-     * @param providerResolutionMethod
-     *            the providerResolutionMethod to set
-     */
-    public static void setProviderResolutionMethod(final URI providerResolutionMethod)
-    {
-        ProviderSchema.providerResolutionMethod = providerResolutionMethod;
-    }
-    
-    /**
-     * @param providerResolutionStrategy
-     *            the providerResolutionStrategy to set
-     */
-    public static void setProviderResolutionStrategy(final URI providerResolutionStrategy)
-    {
-        ProviderSchema.providerResolutionStrategy = providerResolutionStrategy;
-    }
-    
-    /**
-     * @param providerTitle
-     *            the providerTitle to set
-     */
-    public static void setProviderTitle(final URI providerTitle)
-    {
-        ProviderSchema.providerTitle = providerTitle;
-    }
-    
-    /**
-     * @param providerTypeUri
-     *            the providerTypeUri to set
-     */
-    public static void setProviderTypeUri(final URI providerTypeUri)
-    {
-        ProviderSchema.providerTypeUri = providerTypeUri;
     }
 }

@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.WebappConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,9 +16,9 @@ import org.slf4j.LoggerFactory;
 public class DefaultQueryOptions
 {
     public static final Logger log = LoggerFactory.getLogger(DefaultQueryOptions.class);
-    public static final boolean _TRACE = DefaultQueryOptions.log.isTraceEnabled();
-    public static final boolean _DEBUG = DefaultQueryOptions.log.isDebugEnabled();
-    public static final boolean _INFO = DefaultQueryOptions.log.isInfoEnabled();
+    public static final boolean TRACE = DefaultQueryOptions.log.isTraceEnabled();
+    public static final boolean DEBUG = DefaultQueryOptions.log.isDebugEnabled();
+    public static final boolean INFO = DefaultQueryOptions.log.isInfoEnabled();
     
     private boolean _hasExplicitFormat = false;
     private String _chosenFormat = "";
@@ -53,29 +54,30 @@ public class DefaultQueryOptions
         this.localSettings = nextSettings;
         
         this.pageoffsetUrlOpeningPrefix =
-                this.localSettings.getStringProperty("pageoffsetUrlOpeningPrefix", "pageoffset");
-        this.pageoffsetUrlClosingPrefix = this.localSettings.getStringProperty("pageoffsetUrlClosingPrefix", "/");
-        this.pageoffsetUrlSuffix = this.localSettings.getStringProperty("pageoffsetUrlSuffix", "");
-        this.htmlUrlPrefix = this.localSettings.getStringProperty("htmlUrlPrefix", "page/");
-        this.htmlUrlSuffix = this.localSettings.getStringProperty("htmlUrlSuffix", "");
-        this.rdfXmlUrlPrefix = this.localSettings.getStringProperty("rdfXmlUrlPrefix", "rdfxml/");
-        this.rdfXmlUrlSuffix = this.localSettings.getStringProperty("rdfXmlUrlSuffix", "");
-        this.n3UrlPrefix = this.localSettings.getStringProperty("n3UrlPrefix", "n3/");
-        this.n3UrlSuffix = this.localSettings.getStringProperty("n3UrlSuffix", "");
-        this.jsonUrlPrefix = this.localSettings.getStringProperty("jsonUrlPrefix", "json/");
-        this.jsonUrlSuffix = this.localSettings.getStringProperty("jsonUrlSuffix", "");
-        this.ntriplesUrlPrefix = this.localSettings.getStringProperty("ntriplesUrlPrefix", "ntriples/");
-        this.ntriplesUrlSuffix = this.localSettings.getStringProperty("ntriplesUrlSuffix", "");
-        this.nquadsUrlPrefix = this.localSettings.getStringProperty("nquadsUrlPrefix", "nquads/");
-        this.nquadsUrlSuffix = this.localSettings.getStringProperty("nquadsUrlSuffix", "");
-        this.queryplanUrlPrefix = this.localSettings.getStringProperty("queryplanUrlPrefix", "queryplan/");
-        this.queryplanUrlSuffix = this.localSettings.getStringProperty("queryplanUrlSuffix", "");
+                this.localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_OPENING_PREFIX);
+        this.pageoffsetUrlClosingPrefix =
+                this.localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_CLOSING_PREFIX);
+        this.pageoffsetUrlSuffix = this.localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_SUFFIX);
+        this.htmlUrlPrefix = this.localSettings.getStringProperty(WebappConfig.HTML_URL_PREFIX);
+        this.htmlUrlSuffix = this.localSettings.getStringProperty(WebappConfig.HTML_URL_SUFFIX);
+        this.rdfXmlUrlPrefix = this.localSettings.getStringProperty(WebappConfig.RDFXML_URL_PREFIX);
+        this.rdfXmlUrlSuffix = this.localSettings.getStringProperty(WebappConfig.RDFXML_URL_SUFFIX);
+        this.n3UrlPrefix = this.localSettings.getStringProperty(WebappConfig.N3_URL_PREFIX);
+        this.n3UrlSuffix = this.localSettings.getStringProperty(WebappConfig.N3_URL_SUFFIX);
+        this.jsonUrlPrefix = this.localSettings.getStringProperty(WebappConfig.JSON_URL_PREFIX);
+        this.jsonUrlSuffix = this.localSettings.getStringProperty(WebappConfig.JSON_URL_SUFFIX);
+        this.ntriplesUrlPrefix = this.localSettings.getStringProperty(WebappConfig.NTRIPLES_URL_PREFIX);
+        this.ntriplesUrlSuffix = this.localSettings.getStringProperty(WebappConfig.NTRIPLES_URL_SUFFIX);
+        this.nquadsUrlPrefix = this.localSettings.getStringProperty(WebappConfig.NQUADS_URL_PREFIX);
+        this.nquadsUrlSuffix = this.localSettings.getStringProperty(WebappConfig.NQUADS_URL_SUFFIX);
+        this.queryplanUrlPrefix = this.localSettings.getStringProperty(WebappConfig.QUERYPLAN_URL_PREFIX);
+        this.queryplanUrlSuffix = this.localSettings.getStringProperty(WebappConfig.QUERYPLAN_URL_SUFFIX);
         
         final String pageOffsetPatternString =
                 "^" + this.pageoffsetUrlOpeningPrefix + "(\\d+)" + this.pageoffsetUrlClosingPrefix + "(.+)"
                         + this.pageoffsetUrlSuffix + "$";
         
-        if(DefaultQueryOptions._TRACE)
+        if(DefaultQueryOptions.TRACE)
         {
             DefaultQueryOptions.log.trace("pageOffsetPatternString=" + pageOffsetPatternString);
         }
@@ -95,12 +97,12 @@ public class DefaultQueryOptions
         {
             if(requestUri.startsWith(contextPath))
             {
-                if(DefaultQueryOptions._DEBUG)
+                if(DefaultQueryOptions.DEBUG)
                 {
                     DefaultQueryOptions.log.debug("requestUri before removing contextPath requestUri=" + requestUri);
                 }
                 requestUri = requestUri.substring(contextPath.length());
-                if(DefaultQueryOptions._DEBUG)
+                if(DefaultQueryOptions.DEBUG)
                 {
                     DefaultQueryOptions.log.debug("removed contextPath from requestUri contextPath=" + contextPath
                             + " requestUri=" + requestUri);
@@ -112,12 +114,12 @@ public class DefaultQueryOptions
         
         if(requestString.startsWith("/"))
         {
-            if(DefaultQueryOptions._DEBUG)
+            if(DefaultQueryOptions.DEBUG)
             {
                 DefaultQueryOptions.log.debug("requestString=" + requestString);
             }
             requestString = requestString.substring(1);
-            if(DefaultQueryOptions._DEBUG)
+            if(DefaultQueryOptions.DEBUG)
             {
                 DefaultQueryOptions.log.debug("requestString=" + requestString);
             }
@@ -174,12 +176,12 @@ public class DefaultQueryOptions
         {
             this._hasExplicitFormat = true;
             this._chosenFormat = Constants.TEXT_HTML;
-            if(DefaultQueryOptions._DEBUG)
+            if(DefaultQueryOptions.DEBUG)
             {
                 DefaultQueryOptions.log.debug("requestString=" + requestString);
             }
             requestString = this.takeOffPrefixAndSuffix(requestString, this.htmlUrlPrefix, this.htmlUrlSuffix);
-            if(DefaultQueryOptions._DEBUG)
+            if(DefaultQueryOptions.DEBUG)
             {
                 DefaultQueryOptions.log.debug("requestString=" + requestString);
             }
@@ -188,12 +190,12 @@ public class DefaultQueryOptions
         {
             this._hasExplicitFormat = true;
             this._chosenFormat = Constants.APPLICATION_RDF_XML;
-            if(DefaultQueryOptions._DEBUG)
+            if(DefaultQueryOptions.DEBUG)
             {
                 DefaultQueryOptions.log.debug("requestString=" + requestString);
             }
             requestString = this.takeOffPrefixAndSuffix(requestString, this.rdfXmlUrlPrefix, this.rdfXmlUrlSuffix);
-            if(DefaultQueryOptions._DEBUG)
+            if(DefaultQueryOptions.DEBUG)
             {
                 DefaultQueryOptions.log.debug("requestString=" + requestString);
             }
@@ -202,12 +204,12 @@ public class DefaultQueryOptions
         {
             this._hasExplicitFormat = true;
             this._chosenFormat = Constants.TEXT_RDF_N3;
-            if(DefaultQueryOptions._DEBUG)
+            if(DefaultQueryOptions.DEBUG)
             {
                 DefaultQueryOptions.log.debug("requestString=" + requestString);
             }
             requestString = this.takeOffPrefixAndSuffix(requestString, this.n3UrlPrefix, this.n3UrlSuffix);
-            if(DefaultQueryOptions._DEBUG)
+            if(DefaultQueryOptions.DEBUG)
             {
                 DefaultQueryOptions.log.debug("requestString=" + requestString);
             }
@@ -216,12 +218,12 @@ public class DefaultQueryOptions
         {
             this._hasExplicitFormat = true;
             this._chosenFormat = Constants.APPLICATION_JSON;
-            if(DefaultQueryOptions._DEBUG)
+            if(DefaultQueryOptions.DEBUG)
             {
                 DefaultQueryOptions.log.debug("requestString=" + requestString);
             }
             requestString = this.takeOffPrefixAndSuffix(requestString, this.jsonUrlPrefix, this.jsonUrlSuffix);
-            if(DefaultQueryOptions._DEBUG)
+            if(DefaultQueryOptions.DEBUG)
             {
                 DefaultQueryOptions.log.debug("requestString=" + requestString);
             }
@@ -230,12 +232,12 @@ public class DefaultQueryOptions
         {
             this._hasExplicitFormat = true;
             this._chosenFormat = Constants.TEXT_PLAIN;
-            if(DefaultQueryOptions._DEBUG)
+            if(DefaultQueryOptions.DEBUG)
             {
                 DefaultQueryOptions.log.debug("requestString=" + requestString);
             }
             requestString = this.takeOffPrefixAndSuffix(requestString, this.ntriplesUrlPrefix, this.ntriplesUrlSuffix);
-            if(DefaultQueryOptions._DEBUG)
+            if(DefaultQueryOptions.DEBUG)
             {
                 DefaultQueryOptions.log.debug("requestString=" + requestString);
             }
@@ -244,12 +246,12 @@ public class DefaultQueryOptions
         {
             this._hasExplicitFormat = true;
             this._chosenFormat = Constants.TEXT_X_NQUADS;
-            if(DefaultQueryOptions._DEBUG)
+            if(DefaultQueryOptions.DEBUG)
             {
                 DefaultQueryOptions.log.debug("requestString=" + requestString);
             }
             requestString = this.takeOffPrefixAndSuffix(requestString, this.nquadsUrlPrefix, this.nquadsUrlSuffix);
-            if(DefaultQueryOptions._DEBUG)
+            if(DefaultQueryOptions.DEBUG)
             {
                 DefaultQueryOptions.log.debug("requestString=" + requestString);
             }
@@ -287,7 +289,7 @@ public class DefaultQueryOptions
         
         requestString = matcher.group(2);
         
-        if(DefaultQueryOptions._DEBUG)
+        if(DefaultQueryOptions.DEBUG)
         {
             DefaultQueryOptions.log.debug("pageoffset=" + this.pageoffset);
             DefaultQueryOptions.log.debug("requestString=" + requestString);
@@ -301,13 +303,13 @@ public class DefaultQueryOptions
         if(this.matchesPrefixAndSuffix(requestString, this.queryplanUrlPrefix, this.queryplanUrlSuffix))
         {
             this._hasQueryPlanRequest = true;
-            if(DefaultQueryOptions._DEBUG)
+            if(DefaultQueryOptions.DEBUG)
             {
                 DefaultQueryOptions.log.debug("requestString=" + requestString);
             }
             requestString =
                     this.takeOffPrefixAndSuffix(requestString, this.queryplanUrlPrefix, this.queryplanUrlSuffix);
-            if(DefaultQueryOptions._DEBUG)
+            if(DefaultQueryOptions.DEBUG)
             {
                 DefaultQueryOptions.log.debug("requestString=" + requestString);
             }

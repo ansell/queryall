@@ -130,7 +130,7 @@ public class StatisticsHelper
     // long sumErrorLatency = 0;
     // long nextLatency = 0;
     //
-    // for(RdfFetcherQueryRunnable nextResult : fetchController.getResults())
+    // for(RdfFetcherQueryRunnableImpl nextResult : fetchController.getResults())
     // {
     // nextLatency = nextResult.queryEndTime.getTime()-nextResult.queryStartTime.getTime();
     //
@@ -234,7 +234,7 @@ public class StatisticsHelper
     // +localSettings.getStringPropertyFromConfig("separator")
     // +RdfUtils.percentEncode(keyToUse);
     //
-    // if(_INFO)
+    // if(INFO)
     // {
     // log.info("GeneralServlet: statistics key="+key);
     // }

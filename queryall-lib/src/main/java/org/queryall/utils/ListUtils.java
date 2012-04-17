@@ -5,6 +5,8 @@ package org.queryall.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -19,11 +21,11 @@ public class ListUtils
 {
     private static final Logger log = LoggerFactory.getLogger(StringUtils.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = ListUtils.log.isTraceEnabled();
+    private static final boolean TRACE = ListUtils.log.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = ListUtils.log.isDebugEnabled();
+    private static final boolean DEBUG = ListUtils.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = ListUtils.log.isInfoEnabled();
+    private static final boolean INFO = ListUtils.log.isInfoEnabled();
     
     /**
      * A prng that can be used in this class to generate random numbers
@@ -68,13 +70,16 @@ public class ListUtils
             
             int tempPosition = 0;
             
-            for(final T nextThing : newList)
+            final Iterator<T> iterator = newList.iterator();
+            
+            while(iterator.hasNext())
             {
-                if(index == tempPosition)
+                if(tempPosition == index)
                 {
-                    return nextThing;
+                    return iterator.next();
                 }
                 
+                iterator.next();
                 tempPosition++;
             }
         }
@@ -87,7 +92,7 @@ public class ListUtils
      * @param newList
      * @return
      */
-    public static <T> T chooseRandomItemFromCollection(final List<T> newList)
+    public static <T> T chooseRandomItemFromList(final List<T> newList)
     {
         // T result = null;
         
@@ -107,6 +112,8 @@ public class ListUtils
     }
     
     /**
+     * 
+     * NOTE: This method is hardcoded to use Locale.ENGLISH when transposing String's toLowerCase
      * 
      * @param stringCollection
      * @param searchString
@@ -166,51 +173,42 @@ public class ListUtils
     }
     
     /**
+     * Randomises the layout of the given collection and returns the resulting list
+     * 
      * @param <T>
-     * @param newList
-     * @return
+     *            The generic type of the given collection
+     * @param nextCollection
+     *            The collection to be randomised
+     * @return A reference to the randomised list, which may be the original list
      */
-    public static <T> List<T> randomiseListLayout(final Collection<T> newList)
+    public static <T> List<T> randomiseCollectionLayout(final Collection<T> nextCollection)
     {
-        if(newList.size() <= 1 && newList instanceof List)
+        if(nextCollection.size() <= 1 && nextCollection instanceof List)
         {
-            return (List<T>)newList;
+            return (List<T>)nextCollection;
         }
         
-        final List<T> resultList = new ArrayList<T>(newList.size());
-        
-        for(final T nextItem : newList)
-        {
-            resultList.add(nextItem);
-        }
+        final List<T> resultList = new ArrayList<T>(nextCollection);
         
         return ListUtils.randomiseListLayout(resultList);
     }
     
     /**
-     * @param newList
-     * @return
+     * Randomises the layout of the given list and returns the resulting list
+     * 
+     * @param <T>
+     *            The generic type of the given collection
+     * @param nextList
+     *            The list to be randomised
+     * @return A reference to the randomised list, which may be the original list
      */
-    public static <T> List<T> randomiseListLayout(final List<T> newList)
+    public static <T> List<T> randomiseListLayout(final List<T> nextList)
     {
-        if(newList.size() <= 1)
+        if(nextList.size() > 1)
         {
-            return newList;
+            Collections.shuffle(nextList, ListUtils.prng);
         }
         
-        final List<T> resultList = new ArrayList<T>(newList.size());
-        
-        int nextPosition;
-        
-        while(newList.size() > 0)
-        {
-            // then randomly select one from the list to use as the next element
-            // in the resultList
-            nextPosition = ListUtils.prng.nextInt(newList.size());
-            resultList.add(newList.get(nextPosition));
-            newList.remove(nextPosition);
-        }
-        
-        return resultList;
+        return nextList;
     }
 }

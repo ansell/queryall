@@ -2,9 +2,9 @@ package org.queryall.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.velocity.app.VelocityEngine;
 import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.sail.memory.MemoryStore;
@@ -21,11 +22,12 @@ import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.PropertyUtils;
 import org.queryall.api.utils.Schema;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.negotiation.QueryallContentNegotiator;
-import org.queryall.query.Settings;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.servlets.html.HtmlPageRenderer;
 import org.queryall.utils.RdfUtils;
+import org.queryall.utils.SettingsFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,9 +43,9 @@ public class QueryAllSchemaServlet extends HttpServlet
 	 */
     private static final long serialVersionUID = -4486511923930733168L;
     public static final Logger log = LoggerFactory.getLogger(QueryAllSchemaServlet.class);
-    public static final boolean _TRACE = QueryAllSchemaServlet.log.isTraceEnabled();
-    public static final boolean _DEBUG = QueryAllSchemaServlet.log.isDebugEnabled();
-    public static final boolean _INFO = QueryAllSchemaServlet.log.isInfoEnabled();
+    public static final boolean TRACE = QueryAllSchemaServlet.log.isTraceEnabled();
+    public static final boolean DEBUG = QueryAllSchemaServlet.log.isDebugEnabled();
+    public static final boolean INFO = QueryAllSchemaServlet.log.isInfoEnabled();
     
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
@@ -71,7 +73,7 @@ public class QueryAllSchemaServlet extends HttpServlet
         final String originalRequestedContentType =
                 QueryallContentNegotiator.getResponseContentType(request.getHeader("Accept"),
                         request.getHeader("User-Agent"), localContentTypeNegotiator,
-                        localSettings.getStringProperty("preferredDisplayContentType", Constants.APPLICATION_RDF_XML));
+                        localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE));
         
         String requestedContentType = originalRequestedContentType;
         
@@ -88,7 +90,7 @@ public class QueryAllSchemaServlet extends HttpServlet
         
         final String characterEncoding = request.getCharacterEncoding();
         
-        if(QueryAllSchemaServlet._INFO)
+        if(QueryAllSchemaServlet.INFO)
         {
             QueryAllSchemaServlet.log.info("QueryAllSchemaServlet: locale=" + locale + " characterEncoding="
                     + characterEncoding);
@@ -96,7 +98,7 @@ public class QueryAllSchemaServlet extends HttpServlet
         
         final String versionParameter = (String)request.getAttribute("org.queryall.RuleTesterServlet.apiVersion");
         
-        int apiVersion = Settings.CONFIG_API_VERSION;
+        int apiVersion = SettingsFactory.CONFIG_API_VERSION;
         
         if(versionParameter != null && !versionParameter.equals("") && !Constants.CURRENT.equals(versionParameter))
         {
@@ -111,20 +113,20 @@ public class QueryAllSchemaServlet extends HttpServlet
             }
         }
         
-        if(apiVersion > Settings.CONFIG_API_VERSION)
+        if(apiVersion > SettingsFactory.CONFIG_API_VERSION)
         {
             QueryAllSchemaServlet.log
                     .error("QueryAllSchemaServlet: requested API version not supported by this server. apiVersion="
-                            + apiVersion + " Settings.CONFIG_API_VERSION=" + Settings.CONFIG_API_VERSION);
+                            + apiVersion + " Settings.CONFIG_API_VERSION=" + SettingsFactory.CONFIG_API_VERSION);
             
             response.setContentType("text/plain");
             response.setStatus(400);
             out.write("Requested API version not supported by this server. Current supported version="
-                    + Settings.CONFIG_API_VERSION);
+                    + SettingsFactory.CONFIG_API_VERSION);
             return;
         }
         
-        final Collection<String> debugStrings = new HashSet<String>();
+        final Collection<String> debugStrings = new ArrayList<String>();
         
         final String explicitUrlContentType =
                 (String)request.getAttribute("org.queryall.QueryAllSchemaServlet.chosenContentType");
@@ -147,8 +149,8 @@ public class QueryAllSchemaServlet extends HttpServlet
         // Make sure that their requestedContentType is valid as an RDFFormat, or is text/html using
         // this method
         requestedContentType =
-                RdfUtils.findBestContentType(requestedContentType, localSettings.getStringProperty(
-                        Constants.PREFERRED_DISPLAY_CONTENT_TYPE, Constants.APPLICATION_RDF_XML),
+                RdfUtils.findBestContentType(requestedContentType,
+                        localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE),
                         Constants.APPLICATION_RDF_XML);
         
         // this will be null if they chose text/html, but it will be a valid format in other cases
@@ -168,22 +170,25 @@ public class QueryAllSchemaServlet extends HttpServlet
                             + originalRequestedContentType + " requestedContentType=" + requestedContentType);
         }
         
-        ((Settings)localSettings).configRefreshCheck(false);
+        // ((Settings)localSettings).configRefreshCheck(false);
         
         response.setContentType(requestedContentType);
         response.setCharacterEncoding("UTF-8");
         
         try
         {
-            final Repository myRepository = new SailRepository(new MemoryStore());
+            Repository myRepository = null;
             
-            Schema.getSchemas(myRepository, Settings.CONFIG_API_VERSION);
+            myRepository = new SailRepository(new MemoryStore());
+            myRepository.initialize();
+            
+            myRepository = Schema.getSchemas(myRepository, SettingsFactory.CONFIG_API_VERSION);
             
             final java.io.StringWriter stBuff = new java.io.StringWriter();
             
             if(requestedContentType.equals(Constants.TEXT_HTML))
             {
-                if(QueryAllSchemaServlet._DEBUG)
+                if(QueryAllSchemaServlet.DEBUG)
                 {
                     QueryAllSchemaServlet.log.debug("QueryAllSchemaServlet: about to call html rendering method");
                 }
@@ -219,7 +224,7 @@ public class QueryAllSchemaServlet extends HttpServlet
             
             final String actualRdfString = stBuff.toString();
             
-            if(QueryAllSchemaServlet._TRACE)
+            if(QueryAllSchemaServlet.TRACE)
             {
                 QueryAllSchemaServlet.log.trace("QueryAllSchemaServlet: actualRdfString=" + actualRdfString);
             }
@@ -241,13 +246,21 @@ public class QueryAllSchemaServlet extends HttpServlet
             
             final long nextTotalTime = queryEndTime.getTime() - queryStartTime.getTime();
             
-            if(QueryAllSchemaServlet._DEBUG)
+            if(QueryAllSchemaServlet.DEBUG)
             {
                 QueryAllSchemaServlet.log
                         .debug("QueryAllSchemaServlet: finished returning information to client requesterIpAddress="
                                 + requesterIpAddress + " queryString=" + queryString + " totalTime="
                                 + Long.toString(nextTotalTime));
             }
+        }
+        catch(final RepositoryException rex)
+        {
+            QueryAllSchemaServlet.log.error("QueryAllSchemaServlet.doGet: caught repository exception", rex);
+        }
+        catch(final OpenRDFException ordfe)
+        {
+            QueryAllSchemaServlet.log.error("QueryAllSchemaServlet.doGet: caught open rdf exception", ordfe);
         }
         catch(final RuntimeException rex)
         {

@@ -3,8 +3,11 @@
  */
 package org.queryall.api.test;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -14,14 +17,14 @@ import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.sail.memory.model.MemValueFactory;
 import org.queryall.api.querytype.QueryType;
-import org.queryall.api.querytype.QueryTypeSchema;
+import org.queryall.api.utils.NamespaceMatch;
 
 /**
- * Abstract unit test for QueryType API
+ * Abstract unit test for QueryType API.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class AbstractQueryTypeTest
+public abstract class AbstractQueryTypeTest extends AbstractProfilableQueryTypeTest
 {
     protected URI testTrueQueryTypeUri;
     protected URI testFalseQueryTypeUri;
@@ -32,15 +35,15 @@ public abstract class AbstractQueryTypeTest
     protected URI testNamespaceUri5;
     protected URI testFalseNamespaceUri;
     
-    private Collection<Collection<URI>> namespacesFalse;
-    private Collection<Collection<URI>> namespaces12345AndFalse;
-    private Collection<Collection<URI>> namespaces12345;
-    private Collection<Collection<URI>> namespaces123;
-    private Collection<Collection<URI>> namespaces1orFalse;
-    private Collection<Collection<URI>> namespaces1and2orFalse;
-    private Collection<Collection<URI>> namespaces12;
-    private Collection<Collection<URI>> namespaces34;
-    private Collection<Collection<URI>> namespaces45;
+    private Map<String, Collection<URI>> namespacesFalse;
+    private Map<String, Collection<URI>> namespaces12345AndFalse;
+    private Map<String, Collection<URI>> namespaces12345;
+    private Map<String, Collection<URI>> namespaces123;
+    private Map<String, Collection<URI>> namespaces1orFalse;
+    private Map<String, Collection<URI>> namespaces1and2orFalse;
+    private Map<String, Collection<URI>> namespaces12;
+    private Map<String, Collection<URI>> namespaces34;
+    private Map<String, Collection<URI>> namespaces45;
     
     private QueryType queryTypePublicIdentifiers;
     
@@ -70,9 +73,15 @@ public abstract class AbstractQueryTypeTest
     private QueryType queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny;
     private QueryType queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll;
     
+    @Override
+    public final QueryType getNewTestProfilable()
+    {
+        return this.getNewTestQueryType();
+    }
+    
     /**
      * This method must be overridden to return a new instance of the implemented QueryType class
-     * for each successive invocation
+     * for each successive invocation.
      * 
      * @return A new instance of the QueryType implementation
      */
@@ -81,9 +90,12 @@ public abstract class AbstractQueryTypeTest
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @Before
     public void setUp() throws Exception
     {
+        super.setUp();
+        
         final ValueFactory f = new MemValueFactory();
         
         this.testTrueQueryTypeUri = f.createURI("http://example.org/test/includedQueryType");
@@ -95,78 +107,80 @@ public abstract class AbstractQueryTypeTest
         this.testNamespaceUri5 = f.createURI("http://example.org/test/includedNamespace-5");
         this.testFalseNamespaceUri = f.createURI("http://example.org/test/excludedNamespace");
         
-        final LinkedList<URI> namespaceFalseInner = new LinkedList<URI>();
+        final List<URI> namespaceFalseInner = new ArrayList<URI>(1);
         namespaceFalseInner.add(this.testFalseNamespaceUri);
         
-        final LinkedList<URI> namespace1Inner = new LinkedList<URI>();
+        final List<URI> namespace1Inner = new ArrayList<URI>(1);
         namespace1Inner.add(this.testNamespaceUri1);
         
-        final LinkedList<URI> namespace2Inner = new LinkedList<URI>();
+        final List<URI> namespace2Inner = new ArrayList<URI>();
         namespace2Inner.add(this.testNamespaceUri2);
         
-        final LinkedList<URI> namespace3Inner = new LinkedList<URI>();
+        final List<URI> namespace3Inner = new ArrayList<URI>();
         namespace3Inner.add(this.testNamespaceUri3);
         
-        final LinkedList<URI> namespace4Inner = new LinkedList<URI>();
+        final List<URI> namespace4Inner = new ArrayList<URI>();
         namespace4Inner.add(this.testNamespaceUri4);
         
-        final LinkedList<URI> namespace5Inner = new LinkedList<URI>();
+        final List<URI> namespace5Inner = new ArrayList<URI>();
         namespace5Inner.add(this.testNamespaceUri5);
         
-        final LinkedList<URI> namespace1OrFalseInner = new LinkedList<URI>();
+        final List<URI> namespace1OrFalseInner = new ArrayList<URI>();
         namespace1OrFalseInner.add(this.testNamespaceUri1);
         namespace1OrFalseInner.add(this.testFalseNamespaceUri);
         
-        final LinkedList<URI> namespace2OrFalseInner = new LinkedList<URI>();
+        final List<URI> namespace2OrFalseInner = new ArrayList<URI>();
         namespace2OrFalseInner.add(this.testNamespaceUri2);
         namespace2OrFalseInner.add(this.testFalseNamespaceUri);
         
-        this.namespacesFalse = new LinkedList<Collection<URI>>();
-        this.namespacesFalse.add(namespaceFalseInner);
+        this.namespacesFalse = new HashMap<String, Collection<URI>>();
+        // HACK: replace this constant with something useful
+        this.namespacesFalse.put("input_1", namespaceFalseInner);
         
-        this.namespaces12345AndFalse = new LinkedList<Collection<URI>>();
-        this.namespaces12345AndFalse.add(namespace1Inner);
-        this.namespaces12345AndFalse.add(namespace2Inner);
-        this.namespaces12345AndFalse.add(namespace3Inner);
-        this.namespaces12345AndFalse.add(namespace4Inner);
-        this.namespaces12345AndFalse.add(namespace5Inner);
-        this.namespaces12345AndFalse.add(namespaceFalseInner);
+        this.namespaces12345AndFalse = new HashMap<String, Collection<URI>>();
+        this.namespaces12345AndFalse.put("input_1", namespace1Inner);
+        this.namespaces12345AndFalse.put("input_2", namespace2Inner);
+        this.namespaces12345AndFalse.put("input_3", namespace3Inner);
+        this.namespaces12345AndFalse.put("input_4", namespace4Inner);
+        this.namespaces12345AndFalse.put("input_5", namespace5Inner);
+        this.namespaces12345AndFalse.put("input_6", namespaceFalseInner);
         
-        this.namespaces12345 = new LinkedList<Collection<URI>>();
-        this.namespaces12345.add(namespace1Inner);
-        this.namespaces12345.add(namespace2Inner);
-        this.namespaces12345.add(namespace3Inner);
-        this.namespaces12345.add(namespace4Inner);
-        this.namespaces12345.add(namespace5Inner);
+        this.namespaces12345 = new HashMap<String, Collection<URI>>();
+        this.namespaces12345.put("input_1", namespace1Inner);
+        this.namespaces12345.put("input_2", namespace2Inner);
+        this.namespaces12345.put("input_3", namespace3Inner);
+        this.namespaces12345.put("input_4", namespace4Inner);
+        this.namespaces12345.put("input_5", namespace5Inner);
         
-        this.namespaces123 = new LinkedList<Collection<URI>>();
-        this.namespaces123.add(namespace1Inner);
-        this.namespaces123.add(namespace2Inner);
-        this.namespaces123.add(namespace3Inner);
+        this.namespaces123 = new HashMap<String, Collection<URI>>();
+        this.namespaces123.put("input_1", namespace1Inner);
+        this.namespaces123.put("input_2", namespace2Inner);
+        this.namespaces123.put("input_3", namespace3Inner);
         
-        this.namespaces1orFalse = new LinkedList<Collection<URI>>();
-        this.namespaces1orFalse.add(namespace1OrFalseInner);
+        this.namespaces1orFalse = new HashMap<String, Collection<URI>>();
+        this.namespaces1orFalse.put("input_1", namespace1OrFalseInner);
         
-        this.namespaces1and2orFalse = new LinkedList<Collection<URI>>();
-        this.namespaces1and2orFalse.add(namespace1Inner);
-        this.namespaces1and2orFalse.add(namespace2OrFalseInner);
+        this.namespaces1and2orFalse = new HashMap<String, Collection<URI>>();
+        this.namespaces1and2orFalse.put("input_1", namespace1Inner);
+        this.namespaces1and2orFalse.put("input_2", namespace2OrFalseInner);
         
-        this.namespaces12 = new LinkedList<Collection<URI>>();
-        this.namespaces12.add(namespace1Inner);
-        this.namespaces12.add(namespace2Inner);
+        this.namespaces12 = new HashMap<String, Collection<URI>>();
+        this.namespaces12.put("input_1", namespace1Inner);
+        this.namespaces12.put("input_2", namespace2Inner);
         
-        this.namespaces34 = new LinkedList<Collection<URI>>();
-        this.namespaces34.add(namespace3Inner);
-        this.namespaces34.add(namespace4Inner);
+        this.namespaces34 = new HashMap<String, Collection<URI>>();
+        this.namespaces34.put("input_1", namespace3Inner);
+        this.namespaces34.put("input_2", namespace4Inner);
         
-        this.namespaces45 = new LinkedList<Collection<URI>>();
-        this.namespaces45.add(namespace4Inner);
-        this.namespaces45.add(namespace5Inner);
+        this.namespaces45 = new HashMap<String, Collection<URI>>();
+        this.namespaces45.put("input_1", namespace4Inner);
+        this.namespaces45.put("input_2", namespace5Inner);
         
         this.queryTypePublicIdentifiers = this.getNewTestQueryType();
         this.queryTypePublicIdentifiers.addPublicIdentifierTag("input_2");
         
         this.queryTypeNamespaceInputIndexes = this.getNewTestQueryType();
+        this.queryTypeNamespaceInputIndexes.setIsNamespaceSpecific(true);
         this.queryTypeNamespaceInputIndexes.addNamespaceInputTag("input_2");
         
         this.queryTypeIncludeDefaults = this.getNewTestQueryType();
@@ -176,7 +190,7 @@ public abstract class AbstractQueryTypeTest
         this.queryTypeNotIncludeDefaults.setIncludeDefaults(false);
         
         this.queryType123NamespacesMatchMethodAll = this.getNewTestQueryType();
-        this.queryType123NamespacesMatchMethodAll.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAll());
+        this.queryType123NamespacesMatchMethodAll.setNamespaceMatchMethod(NamespaceMatch.ALL_MATCHED);
         this.queryType123NamespacesMatchMethodAll.setIsNamespaceSpecific(true);
         this.queryType123NamespacesMatchMethodAll.setHandleAllNamespaces(false);
         this.queryType123NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri1);
@@ -184,8 +198,7 @@ public abstract class AbstractQueryTypeTest
         this.queryType123NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri3);
         
         this.queryType12345NamespacesMatchMethodAll = this.getNewTestQueryType();
-        this.queryType12345NamespacesMatchMethodAll
-                .setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAll());
+        this.queryType12345NamespacesMatchMethodAll.setNamespaceMatchMethod(NamespaceMatch.ALL_MATCHED);
         this.queryType12345NamespacesMatchMethodAll.setIsNamespaceSpecific(true);
         this.queryType12345NamespacesMatchMethodAll.setHandleAllNamespaces(false);
         this.queryType12345NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri1);
@@ -195,12 +208,12 @@ public abstract class AbstractQueryTypeTest
         this.queryType12345NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri5);
         
         this.queryTypeNoNamespacesMatchMethodAll = this.getNewTestQueryType();
-        this.queryTypeNoNamespacesMatchMethodAll.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAll());
+        this.queryTypeNoNamespacesMatchMethodAll.setNamespaceMatchMethod(NamespaceMatch.ALL_MATCHED);
         this.queryTypeNoNamespacesMatchMethodAll.setIsNamespaceSpecific(true);
         this.queryTypeNoNamespacesMatchMethodAll.setHandleAllNamespaces(false);
         
         this.queryType123NamespacesMatchMethodAny = this.getNewTestQueryType();
-        this.queryType123NamespacesMatchMethodAny.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAny());
+        this.queryType123NamespacesMatchMethodAny.setNamespaceMatchMethod(NamespaceMatch.ANY_MATCHED);
         this.queryType123NamespacesMatchMethodAny.setIsNamespaceSpecific(true);
         this.queryType123NamespacesMatchMethodAny.setHandleAllNamespaces(false);
         this.queryType123NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri1);
@@ -208,8 +221,7 @@ public abstract class AbstractQueryTypeTest
         this.queryType123NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri3);
         
         this.queryType12345NamespacesMatchMethodAny = this.getNewTestQueryType();
-        this.queryType12345NamespacesMatchMethodAny
-                .setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAny());
+        this.queryType12345NamespacesMatchMethodAny.setNamespaceMatchMethod(NamespaceMatch.ANY_MATCHED);
         this.queryType12345NamespacesMatchMethodAny.setIsNamespaceSpecific(true);
         this.queryType12345NamespacesMatchMethodAny.setHandleAllNamespaces(false);
         this.queryType12345NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri1);
@@ -219,25 +231,25 @@ public abstract class AbstractQueryTypeTest
         this.queryType12345NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri5);
         
         this.queryTypeNoNamespacesMatchMethodAny = this.getNewTestQueryType();
-        this.queryTypeNoNamespacesMatchMethodAny.setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAny());
+        this.queryTypeNoNamespacesMatchMethodAny.setNamespaceMatchMethod(NamespaceMatch.ANY_MATCHED);
         this.queryTypeNoNamespacesMatchMethodAny.setIsNamespaceSpecific(true);
         this.queryTypeNoNamespacesMatchMethodAny.setHandleAllNamespaces(false);
         
         this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll = this.getNewTestQueryType();
-        this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.setNamespaceMatchMethod(QueryTypeSchema
-                .getQueryNamespaceMatchAll());
+        this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll
+                .setNamespaceMatchMethod(NamespaceMatch.ALL_MATCHED);
         this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.setIsNamespaceSpecific(false);
         this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAll.setHandleAllNamespaces(false);
         
         this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny = this.getNewTestQueryType();
-        this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.setNamespaceMatchMethod(QueryTypeSchema
-                .getQueryNamespaceMatchAny());
+        this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny
+                .setNamespaceMatchMethod(NamespaceMatch.ANY_MATCHED);
         this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.setIsNamespaceSpecific(false);
         this.queryTypeNotNamespaceSpecificNoNamespacesMatchMethodAny.setHandleAllNamespaces(false);
         
         this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny = this.getNewTestQueryType();
-        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.setNamespaceMatchMethod(QueryTypeSchema
-                .getQueryNamespaceMatchAny());
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny
+                .setNamespaceMatchMethod(NamespaceMatch.ANY_MATCHED);
         this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.setIsNamespaceSpecific(false);
         this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.setHandleAllNamespaces(false);
         this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri1);
@@ -245,8 +257,8 @@ public abstract class AbstractQueryTypeTest
         this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAny.addNamespaceToHandle(this.testNamespaceUri3);
         
         this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll = this.getNewTestQueryType();
-        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.setNamespaceMatchMethod(QueryTypeSchema
-                .getQueryNamespaceMatchAll());
+        this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll
+                .setNamespaceMatchMethod(NamespaceMatch.ALL_MATCHED);
         this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.setIsNamespaceSpecific(false);
         this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.setHandleAllNamespaces(false);
         this.queryTypeNotNamespaceSpecific123NamespacesMatchMethodAll.addNamespaceToHandle(this.testNamespaceUri1);
@@ -255,19 +267,19 @@ public abstract class AbstractQueryTypeTest
         
         this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll = this.getNewTestQueryType();
         this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll
-                .setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAll());
+                .setNamespaceMatchMethod(NamespaceMatch.ALL_MATCHED);
         this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.setIsNamespaceSpecific(false);
         this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAll.setHandleAllNamespaces(true);
         
         this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny = this.getNewTestQueryType();
         this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny
-                .setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAny());
+                .setNamespaceMatchMethod(NamespaceMatch.ANY_MATCHED);
         this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.setIsNamespaceSpecific(false);
         this.queryTypeHandleAllNamespacesNotNamespaceSpecificNoNamespacesMatchMethodAny.setHandleAllNamespaces(true);
         
         this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny = this.getNewTestQueryType();
         this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
-                .setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAny());
+                .setNamespaceMatchMethod(NamespaceMatch.ANY_MATCHED);
         this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.setIsNamespaceSpecific(false);
         this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny.setHandleAllNamespaces(true);
         this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAny
@@ -279,7 +291,7 @@ public abstract class AbstractQueryTypeTest
         
         this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll = this.getNewTestQueryType();
         this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
-                .setNamespaceMatchMethod(QueryTypeSchema.getQueryNamespaceMatchAll());
+                .setNamespaceMatchMethod(NamespaceMatch.ALL_MATCHED);
         this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.setIsNamespaceSpecific(false);
         this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll.setHandleAllNamespaces(true);
         this.queryTypeHandleAllNamespacesNotNamespaceSpecific123NamespacesMatchMethodAll
@@ -290,14 +302,12 @@ public abstract class AbstractQueryTypeTest
                 .addNamespaceToHandle(this.testNamespaceUri3);
         
         this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny = this.getNewTestQueryType();
-        this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.setNamespaceMatchMethod(QueryTypeSchema
-                .getQueryNamespaceMatchAny());
+        this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.setNamespaceMatchMethod(NamespaceMatch.ANY_MATCHED);
         this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.setIsNamespaceSpecific(true);
         this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAny.setHandleAllNamespaces(true);
         
         this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll = this.getNewTestQueryType();
-        this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.setNamespaceMatchMethod(QueryTypeSchema
-                .getQueryNamespaceMatchAll());
+        this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.setNamespaceMatchMethod(NamespaceMatch.ALL_MATCHED);
         this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.setIsNamespaceSpecific(true);
         this.queryTypeHandleAllNamespacesNoNamespacesMatchMethodAll.setHandleAllNamespaces(true);
         
@@ -306,9 +316,12 @@ public abstract class AbstractQueryTypeTest
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @After
     public void tearDown() throws Exception
     {
+        super.tearDown();
+        
         this.testTrueQueryTypeUri = null;
         this.testFalseQueryTypeUri = null;
         this.testNamespaceUri1 = null;
@@ -361,7 +374,7 @@ public abstract class AbstractQueryTypeTest
      * {@link org.queryall.api.querytype.QueryType#handlesNamespacesSpecifically(java.util.Collection)}
      * .
      * 
-     * This test requires the namespaces to be specifically declared for the test to succeed
+     * This test requires the namespaces to be specifically declared for the test to succeed.
      */
     @Test
     public void testHandlesNamespacesSpecifically()
@@ -647,7 +660,8 @@ public abstract class AbstractQueryTypeTest
      * Test method for
      * {@link org.queryall.api.querytype.QueryType#handlesNamespaceUris(java.util.Collection)} .
      * 
-     * This test does not require the namespaces to be specifically declared for the test to succeed
+     * This test does not require the namespaces to be specifically declared for the test to
+     * succeed.
      */
     @Test
     public void testHandlesNamespaceUris()
@@ -935,4 +949,77 @@ public abstract class AbstractQueryTypeTest
         Assert.assertEquals(1, this.queryTypeNamespaceInputIndexes.getNamespaceInputTags().size());
     }
     
+    @Test
+    public void testResetLinkedQueryTypes()
+    {
+        final QueryType testQueryType = this.getNewTestQueryType();
+        
+        Assert.assertEquals(0, testQueryType.getLinkedQueryTypes().size());
+        
+        testQueryType.addLinkedQueryType(this.testTrueQueryTypeUri);
+        
+        Assert.assertEquals(1, testQueryType.getLinkedQueryTypes().size());
+        
+        Assert.assertTrue(testQueryType.resetLinkedQueryTypes());
+        
+        Assert.assertEquals(0, testQueryType.getLinkedQueryTypes().size());
+    }
+    
+    @Test
+    public void testResetNamespaceInputTags()
+    {
+        final QueryType testQueryType = this.getNewTestQueryType();
+        
+        Assert.assertEquals(0, testQueryType.getNamespaceInputTags().size());
+        
+        testQueryType.addNamespaceInputTag("input_5");
+        
+        // verify that the returned set is empty until setIsNamespaceSpecific(true) is called
+        Assert.assertEquals(0, testQueryType.getNamespaceInputTags().size());
+        
+        testQueryType.setIsNamespaceSpecific(true);
+        
+        Assert.assertEquals(1, testQueryType.getNamespaceInputTags().size());
+        
+        Assert.assertTrue(testQueryType.resetNamespaceInputTags());
+        
+        Assert.assertEquals(0, testQueryType.getNamespaceInputTags().size());
+    }
+    
+    @Test
+    public void testResetNamespacesToHandle()
+    {
+        final QueryType testQueryType = this.getNewTestQueryType();
+        
+        Assert.assertEquals(0, testQueryType.getNamespacesToHandle().size());
+        
+        testQueryType.addNamespaceToHandle(this.testNamespaceUri1);
+        
+        // verify that the returned set is empty until setIsNamespaceSpecific(true) is called
+        Assert.assertEquals(0, testQueryType.getNamespaceInputTags().size());
+        
+        testQueryType.setIsNamespaceSpecific(true);
+        
+        Assert.assertEquals(1, testQueryType.getNamespacesToHandle().size());
+        
+        Assert.assertTrue(testQueryType.resetNamespacesToHandle());
+        
+        Assert.assertEquals(0, testQueryType.getNamespacesToHandle().size());
+    }
+    
+    @Test
+    public void testResetPublicIdentifierTags()
+    {
+        final QueryType testQueryType = this.getNewTestQueryType();
+        
+        Assert.assertEquals(0, testQueryType.getPublicIdentifierTags().size());
+        
+        testQueryType.addPublicIdentifierTag("input_5");
+        
+        Assert.assertEquals(1, testQueryType.getPublicIdentifierTags().size());
+        
+        Assert.assertTrue(testQueryType.resetPublicIdentifierTags());
+        
+        Assert.assertEquals(0, testQueryType.getPublicIdentifierTags().size());
+    }
 }

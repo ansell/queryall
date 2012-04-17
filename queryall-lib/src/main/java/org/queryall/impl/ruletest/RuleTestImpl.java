@@ -1,7 +1,7 @@
 package org.queryall.impl.ruletest;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Statement;
@@ -15,6 +15,7 @@ import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.ruletest.RuleTestSchema;
 import org.queryall.api.utils.QueryAllNamespaces;
+import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,25 +25,17 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class RuleTestImpl implements RuleTest, HtmlExport
+public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(RuleTestImpl.class);
-    private static final boolean _TRACE = RuleTestImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = RuleTestImpl.log.isDebugEnabled();
+    private static final boolean TRACE = RuleTestImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = RuleTestImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RuleTestImpl.log.isInfoEnabled();
+    private static final boolean INFO = RuleTestImpl.log.isInfoEnabled();
     
-    protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
+    private Collection<URI> rdfRuleUris = new ArrayList<URI>();
     
-    private URI key = null;
-    
-    private Collection<URI> rdfRuleUris = new HashSet<URI>();
-    
-    private Collection<URI> stages = new HashSet<URI>();
-    
-    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
-    
-    private String title = "";
+    private Collection<URI> stages = new ArrayList<URI>();
     
     public RuleTestImpl()
     {
@@ -52,9 +45,13 @@ public abstract class RuleTestImpl implements RuleTest, HtmlExport
     public RuleTestImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
-        for(final Statement nextStatement : inputStatements)
+        super(inputStatements, keyToUse, modelVersion);
+        
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
+        
+        for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(RuleTestImpl._DEBUG)
+            if(RuleTestImpl.DEBUG)
             {
                 RuleTestImpl.log.debug("RuleTest: nextStatement: " + nextStatement.toString());
             }
@@ -62,7 +59,7 @@ public abstract class RuleTestImpl implements RuleTest, HtmlExport
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(RuleTestSchema.getRuletestTypeUri()))
             {
-                if(RuleTestImpl._TRACE)
+                if(RuleTestImpl.TRACE)
                 {
                     RuleTestImpl.log.trace("RuleTest: found valid type predicate for URI: " + keyToUse);
                 }
@@ -87,7 +84,7 @@ public abstract class RuleTestImpl implements RuleTest, HtmlExport
             }
         }
         
-        if(RuleTestImpl._TRACE)
+        if(RuleTestImpl.TRACE)
         {
             RuleTestImpl.log.trace("RuleTest.fromRdf: would have returned... result=" + this.toString());
         }
@@ -114,12 +111,6 @@ public abstract class RuleTestImpl implements RuleTest, HtmlExport
     }
     
     @Override
-    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
-    {
-        this.unrecognisedStatements.add(unrecognisedStatement);
-    }
-    
-    @Override
     public int compareTo(final RuleTest otherRuleTest)
     {
         @SuppressWarnings("unused")
@@ -136,13 +127,50 @@ public abstract class RuleTestImpl implements RuleTest, HtmlExport
         return this.getKey().stringValue().compareTo(otherRuleTest.getKey().stringValue());
     }
     
-    /**
-     * @return the curationStatus
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public URI getCurationStatus()
+    public boolean equals(final Object obj)
     {
-        return this.curationStatus;
+        if(this == obj)
+        {
+            return true;
+        }
+        if(!super.equals(obj))
+        {
+            return false;
+        }
+        if(!(obj instanceof RuleTest))
+        {
+            return false;
+        }
+        final RuleTest other = (RuleTest)obj;
+        if(this.getRuleUris() == null)
+        {
+            if(other.getRuleUris() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getRuleUris().equals(other.getRuleUris()))
+        {
+            return false;
+        }
+        if(this.getStages() == null)
+        {
+            if(other.getStages() != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.getStages().equals(other.getStages()))
+        {
+            return false;
+        }
+        return true;
     }
     
     /**
@@ -152,15 +180,6 @@ public abstract class RuleTestImpl implements RuleTest, HtmlExport
     public QueryAllNamespaces getDefaultNamespace()
     {
         return QueryAllNamespaces.RULETEST;
-    }
-    
-    /**
-     * @return the key
-     */
-    @Override
-    public URI getKey()
-    {
-        return this.key;
     }
     
     /**
@@ -181,18 +200,6 @@ public abstract class RuleTestImpl implements RuleTest, HtmlExport
         return this.stages;
     }
     
-    @Override
-    public String getTitle()
-    {
-        return this.title;
-    }
-    
-    @Override
-    public Collection<Statement> getUnrecognisedStatements()
-    {
-        return this.unrecognisedStatements;
-    }
-    
     /*
      * (non-Javadoc)
      * 
@@ -202,43 +209,58 @@ public abstract class RuleTestImpl implements RuleTest, HtmlExport
     public int hashCode()
     {
         final int prime = 31;
-        int result = 1;
-        result = prime * result + ((this.curationStatus == null) ? 0 : this.curationStatus.hashCode());
-        result = prime * result + ((this.key == null) ? 0 : this.key.hashCode());
-        result = prime * result + ((this.getRuleUris() == null) ? 0 : this.getRuleUris().hashCode());
+        int result = super.hashCode();
+        result = prime * result + ((this.rdfRuleUris == null) ? 0 : this.rdfRuleUris.hashCode());
+        result = prime * result + ((this.stages == null) ? 0 : this.stages.hashCode());
         return result;
     }
     
-    /**
-     * @param curationStatus
-     *            the curationStatus to set
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.ruletest.RuleTest#resetRuleUris()
      */
     @Override
-    public void setCurationStatus(final URI curationStatus)
+    public boolean resetRuleUris()
     {
-        this.curationStatus = curationStatus;
+        try
+        {
+            this.rdfRuleUris.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            RuleTestImpl.log.debug("Could not clear collection");
+        }
+        
+        this.rdfRuleUris = new ArrayList<URI>();
+        
+        return true;
     }
     
-    /**
-     * @param key
-     *            the key to set
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.queryall.api.ruletest.RuleTest#resetStages()
      */
     @Override
-    public void setKey(final String nextKey)
+    public boolean resetStages()
     {
-        this.setKey(StringUtils.createURI(nextKey));
-    }
-    
-    @Override
-    public void setKey(final URI nextKey)
-    {
-        this.key = nextKey;
-    }
-    
-    @Override
-    public void setTitle(final String title)
-    {
-        this.title = title;
+        try
+        {
+            this.stages.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            RuleTestImpl.log.debug("Could not clear collection");
+        }
+        
+        this.stages = new ArrayList<URI>();
+        
+        return true;
     }
     
     @Override
@@ -268,48 +290,29 @@ public abstract class RuleTestImpl implements RuleTest, HtmlExport
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextKey)
         throws OpenRDFException
     {
+        super.toRdf(myRepository, modelVersion, contextKey);
+        
         final RepositoryConnection con = myRepository.getConnection();
         
         try
         {
             final URI keyUri = this.getKey();
             
-            URI curationStatusLiteral = null;
-            
-            if(this.curationStatus == null)
-            {
-                curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
-            }
-            else
-            {
-                curationStatusLiteral = this.curationStatus;
-            }
-            
             con.setAutoCommit(false);
             
             for(final URI nextElementType : this.getElementTypes())
             {
-                con.add(keyUri, RDF.TYPE, nextElementType, keyToUse);
+                con.add(keyUri, RDF.TYPE, nextElementType, contextKey);
             }
-            
-            con.add(keyUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
             
             if(this.rdfRuleUris != null)
             {
                 for(final URI nextRdfRuleUri : this.rdfRuleUris)
                 {
-                    con.add(keyUri, RuleTestSchema.getRuletestHasRuleUri(), nextRdfRuleUri, keyToUse);
-                }
-            }
-            
-            if(this.unrecognisedStatements != null)
-            {
-                for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
-                {
-                    con.add(nextUnrecognisedStatement, keyToUse);
+                    con.add(keyUri, RuleTestSchema.getRuletestHasRuleUri(), nextRdfRuleUri, contextKey);
                 }
             }
             
@@ -338,7 +341,7 @@ public abstract class RuleTestImpl implements RuleTest, HtmlExport
     {
         String result = "\n";
         
-        result += "key=" + this.key + "\n";
+        result += "key=" + this.getKey() + "\n";
         result += "rdfRuleUris=" + this.rdfRuleUris + "\n";
         
         return result;

@@ -1,14 +1,13 @@
 package org.queryall.statistics;
 
-import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
-import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.vocabulary.OWL;
@@ -17,21 +16,13 @@ import org.openrdf.model.vocabulary.XMLSchema;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.Rio;
-import org.openrdf.sail.memory.MemoryStore;
-import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.base.HtmlExport;
 import org.queryall.api.base.QueryAllConfiguration;
-import org.queryall.api.project.ProjectSchema;
-import org.queryall.api.provider.HttpProviderSchema;
-import org.queryall.api.provider.SparqlProviderSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.query.HttpUrlQueryRunnable;
-import org.queryall.utils.RdfUtils;
+import org.queryall.impl.base.BaseQueryAllImpl;
+import org.queryall.query.HttpUrlQueryRunnableImpl;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,14 +30,14 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
+public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(StatisticsEntry.class);
     @SuppressWarnings("unused")
-    private static final boolean _INFO = StatisticsEntry.log.isInfoEnabled();
-    private static final boolean _DEBUG = StatisticsEntry.log.isDebugEnabled();
+    private static final boolean INFO = StatisticsEntry.log.isInfoEnabled();
+    private static final boolean DEBUG = StatisticsEntry.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = StatisticsEntry.log.isTraceEnabled();
+    private static final boolean TRACE = StatisticsEntry.log.isTraceEnabled();
     
     public static final int IMPLEMENTED_STATISTICS_VERSION = 1;
     
@@ -87,7 +78,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.STATISTICS.getBaseURI();
         
@@ -385,30 +376,23 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
     
     private String acceptHeader = "";
     
-    private Collection<String> configLocations = new HashSet<String>();
+    private Collection<String> configLocations = new ArrayList<String>();
     
     private String configVersion = "";
     
     private int connecttimeout = -1;
     
-    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
-    
-    private Collection<String> errorproviderUris = new HashSet<String>();
-    
-    /**
-     * 
-     */
-    private URI key;
+    private Collection<String> errorproviderUris = new ArrayList<String>();
     
     private String lastServerRestart = "";
     
-    private Collection<String> namespaceUris = new HashSet<String>();
+    private Collection<String> namespaceUris = new ArrayList<String>();
     
-    private Collection<String> profileUris = new HashSet<String>();
+    private Collection<String> profileUris = new ArrayList<String>();
     
     private String queryString = "";
     
-    private Collection<String> querytypeUris = new HashSet<String>();
+    private Collection<String> querytypeUris = new ArrayList<String>();
     
     private int readtimeout = -1;
     
@@ -423,12 +407,11 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
     private double stdeverrorlatency = 0.0;
     
     private double stdevlatency = 0.0;
-    private Collection<String> successfulproviderUris = new HashSet<String>();
+    private Collection<String> successfulproviderUris = new ArrayList<String>();
     private long sumerrorlatency = 0;
     private int sumerrors = 0;
     private long sumLatency = -1;
     private int sumQueries = -1;
-    private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
     private String userAgent = "";
     private String userHostAddress = "";
     
@@ -508,12 +491,6 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
     }
     
     @Override
-    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
-    {
-        this.unrecognisedStatements.add(unrecognisedStatement);
-    }
-    
-    @Override
     public boolean equals(final Object obj)
     {
         if(this == obj)
@@ -566,14 +543,14 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
         {
             return false;
         }
-        if(this.key == null)
+        if(this.getKey() == null)
         {
             if(other.getKey() != null)
             {
                 return false;
             }
         }
-        else if(!this.key.equals(other.getKey()))
+        else if(!this.getKey().equals(other.getKey()))
         {
             return false;
         }
@@ -704,67 +681,73 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
      * @return
      * @throws OpenRDFException
      */
-    public HttpUrlQueryRunnable generateThread(final QueryAllConfiguration localSettings,
+    public HttpUrlQueryRunnableImpl generateThread(final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController, final int modelVersion) throws OpenRDFException
     {
-        if(localSettings.getURIProperty("statisticsServerMethod", SparqlProviderSchema.getProviderHttpPostSparql())
-                .equals(SparqlProviderSchema.getProviderHttpPostSparql()))
-        {
-            final Repository myRepository = new SailRepository(new MemoryStore());
-            myRepository.initialize();
-            
-            @SuppressWarnings("unused")
-            final boolean rdfOkay = this.toRdf(myRepository, this.getKey(), modelVersion);
-            
-            final RDFFormat writerFormat = Rio.getWriterFormatForMIMEType("text/plain");
-            
-            final StringWriter insertTriples = new StringWriter();
-            
-            RdfUtils.toWriter(myRepository, insertTriples, writerFormat);
-            
-            final String insertTriplesContent = insertTriples.toString();
-            
-            // log.info("StatisticsEntry: insertTriplesContent="+insertTriplesContent);
-            
-            String sparqlInsertQuery = "define sql:log-enable 2 INSERT ";
-            
-            if(localSettings.getBooleanProperty("statisticsServerUseGraphUri", true))
-            {
-                sparqlInsertQuery +=
-                        " INTO GRAPH <" + localSettings.getStringProperty("statisticsServerGraphUri", "") + "> ";
-            }
-            
-            sparqlInsertQuery += " { " + insertTriplesContent + " } ";
-            
-            if(StatisticsEntry._DEBUG)
-            {
-                StatisticsEntry.log.debug("StatisticsEntry: sparqlInsertQuery=" + sparqlInsertQuery);
-            }
-            
-            return new HttpUrlQueryRunnable(localSettings.getStringProperty("statisticsServerMethod", ""),
-                    localSettings.getStringProperty("statisticsServerUrl", ""), sparqlInsertQuery, "*/*",
-                    localSettings, localBlacklistController);
-        }
-        else if(localSettings.getURIProperty("statisticsServerMethod", HttpProviderSchema.getProviderHttpPostUrlUri())
-                .equals(HttpProviderSchema.getProviderHttpPostUrlUri()))
-        {
-            final String postInformation = this.toPostArray();
-            
-            if(StatisticsEntry._DEBUG)
-            {
-                StatisticsEntry.log.debug("StatisticsEntry: postInformation=" + postInformation);
-            }
-            
-            return new HttpUrlQueryRunnable(localSettings.getStringProperty("statisticsServerMethod", ""),
-                    localSettings.getStringProperty("statisticsServerUrl", ""), postInformation, "*/*", localSettings,
-                    localBlacklistController);
-        }
-        else
-        {
-            throw new RuntimeException(
-                    "StatisticsEntry.generateThread: Unknown localSettings.getStringPropertyFromConfig(\"statisticsServerMethod\")="
-                            + localSettings.getStringProperty("statisticsServerMethod", ""));
-        }
+        // TODO: Convert this to new structure
+/**
+         * if(localSettings.getURIProperty("statisticsServerMethod",
+         * SparqlProviderSchema.getProviderHttpPostSparql())
+         * .equals(SparqlProviderSchema.getProviderHttpPostSparql())) { final Repository
+         * myRepository = new SailRepository(new MemoryStore()); myRepository.initialize();
+         * 
+         * @SuppressWarnings("unused") final boolean rdfOkay = this.toRdf(myRepository,
+         *                             modelVersion, this.getKey());
+         * 
+         *                             final RDFFormat writerFormat =
+         *                             Rio.getWriterFormatForMIMEType("text/plain");
+         * 
+         *                             final StringWriter insertTriples = new StringWriter();
+         * 
+         *                             RdfUtils.toWriter(myRepository, insertTriples, writerFormat);
+         * 
+         *                             final String insertTriplesContent = insertTriples.toString();
+         * 
+         *                             // log.info("StatisticsEntry: insertTriplesContent="+
+         *                             insertTriplesContent);
+         * 
+         *                             String sparqlInsertQuery = "define sql:log-enable 2 INSERT ";
+         * 
+         *                             if(localSettings.getBooleanProperty(
+         *                             "statisticsServerUseGraphUri", true)) { sparqlInsertQuery +=
+         *                             " INTO GRAPH <" +
+         *                             localSettings.getStringProperty("statisticsServerGraphUri",
+         *                             "") + "> "; }
+         * 
+         *                             sparqlInsertQuery += " { " + insertTriplesContent + " } ";
+         * 
+         *                             if(StatisticsEntry.DEBUG) {
+         *                             StatisticsEntry.log.debug("StatisticsEntry: sparqlInsertQuery="
+         *                             + sparqlInsertQuery); }
+         * 
+         *                             return new
+         *                             HttpUrlQueryRunnableImpl(localSettings.getStringProperty
+         *                             ("statisticsServerMethod", ""),
+         *                             localSettings.getStringProperty("statisticsServerUrl", ""),
+         *                             sparqlInsertQuery, "* / *", localSettings,
+         *                             localBlacklistController); } else
+         *                             if(localSettings.getURIProperty("statisticsServerMethod",
+         *                             HttpProviderSchema.getProviderHttpPostUrl())
+         *                             .equals(HttpProviderSchema.getProviderHttpPostUrl())) { final
+         *                             String postInformation = this.toPostArray();
+         * 
+         *                             if(StatisticsEntry.DEBUG) {
+         *                             StatisticsEntry.log.debug("StatisticsEntry: postInformation="
+         *                             + postInformation); }
+         * 
+         *                             return new
+         *                             HttpUrlQueryRunnableImpl(localSettings.getStringProperty
+         *                             ("statisticsServerMethod", ""),
+         *                             localSettings.getStringProperty("statisticsServerUrl", ""),
+         *                             postInformation, "* / *", localSettings,
+         *                             localBlacklistController); } else { throw new
+         *                             RuntimeException(
+         *                             "StatisticsEntry.generateThread: Unknown localSettings.getStringPropertyFromConfig(\"statisticsServerMethod\")="
+         *                             + localSettings.getStringProperty("statisticsServerMethod",
+         *                             "")); }
+         **/
+        
+        return null;
     }
     
     /**
@@ -786,15 +769,9 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
     /**
      * @return the connecttimeout
      */
-    public int getConnecttimeout()
+    public int getConnectTimeout()
     {
         return this.connecttimeout;
-    }
-    
-    @Override
-    public URI getCurationStatus()
-    {
-        return this.curationStatus;
     }
     
     /**
@@ -813,11 +790,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
     @Override
     public Set<URI> getElementTypes()
     {
-        final Set<URI> results = new HashSet<URI>();
-        
-        results.add(StatisticsEntry.statisticsTypeUri);
-        
-        return results;
+        return Collections.singleton(StatisticsEntry.statisticsTypeUri);
     }
     
     /**
@@ -826,16 +799,6 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
     public Collection<String> getErrorproviderUris()
     {
         return this.errorproviderUris;
-    }
-    
-    /**
-     * @return the key
-     */
-    
-    @Override
-    public URI getKey()
-    {
-        return this.key;
     }
     
     /**
@@ -950,18 +913,6 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
         return this.sumQueries;
     }
     
-    @Override
-    public String getTitle()
-    {
-        return null;
-    }
-    
-    @Override
-    public Collection<Statement> getUnrecognisedStatements()
-    {
-        return this.unrecognisedStatements;
-    }
-    
     /**
      * @return the userAgent
      */
@@ -987,7 +938,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
         result = prime * result + ((this.configVersion == null) ? 0 : this.configVersion.hashCode());
         result = prime * result + this.connecttimeout;
         result = prime * result + ((this.errorproviderUris == null) ? 0 : this.errorproviderUris.hashCode());
-        result = prime * result + ((this.key == null) ? 0 : this.key.hashCode());
+        result = prime * result + ((this.getKey() == null) ? 0 : this.getKey().hashCode());
         result = prime * result + ((this.namespaceUris == null) ? 0 : this.namespaceUris.hashCode());
         result = prime * result + ((this.profileUris == null) ? 0 : this.profileUris.hashCode());
         result = prime * result + ((this.queryString == null) ? 0 : this.queryString.hashCode());
@@ -1037,12 +988,6 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
         this.connecttimeout = connecttimeout;
     }
     
-    @Override
-    public void setCurationStatus(final URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
-    }
-    
     /**
      * @param errorproviderUris
      *            the errorproviderUris to set
@@ -1050,23 +995,6 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
     public void setErrorproviderUris(final Collection<String> errorproviderUris)
     {
         this.errorproviderUris = errorproviderUris;
-    }
-    
-    /**
-     * @param key
-     *            the key to set
-     */
-    
-    @Override
-    public void setKey(final String nextKey)
-    {
-        this.setKey(StringUtils.createURI(nextKey));
-    }
-    
-    @Override
-    public void setKey(final URI nextKey)
-    {
-        this.key = nextKey;
     }
     
     /**
@@ -1207,11 +1135,6 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
         this.sumQueries = sumQueries;
     }
     
-    @Override
-    public void setTitle(final String title)
-    {
-    }
-    
     /**
      * @param userAgent
      *            the userAgent to set
@@ -1302,7 +1225,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextUris)
         throws OpenRDFException
     {
         // String nTriplesInsertString = "";
@@ -1313,16 +1236,16 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
         {
             connection = myRepository.getConnection();
             
-            final ValueFactory f = Constants.valueFactory;
+            final ValueFactory f = Constants.VALUE_FACTORY;
             
-            if((keyToUse == null))
+            if((contextUris == null))
             {
                 StatisticsEntry.log.error("StatisticsEntry.toRdf: keyToUse was empty");
                 
                 return false;
             }
             
-            final URI keyUri = keyToUse;
+            final URI keyUri = this.getKey();
             
             if(this.currentDate == null)
             {
@@ -1355,28 +1278,30 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
             
             connection.setAutoCommit(false);
             
-            connection.add(keyUri, RDF.TYPE, StatisticsEntry.statisticsTypeUri, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticscurrentdatetimeUri, currentDateLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsconfigVersionUri, configVersionLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsreadtimeoutUri, readtimeoutLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsconnecttimeoutUri, connecttimeoutLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsuserHostAddressUri, userHostAddressLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsuserAgentUri, userAgentLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsrealHostNameUri, realHostNameLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsqueryStringUri, queryStringLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsresponseTimeUri, responseTimeLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticssumLatencyUri, sumLatencyLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticssumQueriesUri, sumQueriesLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsstdevlatencyUri, stdevlatencyLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticssumerrorsUri, sumerrorsLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticssumerrorlatencyUri, sumerrorlatencyLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsstdeverrorlatencyUri, stdeverrorlatencyLiteral, keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticslastServerRestartUri, lastServerRestartLiteral, keyUri);
+            connection.add(keyUri, RDF.TYPE, StatisticsEntry.statisticsTypeUri, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticscurrentdatetimeUri, currentDateLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsconfigVersionUri, configVersionLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsreadtimeoutUri, readtimeoutLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsconnecttimeoutUri, connecttimeoutLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsuserHostAddressUri, userHostAddressLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsuserAgentUri, userAgentLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsrealHostNameUri, realHostNameLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsqueryStringUri, queryStringLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsresponseTimeUri, responseTimeLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticssumLatencyUri, sumLatencyLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticssumQueriesUri, sumQueriesLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsstdevlatencyUri, stdevlatencyLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticssumerrorsUri, sumerrorsLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticssumerrorlatencyUri, sumerrorlatencyLiteral, contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsstdeverrorlatencyUri, stdeverrorlatencyLiteral,
+                    contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticslastServerRestartUri, lastServerRestartLiteral,
+                    contextUris);
             connection.add(keyUri, StatisticsEntry.statisticsserverSoftwareVersionUri, serverSoftwareVersionLiteral,
-                    keyUri);
-            connection.add(keyUri, StatisticsEntry.statisticsacceptHeaderUri, acceptHeaderLiteral, keyUri);
+                    contextUris);
+            connection.add(keyUri, StatisticsEntry.statisticsacceptHeaderUri, acceptHeaderLiteral, contextUris);
             connection.add(keyUri, StatisticsEntry.statisticsrequestedContentTypeUri, requestedContentTypeLiteral,
-                    keyUri);
+                    contextUris);
             
             if(this.profileUris != null)
             {
@@ -1385,7 +1310,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
                     if(!nextProfileUri.trim().equals(""))
                     {
                         connection.add(keyUri, StatisticsEntry.statisticsprofileUrisUri, f.createURI(nextProfileUri),
-                                keyUri);
+                                contextUris);
                     }
                 }
             }
@@ -1397,7 +1322,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
                     if(!nextSuccessfulProvidersUri.trim().equals(""))
                     {
                         connection.add(keyUri, StatisticsEntry.statisticssuccessfulproviderUrisUri,
-                                f.createLiteral(nextSuccessfulProvidersUri), keyUri);
+                                f.createLiteral(nextSuccessfulProvidersUri), contextUris);
                     }
                 }
             }
@@ -1409,7 +1334,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
                     if(!nextErrorProvidersUri.trim().equals(""))
                     {
                         connection.add(keyUri, StatisticsEntry.statisticserrorproviderUrisUri,
-                                f.createLiteral(nextErrorProvidersUri), keyUri);
+                                f.createLiteral(nextErrorProvidersUri), contextUris);
                     }
                 }
             }
@@ -1421,7 +1346,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
                     if(!nextConfigLocation.trim().equals(""))
                     {
                         connection.add(keyUri, StatisticsEntry.statisticsconfigLocationsUri,
-                                f.createLiteral(nextConfigLocation), keyUri);
+                                f.createLiteral(nextConfigLocation), contextUris);
                     }
                 }
             }
@@ -1433,7 +1358,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
                     if(!nextQuerytypeUri.trim().equals(""))
                     {
                         connection.add(keyUri, StatisticsEntry.statisticsquerytypeUrisUri,
-                                f.createURI(nextQuerytypeUri), keyUri);
+                                f.createURI(nextQuerytypeUri), contextUris);
                     }
                 }
             }
@@ -1445,7 +1370,7 @@ public class StatisticsEntry implements BaseQueryAllInterface, HtmlExport
                     if(!nextNamespaceUri.trim().equals(""))
                     {
                         connection.add(keyUri, StatisticsEntry.statisticsnamespaceUrisUri,
-                                f.createURI(nextNamespaceUri), keyUri);
+                                f.createURI(nextNamespaceUri), contextUris);
                     }
                 }
             }

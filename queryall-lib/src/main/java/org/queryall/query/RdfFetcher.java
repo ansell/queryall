@@ -11,7 +11,10 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 import org.queryall.api.base.QueryAllConfiguration;
+import org.queryall.api.utils.PropertyUtils;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.exception.QueryAllException;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +25,9 @@ import org.slf4j.LoggerFactory;
 public class RdfFetcher
 {
     private static final Logger log = LoggerFactory.getLogger(RdfFetcher.class);
-    private static final boolean _TRACE = RdfFetcher.log.isTraceEnabled();
-    private static final boolean _DEBUG = RdfFetcher.log.isDebugEnabled();
-    private static final boolean _INFO = RdfFetcher.log.isInfoEnabled();
+    private static final boolean TRACE = RdfFetcher.log.isTraceEnabled();
+    private static final boolean DEBUG = RdfFetcher.log.isDebugEnabled();
+    private static final boolean INFO = RdfFetcher.log.isInfoEnabled();
     
     public static String SPARQL_QUERY_OPERATION = "SPARQL_QUERY_OPERATION";
     public static String RDF_XML_FETCH_OPERATION = "RDF_XML_FETCH_OPERATION";
@@ -46,13 +49,18 @@ public class RdfFetcher
     
     // If postInformation is empty String "" or null then we assume they did not want to post
     public String getDocumentFromUrl(final String endpointUrl, final String postInformation, String acceptHeader)
-        throws MalformedURLException
+        throws MalformedURLException, QueryAllException
     {
-        if(RdfFetcher._DEBUG)
+        if(RdfFetcher.DEBUG)
         {
             RdfFetcher.log.debug("RdfFetcher.getDocumentFromUrl: endpointUrl=" + endpointUrl
                     + " Settings.getStringPropertyFromConfig(\"connectTimeout\")="
-                    + this.localSettings.getIntProperty("connectTimeout", 3000));
+                    + this.localSettings.getIntProperty(WebappConfig.CONNECT_TIMEOUT));
+        }
+        
+        if(endpointUrl == null)
+        {
+            throw new QueryAllException("Cannot send a null endpoint URL!");
         }
         
         final long start = System.currentTimeMillis();
@@ -70,7 +78,7 @@ public class RdfFetcher
         
         try
         {
-            if(RdfFetcher._TRACE)
+            if(RdfFetcher.TRACE)
             {
                 // TODO: do the blocking and querying based on the Ips and not the hostname
                 final InetAddress[] allIpsForEndpoint = InetAddress.getAllByName(url.getHost());
@@ -90,25 +98,20 @@ public class RdfFetcher
             conn = (HttpURLConnection)url.openConnection();
             conn.setRequestProperty(
                     "User-Agent",
-                    "Mozilla/5.0 (compatible; "
-                            + this.localSettings.getStringProperty("userAgent", "queryall")
-                            + "/"
-                            + Settings.VERSION
-                            + " +"
-                            + this.localSettings.getStringProperty("robotHelpUrl",
-                                    "https://sourceforge.net/apps/mediawiki/bio2rdf/index.php?title=RobotHelp") + ")");
+                    "Mozilla/5.0 (compatible; " + this.localSettings.getStringProperty(WebappConfig.USER_AGENT) + "/"
+                            + PropertyUtils.VERSION + " +"
+                            + this.localSettings.getStringProperty(WebappConfig.ROBOT_HELP_URL) + ")");
             
             if(acceptHeader != null && !acceptHeader.equals(""))
             {
-                acceptHeader =
-                        this.localSettings.getStringProperty("defaultAcceptHeader", "application/rdf+xml, text/rdf+n3");
+                acceptHeader = this.localSettings.getStringProperty(WebappConfig.DEFAULT_ACCEPT_HEADER);
             }
             
             conn.setRequestProperty("Accept", acceptHeader);
             
-            conn.setUseCaches(this.localSettings.getBooleanProperty("useRequestCache", true));
-            conn.setConnectTimeout(this.localSettings.getIntProperty("connectTimeout", 3000));
-            conn.setReadTimeout(this.localSettings.getIntProperty("readTimeout", 30000));
+            conn.setUseCaches(this.localSettings.getBooleanProperty(WebappConfig.USE_REQUEST_CACHE));
+            conn.setConnectTimeout(this.localSettings.getIntProperty(WebappConfig.CONNECT_TIMEOUT));
+            conn.setReadTimeout(this.localSettings.getIntProperty(WebappConfig.READ_TIMEOUT));
             
             if(postInformation != null && !postInformation.trim().equals(""))
             {
@@ -158,7 +161,7 @@ public class RdfFetcher
             
             while((line = inputStream.readLine()) != null)
             {
-                if(RdfFetcher._TRACE)
+                if(RdfFetcher.TRACE)
                 {
                     RdfFetcher.log
                             .trace("RdfFetcher.getDocumentFromUrl: endpointUrl=" + endpointUrl
@@ -171,7 +174,7 @@ public class RdfFetcher
         }
         catch(final java.net.UnknownHostException uhe)
         {
-            if(RdfFetcher._INFO)
+            if(RdfFetcher.INFO)
             {
                 RdfFetcher.log.info("RdfFetcher.getDocumentFromUrl: Unknown Host Exception occurred endpointUrl="
                         + endpointUrl);
@@ -183,7 +186,7 @@ public class RdfFetcher
         }
         catch(final java.net.NoRouteToHostException nrthe)
         {
-            if(RdfFetcher._INFO)
+            if(RdfFetcher.INFO)
             {
                 RdfFetcher.log.info("RdfFetcher.getDocumentFromUrl: No Route To Host Exception occurred endpointUrl="
                         + endpointUrl);
@@ -195,7 +198,7 @@ public class RdfFetcher
         }
         catch(final java.net.PortUnreachableException pue)
         {
-            if(RdfFetcher._INFO)
+            if(RdfFetcher.INFO)
             {
                 RdfFetcher.log.info("RdfFetcher.getDocumentFromUrl: Port Unreachable Exception occurred endpointUrl="
                         + endpointUrl);
@@ -207,7 +210,7 @@ public class RdfFetcher
         }
         catch(final java.net.ConnectException ce)
         {
-            if(RdfFetcher._INFO)
+            if(RdfFetcher.INFO)
             {
                 RdfFetcher.log.info("RdfFetcher.getDocumentFromUrl: Connect Exception occurred endpointUrl="
                         + endpointUrl);
@@ -219,7 +222,7 @@ public class RdfFetcher
         }
         catch(final java.net.SocketTimeoutException ste)
         {
-            if(RdfFetcher._INFO)
+            if(RdfFetcher.INFO)
             {
                 RdfFetcher.log.info("RdfFetcher.getDocumentFromUrl: Socket Timeout Exception occurred endpointUrl="
                         + endpointUrl);
@@ -231,7 +234,7 @@ public class RdfFetcher
         }
         catch(final java.net.SocketException se)
         {
-            if(RdfFetcher._INFO)
+            if(RdfFetcher.INFO)
             {
                 RdfFetcher.log.info("RdfFetcher.getDocumentFromUrl: Socket Exception occurred endpointUrl="
                         + endpointUrl);
@@ -243,7 +246,7 @@ public class RdfFetcher
         }
         catch(final java.io.IOException ioe)
         {
-            if(RdfFetcher._INFO)
+            if(RdfFetcher.INFO)
             {
                 RdfFetcher.log.info("RdfFetcher.getDocumentFromUrl: Input Output Exception occurred endpointUrl="
                         + endpointUrl);
@@ -281,7 +284,7 @@ public class RdfFetcher
             
             final long end = System.currentTimeMillis();
             
-            if(RdfFetcher._DEBUG)
+            if(RdfFetcher.DEBUG)
             {
                 RdfFetcher.log.debug(String.format("%s: timing=%10d", "RdfFetcher.getDocumentFromUrl.end",
                         (end - start)));
@@ -297,7 +300,7 @@ public class RdfFetcher
             catch(final IOException e)
             {
                 this.setLastStatusCode(1);
-                RdfFetcher.log.info("Found error trying to get the response status code", e);
+                RdfFetcher.log.info("Found error trying to get the response status code error=" + e.getMessage());
             }
             
             if(this.getLastWasError())
@@ -312,7 +315,7 @@ public class RdfFetcher
                     RdfFetcher.log.error("Found an endpoint that responded with 406 to acceptHeader=" + acceptHeader);
                 }
                 
-                if(RdfFetcher._DEBUG)
+                if(RdfFetcher.DEBUG)
                 {
                     final long errorend = System.currentTimeMillis();
                     
@@ -322,7 +325,7 @@ public class RdfFetcher
             }
         }
         
-        if(RdfFetcher._TRACE)
+        if(RdfFetcher.TRACE)
         {
             RdfFetcher.log.trace("RdfFetcher.getDocumentFromUrl: results.toString()=" + results.toString());
         }
@@ -395,11 +398,17 @@ public class RdfFetcher
     }
     
     public String submitSparqlQuery(final String endpointUrl, final String defaultGraphUri, final String query,
-            final String debug, final int maxRowsParameter, final String acceptHeader) throws MalformedURLException
+            final String debug, final int maxRowsParameter, final String acceptHeader) throws MalformedURLException,
+        QueryAllException
     {
-        if(RdfFetcher._DEBUG)
+        if(RdfFetcher.DEBUG)
         {
             RdfFetcher.log.debug("RdfFetcher.submitSparqlQuery: endpointUrl=" + endpointUrl + " query=" + query);
+        }
+        
+        if(endpointUrl == null)
+        {
+            throw new QueryAllException("Cannot send a null endpoint URL!");
         }
         
         final long start = System.currentTimeMillis();
@@ -409,25 +418,29 @@ public class RdfFetcher
         // particular HTTP server or intermediate proxy
         String postQuery = "";
         
-        if(this.localSettings.getBooleanProperty("useVirtuosoMaxRowsParameter", false))
-        {
-            postQuery += "maxrows=" + maxRowsParameter + "&";
-        }
+        // TODO: Decide where it is appropriate to arrange for this property
+        // if(this.localSettings.getBooleanProperty("useVirtuosoMaxRowsParameter", false))
+        // {
+        // postQuery += "maxrows=" + maxRowsParameter + "&";
+        // }
         
         postQuery += "formatting=Raw&";
         postQuery += "softlimit=50&";
         postQuery += "debug=" + StringUtils.percentEncode(debug) + "&";
         postQuery += "default-graph-uri=" + StringUtils.percentEncode(defaultGraphUri) + "&";
-        postQuery += "query=" + StringUtils.percentEncode(query);
+        if(query != null)
+        {
+            postQuery += "query=" + StringUtils.percentEncode(query);
+        }
         
-        if(RdfFetcher._TRACE)
+        if(RdfFetcher.TRACE)
         {
             RdfFetcher.log.trace("RdfFetcher.submitSparqlQuery: postQuery=" + postQuery);
         }
         
         final String results = this.getDocumentFromUrl(endpointUrl, postQuery, acceptHeader);
         
-        if(RdfFetcher._DEBUG)
+        if(RdfFetcher.DEBUG)
         {
             final long end = System.currentTimeMillis();
             

@@ -3,6 +3,7 @@
  */
 package org.queryall.api.project;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -12,6 +13,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -20,15 +22,16 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ProjectSchema
+@MetaInfServices(QueryAllSchema.class)
+public class ProjectSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(ProjectSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = ProjectSchema.log.isTraceEnabled();
+    private static final boolean TRACE = ProjectSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = ProjectSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = ProjectSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = ProjectSchema.log.isInfoEnabled();
+    private static final boolean INFO = ProjectSchema.LOG.isInfoEnabled();
     
     private static URI projectTypeUri;
     
@@ -48,7 +51,7 @@ public class ProjectSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.PROJECT.getBaseURI();
         
@@ -63,6 +66,11 @@ public class ProjectSchema
         ProjectSchema.setProjectNotCuratedUri(f.createURI(baseUri, "notCurated"));
         
     }
+    
+    /**
+     * A pre-instantiated schema object for ProjectSchema.
+     */
+    public static final QueryAllSchema PROJECT_SCHEMA = new ProjectSchema();
     
     /**
      * @return the projectAdminCuratedUri
@@ -128,57 +136,145 @@ public class ProjectSchema
         return ProjectSchema.projectUserCuratedUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    /**
+     * @param nextProjectAdminCuratedUri
+     *            the projectAdminCuratedUri to set
+     */
+    public static void setProjectAdminCuratedUri(final URI nextProjectAdminCuratedUri)
+    {
+        ProjectSchema.projectAdminCuratedUri = nextProjectAdminCuratedUri;
+    }
+    
+    /**
+     * @param nextProjectAuthority
+     *            the projectAuthority to set
+     */
+    public static void setProjectAuthority(final URI nextProjectAuthority)
+    {
+        ProjectSchema.projectAuthority = nextProjectAuthority;
+    }
+    
+    /**
+     * @param nextProjectCurationStatusUri
+     *            the projectCurationStatusUri to set
+     */
+    public static void setProjectCurationStatusUri(final URI nextProjectCurationStatusUri)
+    {
+        ProjectSchema.projectCurationStatusUri = nextProjectCurationStatusUri;
+    }
+    
+    /**
+     * @param nextProjectDescription
+     *            the projectDescription to set
+     */
+    public static void setProjectDescription(final URI nextProjectDescription)
+    {
+        ProjectSchema.projectDescription = nextProjectDescription;
+    }
+    
+    /**
+     * @param nextProjectNotCuratedUri
+     *            the projectNotCuratedUri to set
+     */
+    public static void setProjectNotCuratedUri(final URI nextProjectNotCuratedUri)
+    {
+        ProjectSchema.projectNotCuratedUri = nextProjectNotCuratedUri;
+    }
+    
+    /**
+     * @param nextProjectTitle
+     *            the projectTitle to set
+     */
+    public static void setProjectTitle(final URI nextProjectTitle)
+    {
+        ProjectSchema.projectTitle = nextProjectTitle;
+    }
+    
+    /**
+     * @param nextProjectTypeUri
+     *            the projectTypeUri to set
+     */
+    public static void setProjectTypeUri(final URI nextProjectTypeUri)
+    {
+        ProjectSchema.projectTypeUri = nextProjectTypeUri;
+    }
+    
+    /**
+     * @param nextProjectUserCuratedUri
+     *            the projectUserCuratedUri to set
+     */
+    public static void setProjectUserCuratedUri(final URI nextProjectUserCuratedUri)
+    {
+        ProjectSchema.projectUserCuratedUri = nextProjectUserCuratedUri;
+    }
+    
+    /**
+     * Default constructor, uses the name of this class as the name.
+     */
+    public ProjectSchema()
+    {
+        this(ProjectSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public ProjectSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contexts)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
-            final URI contextKeyUri = keyToUse;
             con.setAutoCommit(false);
             
-            con.add(ProjectSchema.getProjectTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(ProjectSchema.getProjectTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             
             // TODO: Add description
-            con.add(ProjectSchema.getProjectTitle(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
-            con.add(ProjectSchema.getProjectTitle(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE, contextKeyUri);
-            con.add(ProjectSchema.getProjectTitle(), RDFS.SUBPROPERTYOF, RDFS.LABEL, contextKeyUri);
-            con.add(ProjectSchema.getProjectTitle(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(ProjectSchema.getProjectTitle(), RDFS.DOMAIN, ProjectSchema.getProjectTypeUri(), contextKeyUri);
-            con.add(ProjectSchema.getProjectTitle(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(ProjectSchema.getProjectTitle(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contexts);
+            con.add(ProjectSchema.getProjectTitle(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE, contexts);
+            con.add(ProjectSchema.getProjectTitle(), RDFS.SUBPROPERTYOF, RDFS.LABEL, contexts);
+            con.add(ProjectSchema.getProjectTitle(), RDFS.RANGE, RDFS.LITERAL, contexts);
+            con.add(ProjectSchema.getProjectTitle(), RDFS.DOMAIN, ProjectSchema.getProjectTypeUri(), contexts);
+            con.add(ProjectSchema.getProjectTitle(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             // TODO: Add description
-            con.add(ProjectSchema.getProjectAuthority(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(ProjectSchema.getProjectAuthority(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(ProjectSchema.getProjectAuthority(), RDFS.DOMAIN, ProjectSchema.getProjectTypeUri(), contextKeyUri);
-            con.add(ProjectSchema.getProjectAuthority(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(ProjectSchema.getProjectAuthority(), RDF.TYPE, OWL.OBJECTPROPERTY, contexts);
+            con.add(ProjectSchema.getProjectAuthority(), RDFS.RANGE, RDFS.RESOURCE, contexts);
+            con.add(ProjectSchema.getProjectAuthority(), RDFS.DOMAIN, ProjectSchema.getProjectTypeUri(), contexts);
+            con.add(ProjectSchema.getProjectAuthority(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             // TODO: Add description
-            con.add(ProjectSchema.getProjectDescription(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
-            con.add(ProjectSchema.getProjectDescription(), RDFS.SUBPROPERTYOF, RDFS.COMMENT, contextKeyUri);
-            con.add(ProjectSchema.getProjectDescription(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(ProjectSchema.getProjectDescription(), RDFS.DOMAIN, ProjectSchema.getProjectTypeUri(),
-                    contextKeyUri);
-            con.add(ProjectSchema.getProjectDescription(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(ProjectSchema.getProjectDescription(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contexts);
+            con.add(ProjectSchema.getProjectDescription(), RDFS.SUBPROPERTYOF, RDFS.COMMENT, contexts);
+            con.add(ProjectSchema.getProjectDescription(), RDFS.RANGE, RDFS.LITERAL, contexts);
+            con.add(ProjectSchema.getProjectDescription(), RDFS.DOMAIN, ProjectSchema.getProjectTypeUri(), contexts);
+            con.add(ProjectSchema.getProjectDescription(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             // TODO: Add description
-            con.add(ProjectSchema.getProjectCurationStatusUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(ProjectSchema.getProjectCurationStatusUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(ProjectSchema.getProjectCurationStatusUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contexts);
+            con.add(ProjectSchema.getProjectCurationStatusUri(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             // TODO: Add description
-            con.add(ProjectSchema.getProjectAdminCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(ProjectSchema.getProjectAdminCuratedUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(ProjectSchema.getProjectAdminCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contexts);
+            con.add(ProjectSchema.getProjectAdminCuratedUri(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             // TODO: Add description
-            con.add(ProjectSchema.getProjectUserCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(ProjectSchema.getProjectUserCuratedUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(ProjectSchema.getProjectUserCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contexts);
+            con.add(ProjectSchema.getProjectUserCuratedUri(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             // TODO: Add description
-            con.add(ProjectSchema.getProjectNotCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(ProjectSchema.getProjectNotCuratedUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(ProjectSchema.getProjectNotCuratedUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contexts);
+            con.add(ProjectSchema.getProjectNotCuratedUri(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -194,7 +290,7 @@ public class ProjectSchema
                 con.rollback();
             }
             
-            ProjectSchema.log.error("RepositoryException: " + re.getMessage());
+            ProjectSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {
@@ -205,77 +301,5 @@ public class ProjectSchema
         }
         
         return false;
-    }
-    
-    /**
-     * @param projectAdminCuratedUri
-     *            the projectAdminCuratedUri to set
-     */
-    public static void setProjectAdminCuratedUri(final URI projectAdminCuratedUri)
-    {
-        ProjectSchema.projectAdminCuratedUri = projectAdminCuratedUri;
-    }
-    
-    /**
-     * @param projectAuthority
-     *            the projectAuthority to set
-     */
-    public static void setProjectAuthority(final URI projectAuthority)
-    {
-        ProjectSchema.projectAuthority = projectAuthority;
-    }
-    
-    /**
-     * @param projectCurationStatusUri
-     *            the projectCurationStatusUri to set
-     */
-    public static void setProjectCurationStatusUri(final URI projectCurationStatusUri)
-    {
-        ProjectSchema.projectCurationStatusUri = projectCurationStatusUri;
-    }
-    
-    /**
-     * @param projectDescription
-     *            the projectDescription to set
-     */
-    public static void setProjectDescription(final URI projectDescription)
-    {
-        ProjectSchema.projectDescription = projectDescription;
-    }
-    
-    /**
-     * @param projectNotCuratedUri
-     *            the projectNotCuratedUri to set
-     */
-    public static void setProjectNotCuratedUri(final URI projectNotCuratedUri)
-    {
-        ProjectSchema.projectNotCuratedUri = projectNotCuratedUri;
-    }
-    
-    /**
-     * @param projectTitle
-     *            the projectTitle to set
-     */
-    public static void setProjectTitle(final URI projectTitle)
-    {
-        ProjectSchema.projectTitle = projectTitle;
-    }
-    
-    /**
-     * @param projectTypeUri
-     *            the projectTypeUri to set
-     */
-    public static void setProjectTypeUri(final URI projectTypeUri)
-    {
-        ProjectSchema.projectTypeUri = projectTypeUri;
-    }
-    
-    /**
-     * @param projectUserCuratedUri
-     *            the projectUserCuratedUri to set
-     */
-    public static void setProjectUserCuratedUri(final URI projectUserCuratedUri)
-    {
-        ProjectSchema.projectUserCuratedUri = projectUserCuratedUri;
     }
 }

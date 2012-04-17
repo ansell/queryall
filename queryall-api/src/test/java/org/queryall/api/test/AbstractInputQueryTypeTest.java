@@ -8,30 +8,40 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.queryall.api.querytype.InputQueryType;
+import org.queryall.api.querytype.QueryType;
 
 /**
- * Abstract unit test for InputQueryType API
+ * Abstract unit test for InputQueryType API.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class AbstractInputQueryTypeTest
+public abstract class AbstractInputQueryTypeTest extends AbstractQueryTypeTest
 {
     private InputQueryType testQueryType1;
     
     /**
      * This method must be overridden to return a new instance of the implemented QueryType class
-     * for each successive invocation
+     * for each successive invocation.
      * 
      * @return A new instance of the QueryType implementation
      */
     public abstract InputQueryType getNewTestInputQueryType();
     
+    @Override
+    public final QueryType getNewTestQueryType()
+    {
+        return this.getNewTestInputQueryType();
+    }
+    
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @Before
     public void setUp() throws Exception
     {
+        super.setUp();
+        
         // final ValueFactory f = new MemValueFactory();
         
         this.testQueryType1 = this.getNewTestInputQueryType();
@@ -45,9 +55,12 @@ public abstract class AbstractInputQueryTypeTest
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @After
     public void tearDown() throws Exception
     {
+        super.tearDown();
+        
         this.testQueryType1 = null;
     }
     
@@ -60,6 +73,14 @@ public abstract class AbstractInputQueryTypeTest
     {
         Assert.assertEquals("Did not find all of the expected input parameters", 4, this.testQueryType1
                 .getExpectedInputParameters().size());
+    }
+    
+    @Test
+    public void testResetExpectedQueryParameters()
+    {
+        Assert.assertTrue(this.testQueryType1.resetExpectedInputParameters());
+        
+        Assert.assertEquals(0, this.testQueryType1.getExpectedInputParameters().size());
     }
     
 }

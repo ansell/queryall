@@ -55,6 +55,7 @@ public class QueryAllNamespacesTest
     {
         for(final QueryAllNamespaces nextNamespace : QueryAllNamespaces.values())
         {
+            Assert.assertTrue(nextNamespace.getDefaultValue().length() > 0);
             // verify that the default values match the testing
             // queryall.properties file that is
             // used via PropertyUtils to generate the actual namespace
@@ -85,6 +86,7 @@ public class QueryAllNamespacesTest
     {
         for(final QueryAllNamespaces nextNamespace : QueryAllNamespaces.values())
         {
+            Assert.assertTrue(nextNamespace.getNamespace().length() > 0);
             // verify that the default values match the testing
             // queryall.properties file that is
             // used via PropertyUtils to generate the actual namespace

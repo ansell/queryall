@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.junit.Assert;
 import org.openrdf.model.URI;
 import org.queryall.api.rdfrule.NormalisationRule;
+import org.queryall.exception.InvalidStageException;
 
 /**
  * 
@@ -12,14 +13,17 @@ import org.queryall.api.rdfrule.NormalisationRule;
  */
 public final class NormalisationRuleTestUtil
 {
-    protected final static void testIsUsedInStage(final NormalisationRule rule, final URI stage,
-            final boolean expectedResult)
+    private static final String FAILED_TESTING_STAGE = "Failed testing stage=";
+    
+    protected static void testIsUsedInStage(final NormalisationRule rule, final URI stage, final boolean expectedResult)
+        throws InvalidStageException
     {
-        Assert.assertEquals(expectedResult, rule.usedInStage(stage));
+        Assert.assertEquals(NormalisationRuleTestUtil.FAILED_TESTING_STAGE + stage, expectedResult,
+                rule.usedInStage(stage));
     }
     
-    protected final static void testIsUsedInStages(final NormalisationRule rule, final Collection<URI> stages,
-            final boolean expectedResult)
+    protected static void testIsUsedInStages(final NormalisationRule rule, final Collection<URI> stages,
+            final boolean expectedResult) throws InvalidStageException
     {
         for(final URI nextStage : stages)
         {
@@ -27,14 +31,15 @@ public final class NormalisationRuleTestUtil
         }
     }
     
-    protected final static void testIsValidInStage(final NormalisationRule rule, final URI stage,
-            final boolean expectedResult)
+    protected static void testIsValidInStage(final NormalisationRule rule, final URI stage, final boolean expectedResult)
+        throws InvalidStageException
     {
-        Assert.assertEquals(expectedResult, rule.validInStage(stage));
+        Assert.assertEquals(NormalisationRuleTestUtil.FAILED_TESTING_STAGE + stage, expectedResult,
+                rule.validInStage(stage));
     }
     
-    protected final static void testIsValidInStages(final NormalisationRule rule, final Collection<URI> stages,
-            final boolean expectedResult)
+    protected static void testIsValidInStages(final NormalisationRule rule, final Collection<URI> stages,
+            final boolean expectedResult) throws InvalidStageException
     {
         for(final URI nextStage : stages)
         {

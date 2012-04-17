@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.queryall.query.RdfFetcherQueryRunnable;
+import org.queryall.query.RdfFetcherQueryRunnableImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,15 +19,24 @@ public class BlacklistEntry
     public int numberOfFailures = 0;
     public String endpointUrl = "";
     public long totalTime = 0L;
-    private Collection<RdfFetcherQueryRunnable> errorRunnables = null;
+    private Collection<RdfFetcherQueryRunnableImpl> errorRunnables = null;
     public Collection<String> errorMessages = new ArrayList<String>();
     
     public void addErrorMessageForRunnable(final RdfFetcherQueryRunnable errorRunnable)
     {
         final StringBuilder resultBuffer = new StringBuilder();
         
-        resultBuffer.append("Failed query key : "
-                + errorRunnable.getOriginalQueryBundle().getQueryType().getKey().stringValue() + "<br />\n");
+        if(errorRunnable.getOriginalQueryBundle() != null
+                && errorRunnable.getOriginalQueryBundle().getQueryType() != null)
+        {
+            resultBuffer.append("Failed query key : "
+                    + errorRunnable.getOriginalQueryBundle().getQueryType().getKey().stringValue() + "<br />\n");
+        }
+        else
+        {
+            resultBuffer.append("Failed query, no details available for original query type <br />\n");
+        }
+        
         if(errorRunnable.getLastException() != null)
         {
             resultBuffer.append("Failure message : " + errorRunnable.getLastException().toString() + "<br />\n");
@@ -36,13 +46,20 @@ public class BlacklistEntry
             resultBuffer.append("Failure message not known <br />\n");
         }
         
-        resultBuffer.append("Time to fail (milliseconds) : "
-                + (errorRunnable.getQueryEndTime().getTime() - errorRunnable.getQueryStartTime().getTime())
-                + " <br />\n");
+        if(errorRunnable.getQueryEndTime() != null && errorRunnable.getQueryStartTime() != null)
+        {
+            resultBuffer.append("Time to fail (milliseconds) : "
+                    + (errorRunnable.getQueryEndTime().getTime() - errorRunnable.getQueryStartTime().getTime())
+                    + " <br />\n");
+            
+            this.totalTime += errorRunnable.getQueryEndTime().getTime() - errorRunnable.getQueryStartTime().getTime();
+        }
+        else
+        {
+            resultBuffer.append("Time to fail unknown <br />\n");
+        }
         
         this.errorMessages.add(resultBuffer.toString());
-        
-        this.totalTime += errorRunnable.getQueryEndTime().getTime() - errorRunnable.getQueryStartTime().getTime();
         
         this.numberOfFailures++;
     }

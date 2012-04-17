@@ -1,35 +1,37 @@
 package org.queryall.api.services;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.openrdf.model.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class QueryAllEnum
+public abstract class QueryAllEnum
 {
-    private static final Logger log = LoggerFactory.getLogger(QueryAllEnum.class);
+    private static final Logger LOG = LoggerFactory.getLogger(QueryAllEnum.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = QueryAllEnum.log.isTraceEnabled();
+    private static final boolean TRACE = QueryAllEnum.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = QueryAllEnum.log.isDebugEnabled();
+    private static final boolean DEBUG = QueryAllEnum.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = QueryAllEnum.log.isInfoEnabled();
+    private static final boolean INFO = QueryAllEnum.LOG.isInfoEnabled();
     
-    private Set<URI> typeURIs;
-    private String name;
+    private final Set<URI> typeURIs;
+    private final String name;
     
     /**
-     * Create a new QueryType enum using the given name, which must be unique
+     * Create a new QueryType enum using the given name, which must be unique, and the given URIs to
+     * define the types for objects based on this enum.
      * 
      * @param nextName
      * @param nextTypeURIs
      */
     public QueryAllEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
-        this.setName(nextName);
-        this.setTypeURIs(nextTypeURIs);
+        this.name = nextName;
+        this.typeURIs = new HashSet<URI>(nextTypeURIs);
     }
     
     /*
@@ -90,18 +92,19 @@ public class QueryAllEnum
     }
     
     /**
-     * @return the name
+     * @return The name for this enum. This should be the name of the implementing class to ensure
+     *         that the name will be unique.
      */
-    public String getName()
+    public final String getName()
     {
         return this.name;
     }
     
     /**
      * 
-     * @return the typeURIs
+     * @return The set of URIs that define the types for this enum.
      */
-    public Set<URI> getTypeURIs()
+    public final Set<URI> getTypeURIs()
     {
         return Collections.unmodifiableSet(this.typeURIs);
     }
@@ -122,34 +125,27 @@ public class QueryAllEnum
     }
     
     /**
-     * The name can only be set using the constructor.
+     * Determines if the given set of URIs match the types that are defined for this enum.
      * 
-     * @param name
-     *            the name to set
+     * By default, each of the given type URIs must be present in the types defined for this enum.
+     * 
+     * This method can be overridden to provider custom behaviour for subclasses.
+     * 
+     * @param nextTypeURIs
+     *            A set of URIs to match against the URIs setup for this enum.
+     * @return True if the given set of URIs suitably matches the type URIs defined for this enum.
      */
-    protected void setName(final String name)
+    protected boolean matchForTypeUris(final Set<URI> nextTypeURIs)
     {
-        this.name = name;
+        return this.typeURIs.containsAll(nextTypeURIs);
     }
     
     /**
-     * The type can only be set using the constructor.
-     * 
-     * @param typeURIs
-     *            the typeURIs to set
-     */
-    protected void setTypeURIs(final Set<URI> typeURIs)
-    {
-        this.typeURIs = typeURIs;
-    }
-    
-    /**
-     * Returns the list of type URIs
+     * Returns a string including the name and the list of type URIs.
      */
     @Override
     public String toString()
     {
         return this.name + " {" + this.typeURIs.toString() + "}";
     }
-    
 }

@@ -8,10 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.queryall.api.base.QueryAllConfiguration;
-import org.queryall.blacklist.BlacklistController;
-import org.queryall.query.Settings;
-import org.queryall.servlets.helpers.SettingsContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,42 +21,43 @@ public class ManualRefreshServlet extends HttpServlet
 	 */
     private static final long serialVersionUID = -8130327002164154880L;
     public static final Logger log = LoggerFactory.getLogger(ManualRefreshServlet.class);
-    public static final boolean _TRACE = ManualRefreshServlet.log.isTraceEnabled();
-    public static final boolean _DEBUG = ManualRefreshServlet.log.isDebugEnabled();
-    public static final boolean _INFO = ManualRefreshServlet.log.isInfoEnabled();
+    public static final boolean TRACE = ManualRefreshServlet.log.isTraceEnabled();
+    public static final boolean DEBUG = ManualRefreshServlet.log.isDebugEnabled();
+    public static final boolean INFO = ManualRefreshServlet.log.isInfoEnabled();
     
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
         IOException
     {
-        final QueryAllConfiguration localSettings =
-                (QueryAllConfiguration)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONFIG);
-        final BlacklistController localBlacklistController =
-                (BlacklistController)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_BLACKLIST);
+        // final QueryAllConfiguration localSettings =
+        // (QueryAllConfiguration)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONFIG);
+        // final BlacklistController localBlacklistController =
+        // (BlacklistController)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_BLACKLIST);
         
         final PrintWriter out = response.getWriter();
         
-        final boolean refreshAllowed = ((Settings)localSettings).isManualRefreshAllowed();
+        // final boolean refreshAllowed = ((Settings)localSettings).isManualRefreshAllowed();
+        final boolean refreshAllowed = false;
         
         if(refreshAllowed)
         {
-            if(((Settings)localSettings).configRefreshCheck(true))
-            {
-                localBlacklistController.doBlacklistExpiry();
-                
-                response.setStatus(HttpServletResponse.SC_OK);
-                ManualRefreshServlet.log.info("manualrefresh.jsp: manual refresh succeeded requesterIpAddress="
-                        + request.getRemoteAddr());
-                out.write("Refresh succeeded.");
-            }
-            else
-            {
-                response.setStatus(500);
-                ManualRefreshServlet.log
-                        .error("manualrefresh.jsp: refresh failed for an unknown reason, as it was supposedly allowed in a previous check requesterIpAddress="
-                                + request.getRemoteAddr());
-                out.write("Refresh failed for an unknown reason");
-            }
+            // if(((Settings)localSettings).configRefreshCheck(true))
+            // {
+            // localBlacklistController.doBlacklistExpiry();
+            //
+            // response.setStatus(HttpServletResponse.SC_OK);
+            // ManualRefreshServlet.log.info("manualrefresh.jsp: manual refresh succeeded requesterIpAddress="
+            // + request.getRemoteAddr());
+            // out.write("Refresh succeeded.");
+            // }
+            // else
+            // {
+            // response.setStatus(500);
+            // ManualRefreshServlet.log
+            // .error("manualrefresh.jsp: refresh failed for an unknown reason, as it was supposedly allowed in a previous check requesterIpAddress="
+            // + request.getRemoteAddr());
+            // out.write("Refresh failed for an unknown reason");
+            // }
         }
         else
         {

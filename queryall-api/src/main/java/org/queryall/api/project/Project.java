@@ -7,11 +7,16 @@ import org.queryall.api.base.BaseQueryAllInterface;
  */
 public interface Project extends BaseQueryAllInterface, Comparable<Project>
 {
+    /**
+     * 
+     * @return The URI of the authority which is administrating this project
+     */
     org.openrdf.model.URI getAuthority();
     
-    String getDescription();
-    
+    /**
+     * 
+     * @param authority
+     *            The URI of the authority which is administrating this project
+     */
     void setAuthority(org.openrdf.model.URI authority);
-    
-    void setDescription(String description);
 }

@@ -10,11 +10,11 @@ import org.openrdf.sail.memory.model.MemValueFactory;
 import org.queryall.api.provider.Provider;
 
 /**
- * Abstract unit test for Provider API
+ * Abstract unit test for Provider API.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class AbstractProviderTest
+public abstract class AbstractProviderTest extends AbstractProfilableProviderTest
 {
     protected URI testTrueQueryTypeUri = null;
     protected URI testFalseQueryTypeUri = null;
@@ -29,20 +29,29 @@ public abstract class AbstractProviderTest
     private Provider providerSpecificDefault = null;
     private Provider providerNoNamespacesDefault = null;
     
+    @Override
+    public final Provider getNewTestProfilable()
+    {
+        return this.getNewTestProvider();
+    }
+    
     /**
      * This method must be overridden to return a new instance of the implemented Provider class for
-     * each successive invocation
+     * each successive invocation.
      */
     public abstract Provider getNewTestProvider();
     
     /**
      * This method performs the following actions: - Creates new Providers for the Provider type
      * fields using multiple calls to getNewTestProvider - Create org.openrdf.model.URI instances
-     * for the test URIs - Add testTrue*'s using the relevant methods from the API
+     * for the test URIs - Add testTrue*'s using the relevant methods from the API.
      */
+    @Override
     @Before
     public void setUp() throws Exception
     {
+        super.setUp();
+        
         final ValueFactory f = new MemValueFactory();
         
         this.testTrueQueryTypeUri = f.createURI("http://example.org/test/includedQueryType");
@@ -75,9 +84,12 @@ public abstract class AbstractProviderTest
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @After
     public void tearDown() throws Exception
     {
+        super.tearDown();
+        
         this.testTrueQueryTypeUri = null;
         this.testFalseQueryTypeUri = null;
         this.testTrueRuleUri = null;
@@ -100,6 +112,8 @@ public abstract class AbstractProviderTest
     @Test
     public void testContainsNamespaceOrDefault()
     {
+        Assert.assertNotNull("Did you call super.setUp()?", this.providerSpecificDefault);
+        
         Assert.assertTrue(this.providerSpecificDefault.containsNamespaceOrDefault(this.testTrueNamespaceUri));
         Assert.assertTrue(this.providerSpecificDefault.containsNamespaceOrDefault(this.testFalseNamespaceUri));
         Assert.assertTrue(this.providerNonDefault.containsNamespaceOrDefault(this.testTrueNamespaceUri));
@@ -115,6 +129,8 @@ public abstract class AbstractProviderTest
     @Test
     public void testContainsNamespaceUri()
     {
+        Assert.assertNotNull("Did you call super.setUp()?", this.providerSpecificDefault);
+        
         Assert.assertTrue(this.providerSpecificDefault.containsNamespaceUri(this.testTrueNamespaceUri));
         Assert.assertFalse(this.providerSpecificDefault.containsNamespaceUri(this.testFalseNamespaceUri));
         Assert.assertTrue(this.providerNonDefault.containsNamespaceUri(this.testTrueNamespaceUri));
@@ -130,11 +146,61 @@ public abstract class AbstractProviderTest
     @Test
     public void testHandlesQueryTypes()
     {
+        Assert.assertNotNull("Did you call super.setUp()?", this.providerSpecificDefault);
+        
         Assert.assertTrue(this.providerSpecificDefault.containsQueryTypeUri(this.testTrueQueryTypeUri));
         Assert.assertFalse(this.providerSpecificDefault.containsQueryTypeUri(this.testFalseQueryTypeUri));
         Assert.assertTrue(this.providerNonDefault.containsQueryTypeUri(this.testTrueQueryTypeUri));
         Assert.assertFalse(this.providerNonDefault.containsQueryTypeUri(this.testFalseQueryTypeUri));
         Assert.assertTrue(this.providerNoNamespacesDefault.containsQueryTypeUri(this.testTrueQueryTypeUri));
         Assert.assertFalse(this.providerNoNamespacesDefault.containsQueryTypeUri(this.testFalseQueryTypeUri));
+    }
+    
+    @Test
+    public void testResetIncludedInQueryTypes()
+    {
+        final Provider testProvider = this.getNewTestProvider();
+        
+        Assert.assertEquals(0, testProvider.getIncludedInQueryTypes().size());
+        
+        testProvider.addIncludedInQueryType(this.testTrueQueryTypeUri);
+        
+        Assert.assertEquals(1, testProvider.getIncludedInQueryTypes().size());
+        
+        Assert.assertTrue(testProvider.resetIncludedInQueryTypes());
+        
+        Assert.assertEquals(0, testProvider.getIncludedInQueryTypes().size());
+    }
+    
+    @Test
+    public void testResetNamespaces()
+    {
+        final Provider testProvider = this.getNewTestProvider();
+        
+        Assert.assertEquals(0, testProvider.getNamespaces().size());
+        
+        testProvider.addNamespace(this.testTrueNamespaceUri);
+        
+        Assert.assertEquals(1, testProvider.getNamespaces().size());
+        
+        Assert.assertTrue(testProvider.resetNamespaces());
+        
+        Assert.assertEquals(0, testProvider.getNamespaces().size());
+    }
+    
+    @Test
+    public void testResetNormalisationUris()
+    {
+        final Provider testProvider = this.getNewTestProvider();
+        
+        Assert.assertEquals(0, testProvider.getNormalisationUris().size());
+        
+        testProvider.addNormalisationUri(this.testTrueRuleUri);
+        
+        Assert.assertEquals(1, testProvider.getNormalisationUris().size());
+        
+        Assert.assertTrue(testProvider.resetNormalisationUris());
+        
+        Assert.assertEquals(0, testProvider.getNormalisationUris().size());
     }
 }

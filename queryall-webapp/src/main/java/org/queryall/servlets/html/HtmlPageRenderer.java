@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -15,10 +16,11 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.Value;
 import org.openrdf.repository.Repository;
 import org.queryall.api.base.QueryAllConfiguration;
+import org.queryall.api.utils.PropertyUtils;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.query.QueryBundle;
 import org.queryall.query.RdfFetchController;
 import org.queryall.query.RdfFetcherQueryRunnable;
-import org.queryall.query.Settings;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
@@ -30,18 +32,19 @@ import org.slf4j.LoggerFactory;
  * 
  * Originally created for Pubby using Jena by...
  * 
- * @author Richard Cyganiak (richard@cyganiak.de) Ported to Sesame for Bio2RDF by...
+ * @author Richard Cyganiak (richard@cyganiak.de)
+ * 
+ *         Ported to Sesame for Bio2RDF by...
+ * 
  * @author Peter Ansell (p_ansell@yahoo.com)
- * @version $Id: HtmlPageRenderer.java 944 2011-02-08 10:23:08Z p_ansell $
  */
 
 public class HtmlPageRenderer
 {
     private static final Logger log = LoggerFactory.getLogger(HtmlPageRenderer.class);
-    private static final boolean _TRACE = HtmlPageRenderer.log.isTraceEnabled();
-    private static final boolean _DEBUG = HtmlPageRenderer.log.isDebugEnabled();
-    @SuppressWarnings("unused")
-    private static final boolean _INFO = HtmlPageRenderer.log.isInfoEnabled();
+    private static final boolean TRACE = HtmlPageRenderer.log.isTraceEnabled();
+    private static final boolean DEBUG = HtmlPageRenderer.log.isDebugEnabled();
+    private static final boolean INFO = HtmlPageRenderer.log.isInfoEnabled();
     
     public static void renderHtml(final VelocityEngine nextEngine, final QueryAllConfiguration localSettings,
             final RdfFetchController fetchController, final Repository nextRepository, final java.io.Writer nextWriter,
@@ -71,43 +74,30 @@ public class HtmlPageRenderer
             contextPath = contextPath.substring(1) + "/";
         }
         
-        if(localSettings.getBooleanProperty("useHardcodedRequestContext", true))
+        if(localSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_CONTEXT))
         {
-            contextPath = localSettings.getStringProperty("hardcodedRequestContext", "");
+            contextPath = localSettings.getStringProperty(WebappConfig.HARDCODED_REQUEST_CONTEXT);
         }
         
-        if(localSettings.getBooleanProperty("useHardcodedRequestHostname", true))
+        if(localSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_HOSTNAME))
         {
-            realHostName = localSettings.getStringProperty("hardcodedRequestHostname", "");
-        }
-        
-        if(HtmlPageRenderer._TRACE)
-        {
-            HtmlPageRenderer.log.trace("renderHtml: about to create VelocityHelper class");
-        }
-        
-        if(HtmlPageRenderer._TRACE)
-        {
-            HtmlPageRenderer.log.trace("renderHtml: finished creating VelocityHelper class");
+            realHostName = localSettings.getStringProperty(WebappConfig.HARDCODED_REQUEST_HOSTNAME);
         }
         
         final Context velocityContext = new VelocityContext();
         
-        velocityContext.put("debug_level_info", HtmlPageRenderer._INFO);
-        velocityContext.put("debug_level_debug", HtmlPageRenderer._DEBUG);
-        velocityContext.put("debug_level_trace", HtmlPageRenderer._TRACE);
+        velocityContext.put("debug_level_info", HtmlPageRenderer.INFO);
+        velocityContext.put("debug_level_debug", HtmlPageRenderer.DEBUG);
+        velocityContext.put("debug_level_trace", HtmlPageRenderer.TRACE);
         
-        velocityContext.put("project_name", localSettings.getStringProperty("projectName", "queryall"));
-        velocityContext.put("project_base_url",
-                localSettings.getStringProperty("projectHomeUri", "http://bio2rdf.org/"));
-        velocityContext.put("project_html_url_prefix", localSettings.getStringProperty("htmlUrlPrefix", "page/"));
-        velocityContext.put("project_html_url_suffix", localSettings.getStringProperty("htmlUrlSuffix", ""));
-        velocityContext.put("project_link", localSettings.getStringProperty("projectHomeUrl", "http://bio2rdf.org/"));
-        velocityContext.put("application_name", localSettings.getStringProperty("userAgent", "queryall") + "/"
-                + Settings.VERSION);
-        velocityContext
-                .put("application_help", localSettings.getStringProperty("applicationHelpUrl",
-                        "http://sourceforge.net/apps/mediawiki/bio2rdf/"));
+        velocityContext.put("project_name", localSettings.getStringProperty(WebappConfig.PROJECT_NAME));
+        velocityContext.put("project_base_url", localSettings.getStringProperty(WebappConfig.PROJECT_HOME_URI));
+        velocityContext.put("project_html_url_prefix", localSettings.getStringProperty(WebappConfig.HTML_URL_PREFIX));
+        velocityContext.put("project_html_url_suffix", localSettings.getStringProperty(WebappConfig.HTML_URL_SUFFIX));
+        velocityContext.put("project_link", localSettings.getStringProperty(WebappConfig.PROJECT_HOME_URL));
+        velocityContext.put("application_name", localSettings.getStringProperty(WebappConfig.USER_AGENT) + "/"
+                + PropertyUtils.VERSION);
+        velocityContext.put("application_help", localSettings.getStringProperty(WebappConfig.APPLICATION_HELP_URL));
         velocityContext.put("uri", resolvedUri);
         
         boolean is_plainnsid = false;
@@ -143,21 +133,21 @@ public class HtmlPageRenderer
         velocityContext.put("context_path", contextPath);
         velocityContext.put("server_base", realHostName + contextPath);
         velocityContext.put("rdfxml_link",
-                realHostName + contextPath + localSettings.getStringProperty("rdfXmlUrlPrefix", "rdfxml/")
-                        + queryString + localSettings.getStringProperty("rdfXmlUrlSuffix", ""));
+                realHostName + contextPath + localSettings.getStringProperty(WebappConfig.RDFXML_URL_PREFIX)
+                        + queryString + localSettings.getStringProperty(WebappConfig.RDFXML_URL_SUFFIX));
         velocityContext.put("rdfn3_link",
-                realHostName + contextPath + localSettings.getStringProperty("n3UrlPrefix", "n3/") + queryString
-                        + localSettings.getStringProperty("n3UrlSuffix", ""));
+                realHostName + contextPath + localSettings.getStringProperty(WebappConfig.N3_URL_PREFIX) + queryString
+                        + localSettings.getStringProperty(WebappConfig.N3_URL_SUFFIX));
         velocityContext.put("html_link",
-                realHostName + contextPath + localSettings.getStringProperty("htmlUrlPrefix", "page/") + queryString
-                        + localSettings.getStringProperty("htmlUrlSuffix", ""));
+                realHostName + contextPath + localSettings.getStringProperty(WebappConfig.HTML_URL_PREFIX)
+                        + queryString + localSettings.getStringProperty(WebappConfig.HTML_URL_SUFFIX));
         velocityContext.put("json_link",
-                realHostName + contextPath + localSettings.getStringProperty("jsonUrlPrefix", "json/") + queryString
-                        + localSettings.getStringProperty("jsonUrlSuffix", ""));
+                realHostName + contextPath + localSettings.getStringProperty(WebappConfig.JSON_URL_PREFIX)
+                        + queryString + localSettings.getStringProperty(WebappConfig.JSON_URL_SUFFIX));
         // context.put("disco_link", discoLink);
         // context.put("tabulator_link", tabulatorLink);
         // context.put("openlink_link", openLinkLink);
-        final Collection<String> endpointsList = new HashSet<String>();
+        final Set<String> endpointsList = new HashSet<String>();
         
         if(fetchController != null)
         {
@@ -165,11 +155,7 @@ public class HtmlPageRenderer
             {
                 for(final String nextAlternativeEndpoint : nextQueryBundle.getAlternativeEndpointsAndQueries().keySet())
                 {
-                    if(!endpointsList.contains(nextQueryBundle.getAlternativeEndpointsAndQueries().get(
-                            nextAlternativeEndpoint)))
-                    {
-                        endpointsList.add(nextAlternativeEndpoint);
-                    }
+                    endpointsList.add(nextAlternativeEndpoint);
                 }
             }
         }
@@ -186,13 +172,13 @@ public class HtmlPageRenderer
         // Collection<Value> images = new HashSet<Value>();
         final Collection<Value> titles =
                 RdfUtils.getValuesFromRepositoryByPredicateUris(nextRepository,
-                        localSettings.getURIProperties("titleProperties"));
+                        localSettings.getURIProperties(WebappConfig.TITLE_PROPERTIES));
         final Collection<Value> comments =
                 RdfUtils.getValuesFromRepositoryByPredicateUris(nextRepository,
-                        localSettings.getURIProperties("commentProperties"));
+                        localSettings.getURIProperties(WebappConfig.COMMENT_PROPERTIES));
         final Collection<Value> images =
                 RdfUtils.getValuesFromRepositoryByPredicateUris(nextRepository,
-                        localSettings.getURIProperties("imageProperties"));
+                        localSettings.getURIProperties(WebappConfig.IMAGE_PROPERTIES));
         
         String chosenTitle = "";
         
@@ -208,7 +194,7 @@ public class HtmlPageRenderer
         
         if(chosenTitle.trim().equals(""))
         {
-            velocityContext.put("title", localSettings.getStringProperty("blankTitle", ""));
+            velocityContext.put("title", localSettings.getStringProperty(WebappConfig.BLANK_TITLE));
         }
         else
         {
@@ -219,12 +205,12 @@ public class HtmlPageRenderer
         velocityContext.put("comments", comments);
         velocityContext.put("images", images);
         
-        velocityContext.put("shortcut_icon",
-                localSettings.getStringProperty("shortcutIconPath", "static/includes-images/favicon.ico"));
-        velocityContext.put("scripts", localSettings.getStringProperties("resultsPageScripts"));
-        velocityContext.put("local_scripts", localSettings.getStringProperties("resultsPageScriptsLocal"));
-        velocityContext.put("stylesheets", localSettings.getStringProperties("resultsPageStylesheets"));
-        velocityContext.put("local_stylesheets", localSettings.getStringProperties("resultsPageStylesheetsLocal"));
+        velocityContext.put("shortcut_icon", localSettings.getStringProperty(WebappConfig.SHORTCUT_ICON_PATH));
+        velocityContext.put("scripts", localSettings.getStringProperties(WebappConfig.INDEX_PAGE_SCRIPTS));
+        velocityContext.put("local_scripts", localSettings.getStringProperties(WebappConfig.INDEX_PAGE_SCRIPTS_LOCAL));
+        velocityContext.put("stylesheets", localSettings.getStringProperties(WebappConfig.INDEX_PAGE_STYLESHEETS));
+        velocityContext.put("local_stylesheets",
+                localSettings.getStringProperties(WebappConfig.INDEX_PAGE_STYLESHEETS_LOCAL));
         
         // For each URI in localSettings.IMAGE_QUERY_TYPES
         // Make sure the URI is a valid QueryType
@@ -240,9 +226,10 @@ public class HtmlPageRenderer
         // existing label available
         // and if not schedule a thread to retrieve a label for the item so that for other uses it
         // can be shown
-        
-        HtmlPageRenderer.log.info("HtmlPageRenderer: allStatements.size()=" + allStatements.size());
-        
+        if(HtmlPageRenderer.INFO)
+        {
+            HtmlPageRenderer.log.info("HtmlPageRenderer: allStatements.size()={}", allStatements.size());
+        }
         // TODO: what should be shown if there are no RDF statements? A 404 error doesn't seem
         // appropriate because the query might be quite legitimate and no triples is the valid
         // response
@@ -253,7 +240,7 @@ public class HtmlPageRenderer
         velocityContext.put("bio2rdfutil", new org.queryall.utils.RdfUtils());
         
         // our only way of guessing if other pages are available without doing an explicit count
-        if(allStatements.size() >= localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 500))
+        if(allStatements.size() >= localSettings.getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT))
         {
             nextpagelinkuseful = true;
         }
@@ -273,19 +260,21 @@ public class HtmlPageRenderer
             nextpagelinkuseful = false;
         }
         
+        final int pageoffsetMaxValue = localSettings.getIntProperty(WebappConfig.PAGEOFFSET_MAX_VALUE);
+        
         // To prevent infinite or extended requests, we have a maximum value that we can go up to
-        if(pageoffset > localSettings.getIntProperty("pageoffsetMaxValue", 20))
+        if(pageoffset > pageoffsetMaxValue)
         {
             // setup the pageoffset value so it artificially points to the limit so that
             // non-conforming robots that don't follow robots.txt don't accidentally run into issues
             // when people play around with links to very high page offsets
-            previouspageoffset = localSettings.getIntProperty("pageoffsetMaxValue", 20);
+            previouspageoffset = pageoffsetMaxValue;
             nextpagelinkuseful = false;
         }
         
         // If configured to only show pageoffset for plain nsid's as opposed to the other queries
         // then decide here whether to show it
-        if(localSettings.getBooleanProperty("pageoffsetOnlyShowForNsId", true) && !is_plainnsid)
+        if(localSettings.getBooleanProperty(WebappConfig.PAGEOFFSET_ONLY_SHOW_FOR_NSID) && !is_plainnsid)
         {
             nextpagelinkuseful = false;
         }
@@ -294,11 +283,12 @@ public class HtmlPageRenderer
         {
             velocityContext.put(
                     "nextpagelink",
-                    realHostName + contextPath + localSettings.getStringProperty("htmlUrlPrefix", "page/")
-                            + localSettings.getStringProperty("pageoffsetUrlOpeningPrefix", "pageoffset")
-                            + (pageoffset + 1) + localSettings.getStringProperty("pageoffsetUrlClosingPrefix", "/")
-                            + queryString + localSettings.getStringProperty("pageoffsetUrlSuffix", "")
-                            + localSettings.getStringProperty("htmlUrlSuffix", ""));
+                    realHostName + contextPath + localSettings.getStringProperty(WebappConfig.HTML_URL_PREFIX)
+                            + localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_OPENING_PREFIX)
+                            + (pageoffset + 1)
+                            + localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_CLOSING_PREFIX) + queryString
+                            + localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_SUFFIX)
+                            + localSettings.getStringProperty(WebappConfig.HTML_URL_SUFFIX));
             velocityContext.put("nextpagelabel", (pageoffset + 1));
         }
         
@@ -306,11 +296,12 @@ public class HtmlPageRenderer
         {
             velocityContext.put(
                     "previouspagelink",
-                    realHostName + contextPath + localSettings.getStringProperty("htmlUrlPrefix", "page/")
-                            + localSettings.getStringProperty("pageoffsetUrlOpeningPrefix", "pageoffset")
-                            + (previouspageoffset) + localSettings.getStringProperty("pageoffsetUrlClosingPrefix", "/")
-                            + queryString + localSettings.getStringProperty("pageoffsetUrlSuffix", "")
-                            + localSettings.getStringProperty("htmlUrlSuffix", ""));
+                    realHostName + contextPath + localSettings.getStringProperty(WebappConfig.HTML_URL_PREFIX)
+                            + localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_OPENING_PREFIX)
+                            + (previouspageoffset)
+                            + localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_CLOSING_PREFIX) + queryString
+                            + localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_SUFFIX)
+                            + localSettings.getStringProperty(WebappConfig.HTML_URL_SUFFIX));
             velocityContext.put("previouspagelabel", previouspageoffset);
         }
         
@@ -339,20 +330,21 @@ public class HtmlPageRenderer
         // the @ character needs to be escaped, and in Javascript strings the single apostrophe '
         // needs to be escaped.
         
-        if(HtmlPageRenderer._TRACE)
+        if(HtmlPageRenderer.TRACE)
         {
-            HtmlPageRenderer.log.trace("renderHtml: about to render XHTML to nextWriter=" + nextWriter);
+            HtmlPageRenderer.log.trace("renderHtml: about to render XHTML");
         }
         
         try
         {
             if(fetchController == null || fetchController.queryKnown())
             {
-                if(HtmlPageRenderer._DEBUG)
+                if(HtmlPageRenderer.DEBUG)
                 {
-                    HtmlPageRenderer.log.debug("renderHtml: fetchController.queryKnown(), using page.vm template");
+                    HtmlPageRenderer.log.debug("renderHtml: fetchController.queryKnown(), using results template");
                 }
-                final String templateLocation = localSettings.getStringProperty("resultsTemplate", "page.vm");
+                
+                final String templateLocation = localSettings.getStringProperty(WebappConfig.RESULTS_TEMPLATE);
                 // final VelocityEngine nextEngine =
                 // (VelocityEngine)servletContext.getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
                 
@@ -360,18 +352,15 @@ public class HtmlPageRenderer
             }
             else
             {
-                if(HtmlPageRenderer._DEBUG)
+                if(HtmlPageRenderer.DEBUG)
                 {
-                    HtmlPageRenderer.log.debug("renderHtml: !fetchController.queryKnown(), using error.vm template");
+                    HtmlPageRenderer.log.debug("renderHtml: !fetchController.queryKnown(), using error template");
                 }
                 
                 velocityContext.put("namespaceRecognised", !fetchController.anyNamespaceNotRecognised());
                 velocityContext.put("queryKnown", fetchController.queryKnown());
                 
-                final String templateLocation = localSettings.getStringProperty("errorTemplate", "error.vm");
-                
-                // final VelocityEngine nextEngine =
-                // (VelocityEngine)servletContext.getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
+                final String templateLocation = localSettings.getStringProperty(WebappConfig.ERROR_TEMPLATE);
                 
                 VelocityHelper.renderXHTML(nextEngine, velocityContext, templateLocation, nextWriter);
             }
@@ -390,7 +379,7 @@ public class HtmlPageRenderer
             }
         }
         
-        if(HtmlPageRenderer._TRACE)
+        if(HtmlPageRenderer.TRACE)
         {
             HtmlPageRenderer.log.trace("renderHtml: finished rendering XHTML");
         }
@@ -405,10 +394,15 @@ public class HtmlPageRenderer
                 resolvedUri, realHostName, contextPath, pageoffset, debugStrings);
     }
     
-    public static void renderIndexPage(final QueryAllConfiguration localSettings, final VelocityEngine nextEngine,
-            final java.io.Writer nextWriter, final Collection<String> debugStrings, String realHostName,
-            String contextPath) throws OpenRDFException
+    public static void renderIndexPage(final VelocityEngine nextEngine, final QueryAllConfiguration localSettings,
+            final java.io.Writer nextWriter, String realHostName, String contextPath,
+            final Collection<String> debugStrings) throws OpenRDFException
     {
+        if(localSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_CONTEXT))
+        {
+            contextPath = localSettings.getStringProperty(WebappConfig.HARDCODED_REQUEST_CONTEXT);
+        }
+        
         if(contextPath == null || contextPath.equals("/"))
         {
             contextPath = "";
@@ -419,17 +413,12 @@ public class HtmlPageRenderer
             contextPath = contextPath.substring(1) + "/";
         }
         
-        if(localSettings.getBooleanProperty("useHardcodedRequestContext", false))
+        if(localSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_HOSTNAME))
         {
-            contextPath = localSettings.getStringProperty("hardcodedRequestContext", "");
+            realHostName = localSettings.getStringProperty(WebappConfig.HARDCODED_REQUEST_HOSTNAME);
         }
         
-        if(localSettings.getBooleanProperty("useHardcodedRequestHostname", false))
-        {
-            realHostName = localSettings.getStringProperty("hardcodedRequestHostname", "");
-        }
-        
-        if(HtmlPageRenderer._TRACE)
+        if(HtmlPageRenderer.TRACE)
         {
             HtmlPageRenderer.log.trace("renderIndexPage: about to create VelocityHelper class");
         }
@@ -444,41 +433,38 @@ public class HtmlPageRenderer
                 Integer.toString(localSettings.getAllRuleTests().size()));
         velocityContext.put("statistics_querytypes", Integer.toString(localSettings.getAllQueryTypes().size()));
         
-        velocityContext.put("debug_level_info", HtmlPageRenderer._INFO);
-        velocityContext.put("debug_level_debug", HtmlPageRenderer._DEBUG);
-        velocityContext.put("debug_level_trace", HtmlPageRenderer._TRACE);
+        velocityContext.put("debug_level_info", HtmlPageRenderer.INFO);
+        velocityContext.put("debug_level_debug", HtmlPageRenderer.DEBUG);
+        velocityContext.put("debug_level_trace", HtmlPageRenderer.TRACE);
         
-        velocityContext.put("title", localSettings.getStringProperty("projectName", "Bio2RDF"));
+        velocityContext.put("title", localSettings.getStringProperty(WebappConfig.PROJECT_NAME));
         
-        velocityContext.put("project_name", localSettings.getStringProperty("projectName", "Bio2RDF"));
-        velocityContext.put("project_base_url",
-                localSettings.getStringProperty("projectHomeUri", "http://bio2rdf.org/"));
-        velocityContext.put("project_html_url_prefix", localSettings.getStringProperty("htmlUrlPrefix", "html/"));
-        velocityContext.put("project_html_url_suffix", localSettings.getStringProperty("htmlUrlSuffix", ""));
-        velocityContext.put("project_link", localSettings.getStringProperty("projectHomeUrl", "http://bio2rdf.org/"));
-        velocityContext.put("application_name", localSettings.getStringProperty("userAgent", "queryall") + "/"
-                + Settings.VERSION);
+        velocityContext.put("project_name", localSettings.getStringProperty(WebappConfig.PROJECT_NAME));
+        velocityContext.put("project_base_url", localSettings.getStringProperty(WebappConfig.PROJECT_HOME_URI));
+        velocityContext.put("project_html_url_prefix", localSettings.getStringProperty(WebappConfig.HTML_URL_PREFIX));
+        velocityContext.put("project_html_url_suffix", localSettings.getStringProperty(WebappConfig.HTML_URL_SUFFIX));
+        velocityContext.put("project_link", localSettings.getStringProperty(WebappConfig.PROJECT_HOME_URL));
+        velocityContext.put("application_name", localSettings.getStringProperty(WebappConfig.USER_AGENT) + "/"
+                + PropertyUtils.VERSION);
+        velocityContext.put("application_help", localSettings.getStringProperty(WebappConfig.APPLICATION_HELP_URL));
+        
         velocityContext
-                .put("application_help", localSettings.getStringProperty("applicationHelpUrl",
-                        "http://sourceforge.net/apps/mediawiki/bio2rdf/"));
-        
-        velocityContext.put("index_banner_image", localSettings.getStringProperty("indexBannerImagePath",
-                "static/includes-images/merged-bio2rdf-banner.jpg"));
+                .put("index_banner_image", localSettings.getStringProperty(WebappConfig.INDEX_BANNER_IMAGE_PATH));
         velocityContext.put("index_project_image",
-                localSettings.getStringProperty("indexProjectImagePath", "static/includes-images/Bio2RDF.jpg"));
+                localSettings.getStringProperty(WebappConfig.INDEX_PROJECT_IMAGE_PATH));
         
-        velocityContext.put("shortcut_icon",
-                localSettings.getStringProperty("shortcutIconPath", "static/includes-images/favicon.ico"));
-        velocityContext.put("scripts", localSettings.getStringProperties("indexPageScripts"));
-        velocityContext.put("local_scripts", localSettings.getStringProperties("indexPageScriptsLocal"));
-        velocityContext.put("stylesheets", localSettings.getStringProperties("indexPageStylesheets"));
-        velocityContext.put("local_stylesheets", localSettings.getStringProperties("indexPageStylesheetsLocal"));
+        velocityContext.put("shortcut_icon", localSettings.getStringProperty(WebappConfig.SHORTCUT_ICON_PATH));
+        velocityContext.put("scripts", localSettings.getStringProperties(WebappConfig.INDEX_PAGE_SCRIPTS));
+        velocityContext.put("local_scripts", localSettings.getStringProperties(WebappConfig.INDEX_PAGE_SCRIPTS_LOCAL));
+        velocityContext.put("stylesheets", localSettings.getStringProperties(WebappConfig.INDEX_PAGE_STYLESHEETS));
+        velocityContext.put("local_stylesheets",
+                localSettings.getStringProperties(WebappConfig.INDEX_PAGE_STYLESHEETS_LOCAL));
         
         velocityContext.put("real_hostname", realHostName);
         velocityContext.put("context_path", contextPath);
         velocityContext.put("server_base", realHostName + contextPath);
         
-        final String templateLocation = localSettings.getStringProperty("indexTemplate", "default-index.vm");
+        final String templateLocation = localSettings.getStringProperty(WebappConfig.INDEX_TEMPLATE);
         
         try
         {
@@ -486,8 +472,7 @@ public class HtmlPageRenderer
         }
         catch(final Exception ex)
         {
-            HtmlPageRenderer.log.error("renderIndexPage: caught exception while rendering XHTML");
-            HtmlPageRenderer.log.error(ex.getMessage());
+            HtmlPageRenderer.log.error("renderIndexPage: caught exception while rendering XHTML", ex);
             
             try
             {
@@ -499,7 +484,7 @@ public class HtmlPageRenderer
             }
         }
         
-        if(HtmlPageRenderer._TRACE)
+        if(HtmlPageRenderer.TRACE)
         {
             HtmlPageRenderer.log.trace("renderIndexPage: finished rendering XHTML");
         }

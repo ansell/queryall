@@ -2,7 +2,7 @@ package org.queryall.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,9 +24,9 @@ public class IndexPageServlet extends HttpServlet
 {
     private static final long serialVersionUID = -6472769738354082954L;
     public static final Logger log = LoggerFactory.getLogger(IndexPageServlet.class);
-    public static final boolean _TRACE = IndexPageServlet.log.isTraceEnabled();
-    public static final boolean _DEBUG = IndexPageServlet.log.isDebugEnabled();
-    public static final boolean _INFO = IndexPageServlet.log.isInfoEnabled();
+    public static final boolean TRACE = IndexPageServlet.log.isTraceEnabled();
+    public static final boolean DEBUG = IndexPageServlet.log.isDebugEnabled();
+    public static final boolean INFO = IndexPageServlet.log.isInfoEnabled();
     
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
@@ -46,8 +46,8 @@ public class IndexPageServlet extends HttpServlet
         
         try
         {
-            HtmlPageRenderer.renderIndexPage(localSettings, localVelocity, out, new LinkedList<String>(), realHostName,
-                    request.getContextPath());
+            HtmlPageRenderer.renderIndexPage(localVelocity, localSettings, out, realHostName, request.getContextPath(),
+                    new ArrayList<String>(0));
         }
         catch(final OpenRDFException ordfe)
         {

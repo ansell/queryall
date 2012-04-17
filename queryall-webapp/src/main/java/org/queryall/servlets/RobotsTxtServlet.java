@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.queryall.api.base.QueryAllConfiguration;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +25,9 @@ public class RobotsTxtServlet extends HttpServlet
 	 */
     private static final long serialVersionUID = 3224404845116318101L;
     public static final Logger log = LoggerFactory.getLogger(RobotsTxtServlet.class);
-    public static final boolean _TRACE = RobotsTxtServlet.log.isTraceEnabled();
-    public static final boolean _DEBUG = RobotsTxtServlet.log.isDebugEnabled();
-    public static final boolean _INFO = RobotsTxtServlet.log.isInfoEnabled();
+    public static final boolean TRACE = RobotsTxtServlet.log.isTraceEnabled();
+    public static final boolean DEBUG = RobotsTxtServlet.log.isDebugEnabled();
+    public static final boolean INFO = RobotsTxtServlet.log.isInfoEnabled();
     
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
@@ -35,7 +36,7 @@ public class RobotsTxtServlet extends HttpServlet
         final QueryAllConfiguration localSettings =
                 (QueryAllConfiguration)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONFIG);
         
-        if(RobotsTxtServlet._INFO)
+        if(RobotsTxtServlet.INFO)
         {
             RobotsTxtServlet.log.info("Robots.txt requested: request.getRequestURI()=" + request.getRequestURI());
         }
@@ -44,7 +45,8 @@ public class RobotsTxtServlet extends HttpServlet
         
         final PrintWriter out = response.getWriter();
         
-        final Collection<String> robotsList = localSettings.getStringProperties("blacklistBaseUserAgents");
+        final Collection<String> robotsList =
+                localSettings.getStringProperties(WebappConfig.BLACKLIST_BASE_USER_AGENTS);
         
         if(robotsList != null)
         {

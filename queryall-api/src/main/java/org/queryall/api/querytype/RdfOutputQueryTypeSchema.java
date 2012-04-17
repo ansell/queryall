@@ -3,6 +3,7 @@
  */
 package org.queryall.api.querytype;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -12,6 +13,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -21,15 +23,16 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RdfOutputQueryTypeSchema
+@MetaInfServices(QueryAllSchema.class)
+public class RdfOutputQueryTypeSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(RdfOutputQueryTypeSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RdfOutputQueryTypeSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = RdfOutputQueryTypeSchema.log.isTraceEnabled();
+    private static final boolean TRACE = RdfOutputQueryTypeSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = RdfOutputQueryTypeSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = RdfOutputQueryTypeSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RdfOutputQueryTypeSchema.log.isInfoEnabled();
+    private static final boolean INFO = RdfOutputQueryTypeSchema.LOG.isInfoEnabled();
     
     private static URI rdfOutputQueryTypeUri;
     private static URI queryOLDOutputRdfXmlString;
@@ -38,7 +41,7 @@ public class RdfOutputQueryTypeSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.QUERY.getBaseURI();
         
@@ -47,6 +50,11 @@ public class RdfOutputQueryTypeSchema
         RdfOutputQueryTypeSchema.setQueryOutputRdfString(f.createURI(baseUri, "outputRdfString"));
         RdfOutputQueryTypeSchema.setQueryOutputRdfFormat(f.createURI(baseUri, "outputRdfFormat"));
     }
+    
+    /**
+     * A pre-instantiated schema object for RdfOutputQueryTypeSchema.
+     */
+    public static final QueryAllSchema RDF_OUTPUT_QUERY_TYPE_SCHEMA = new RdfOutputQueryTypeSchema();
     
     /**
      * @return the queryOLDOutputRdfXmlString
@@ -72,73 +80,6 @@ public class RdfOutputQueryTypeSchema
     public static URI getRdfOutputQueryTypeUri()
     {
         return RdfOutputQueryTypeSchema.rdfOutputQueryTypeUri;
-    }
-    
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
-        throws OpenRDFException
-    {
-        final RepositoryConnection con = myRepository.getConnection();
-        
-        final ValueFactory f = Constants.valueFactory;
-        
-        try
-        {
-            final URI contextKeyUri = keyToUse;
-            con.setAutoCommit(false);
-            
-            con.add(RdfOutputQueryTypeSchema.getRdfOutputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
-            
-            con.add(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(), RDF.TYPE, OWL.DATATYPEPROPERTY,
-                    contextKeyUri);
-            con.add(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(), RDFS.DOMAIN,
-                    QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
-            con.add(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(), RDFS.LABEL,
-                    f.createLiteral("DEPRECATED: Use rdfOutputString instead."), contextKeyUri);
-            
-            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(),
-                    RDFS.LABEL,
-                    f.createLiteral("Property for denoting an RDF template that can be used to generate static additional statements for this query type."),
-                    contextKeyUri);
-            
-            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(),
-                    RDFS.LABEL,
-                    f.createLiteral("The RDF format used to design the rdfOutputString. This property defaults to application/rdf+xml if not defined."),
-                    contextKeyUri);
-            
-            // If everything went as planned, we can commit the result
-            con.commit();
-            
-            return true;
-        }
-        catch(final RepositoryException re)
-        {
-            // Something went wrong during the transaction, so we roll it back
-            
-            if(con != null)
-            {
-                con.rollback();
-            }
-            
-            RdfOutputQueryTypeSchema.log.error("RepositoryException: " + re.getMessage());
-        }
-        finally
-        {
-            if(con != null)
-            {
-                con.close();
-            }
-        }
-        
-        return false;
     }
     
     /**
@@ -169,4 +110,88 @@ public class RdfOutputQueryTypeSchema
         RdfOutputQueryTypeSchema.rdfOutputQueryTypeUri = queryTypeUri;
     }
     
+    /**
+     * Default constructor, uses the name of this class as the name.
+     */
+    public RdfOutputQueryTypeSchema()
+    {
+        this(RdfOutputQueryTypeSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public RdfOutputQueryTypeSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contexts)
+        throws OpenRDFException
+    {
+        final RepositoryConnection con = myRepository.getConnection();
+        
+        final ValueFactory f = Constants.VALUE_FACTORY;
+        
+        try
+        {
+            con.setAutoCommit(false);
+            
+            con.add(RdfOutputQueryTypeSchema.getRdfOutputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
+            con.add(RdfOutputQueryTypeSchema.getRdfOutputQueryTypeUri(), RDFS.SUBCLASSOF,
+                    QueryTypeSchema.getQueryTypeUri(), contexts);
+            
+            con.add(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(), RDFS.RANGE, RDFS.LITERAL, contexts);
+            con.add(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(), RDFS.DOMAIN,
+                    QueryTypeSchema.getQueryTypeUri(), contexts);
+            con.add(RdfOutputQueryTypeSchema.getOLDQueryOutputRdfXmlString(), RDFS.LABEL,
+                    f.createLiteral("DEPRECATED: Use rdfOutputString instead."), contexts);
+            
+            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(), RDFS.RANGE, RDFS.LITERAL, contexts);
+            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contexts);
+            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfString(),
+                    RDFS.LABEL,
+                    f.createLiteral("Property for denoting an RDF template that can be used to generate static additional statements for this query type."),
+                    contexts);
+            
+            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), RDFS.RANGE, RDFS.LITERAL, contexts);
+            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
+                    contexts);
+            con.add(RdfOutputQueryTypeSchema.getQueryOutputRdfFormat(),
+                    RDFS.LABEL,
+                    f.createLiteral("The RDF format used to design the rdfOutputString. This property defaults to application/rdf+xml if not defined."),
+                    contexts);
+            
+            // If everything went as planned, we can commit the result
+            con.commit();
+            
+            return true;
+        }
+        catch(final RepositoryException re)
+        {
+            // Something went wrong during the transaction, so we roll it back
+            
+            if(con != null)
+            {
+                con.rollback();
+            }
+            
+            RdfOutputQueryTypeSchema.LOG.error("RepositoryException: " + re.getMessage());
+        }
+        finally
+        {
+            if(con != null)
+            {
+                con.close();
+            }
+        }
+        
+        return false;
+    }
 }

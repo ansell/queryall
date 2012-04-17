@@ -30,10 +30,10 @@ import org.slf4j.LoggerFactory;
 public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
 {
     private static final Logger log = LoggerFactory.getLogger(SparqlRuleTestImpl.class);
-    private static final boolean _TRACE = SparqlRuleTestImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = SparqlRuleTestImpl.log.isDebugEnabled();
+    private static final boolean TRACE = SparqlRuleTestImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = SparqlRuleTestImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = SparqlRuleTestImpl.log.isInfoEnabled();
+    private static final boolean INFO = SparqlRuleTestImpl.log.isInfoEnabled();
     
     private static final Set<URI> SPARQL_RULE_TEST_IMPL_TYPES = new HashSet<URI>();
     
@@ -50,7 +50,7 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
     
     private String askQuery = "";
     
-    private boolean expectedResult = false;
+    private boolean expectedResult = true;
     private String testInputTriples;
     private String testInputMimeType;
     
@@ -64,15 +64,11 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
     {
         super(inputStatements, keyToUse, modelVersion);
         
-        final Collection<Statement> currentUnrecognisedStatements = new HashSet<Statement>();
-        
-        currentUnrecognisedStatements.addAll(this.getUnrecognisedStatements());
-        
-        this.unrecognisedStatements = new HashSet<Statement>();
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(SparqlRuleTestImpl._DEBUG)
+            if(SparqlRuleTestImpl.DEBUG)
             {
                 SparqlRuleTestImpl.log.debug("SparqlRuleTestImpl: nextStatement: " + nextStatement.toString());
             }
@@ -80,7 +76,7 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(SparqlRuleTestSchema.getSparqlRuleTestTypeUri()))
             {
-                if(SparqlRuleTestImpl._TRACE)
+                if(SparqlRuleTestImpl.TRACE)
                 {
                     SparqlRuleTestImpl.log.trace("SparqlRuleTestImpl: found valid type predicate for URI: " + keyToUse);
                 }
@@ -105,7 +101,7 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
             }
             else
             {
-                if(SparqlRuleTestImpl._DEBUG)
+                if(SparqlRuleTestImpl.DEBUG)
                 {
                     SparqlRuleTestImpl.log.debug("SparqlRuleTestImpl: found unexpected Statement nextStatement: "
                             + nextStatement.toString());
@@ -114,7 +110,7 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
             }
         }
         
-        if(SparqlRuleTestImpl._TRACE)
+        if(SparqlRuleTestImpl.TRACE)
         {
             SparqlRuleTestImpl.log
                     .trace("StringRuleTestImpl.fromRdf: would have returned... result=" + this.toString());
@@ -177,14 +173,14 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... keyToUse)
         throws OpenRDFException
     {
-        super.toRdf(myRepository, keyToUse, modelVersion);
+        super.toRdf(myRepository, modelVersion, keyToUse);
         
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -201,14 +197,6 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
             con.add(keyUri, SparqlRuleTestSchema.getSparqlRuletestExpectedResult(), testExpectedResultLiteral, keyToUse);
             con.add(keyUri, SparqlRuleTestSchema.getSparqlRuletestInputTriples(), testInputTriplesLiteral, keyToUse);
             con.add(keyUri, SparqlRuleTestSchema.getSparqlRuletestInputMimeType(), testInputMimeTypeLiteral, keyToUse);
-            
-            if(this.unrecognisedStatements != null)
-            {
-                for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
-                {
-                    con.add(nextUnrecognisedStatement, keyToUse);
-                }
-            }
             
             // If everything went as planned, we can commit the result
             con.commit();

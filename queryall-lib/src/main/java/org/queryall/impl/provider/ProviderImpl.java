@@ -1,8 +1,8 @@
 package org.queryall.impl.provider;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.openrdf.OpenRDFException;
@@ -17,12 +17,13 @@ import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.HtmlExport;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
-import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.ProfileIncludeExclude;
+import org.queryall.api.utils.ProfileMatch;
 import org.queryall.api.utils.QueryAllNamespaces;
-import org.queryall.utils.ProfileUtils;
+import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
@@ -31,33 +32,25 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class ProviderImpl implements Provider, HtmlExport
+public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(ProviderImpl.class);
-    private static final boolean _TRACE = ProviderImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = ProviderImpl.log.isDebugEnabled();
+    private static final boolean TRACE = ProviderImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = ProviderImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = ProviderImpl.log.isInfoEnabled();
+    private static final boolean INFO = ProviderImpl.log.isInfoEnabled();
     
-    protected Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
+    private Collection<URI> namespaces = new ArrayList<URI>();
     
-    private URI key = null;
+    private Collection<URI> includedInQueryTypes = new ArrayList<URI>();
     
-    private String title = "";
-    
-    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
-    
-    private Collection<URI> namespaces = new HashSet<URI>();
-    
-    private Collection<URI> includedInQueryTypes = new HashSet<URI>();
-    
-    private Collection<URI> rdfNormalisationsNeeded = new HashSet<URI>();
+    private Collection<URI> normalisationUris = new ArrayList<URI>();
     
     private URI redirectOrProxy = ProviderSchema.getProviderRedirect();
     
     private boolean isDefaultSourceVar = false;
     
-    private URI profileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
+    private ProfileIncludeExclude profileIncludeExcludeOrder = ProfileIncludeExclude.UNDEFINED;
     
     // See Provider.providerHttpPostSparql.stringValue(), Provider.providerHttpGetUrl.stringValue()
     // and Provider.providerNoCommunication.stringValue()
@@ -73,11 +66,13 @@ public abstract class ProviderImpl implements Provider, HtmlExport
     protected ProviderImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
-        final ValueFactory f = Constants.valueFactory;
+        super(inputStatements, keyToUse, modelVersion);
         
-        for(final Statement nextStatement : inputStatements)
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
+        
+        for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(ProviderImpl._TRACE)
+            if(ProviderImpl.TRACE)
             {
                 ProviderImpl.log.trace("Provider: nextStatement: " + nextStatement.toString());
             }
@@ -85,22 +80,13 @@ public abstract class ProviderImpl implements Provider, HtmlExport
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(ProviderSchema.getProviderTypeUri()))
             {
-                if(ProviderImpl._TRACE)
+                if(ProviderImpl.TRACE)
                 {
                     ProviderImpl.log.trace("Provider: found valid type predicate for URI: " + keyToUse);
                 }
                 
                 // resultIsValid = true;
                 this.setKey(keyToUse);
-            }
-            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectCurationStatusUri()))
-            {
-                this.setCurationStatus((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(ProviderSchema.getProviderTitle())
-                    || nextStatement.getPredicate().equals(f.createURI(Constants.DC_NAMESPACE + "title")))
-            {
-                this.setTitle(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(ProviderSchema.getProviderResolutionStrategy()))
             {
@@ -124,7 +110,7 @@ public abstract class ProviderImpl implements Provider, HtmlExport
             }
             else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileIncludeExcludeOrderUri()))
             {
-                this.setProfileIncludeExcludeOrder((URI)nextStatement.getObject());
+                this.setProfileIncludeExcludeOrder(ProfileIncludeExclude.valueOf((URI)nextStatement.getObject()));
             }
             else if(nextStatement.getPredicate().equals(ProviderSchema.getProviderResolutionMethod()))
             {
@@ -140,9 +126,9 @@ public abstract class ProviderImpl implements Provider, HtmlExport
             }
         }
         
-        if(ProviderImpl._DEBUG)
+        if(ProviderImpl.TRACE)
         {
-            ProviderImpl.log.debug("Provider.fromRdf: would have returned... keyToUse=" + keyToUse + " result="
+            ProviderImpl.log.trace("Provider.fromRdf: would have returned... keyToUse=" + keyToUse + " result="
                     + this.toString());
         }
     }
@@ -152,7 +138,7 @@ public abstract class ProviderImpl implements Provider, HtmlExport
     {
         if(this.includedInQueryTypes == null)
         {
-            this.includedInQueryTypes = new LinkedList<URI>();
+            this.includedInQueryTypes = new ArrayList<URI>();
         }
         
         this.includedInQueryTypes.add(includedInQueryType);
@@ -163,7 +149,7 @@ public abstract class ProviderImpl implements Provider, HtmlExport
     {
         if(this.namespaces == null)
         {
-            this.namespaces = new LinkedList<URI>();
+            this.namespaces = new ArrayList<URI>();
         }
         
         this.namespaces.add(namespace);
@@ -172,18 +158,12 @@ public abstract class ProviderImpl implements Provider, HtmlExport
     @Override
     public void addNormalisationUri(final URI rdfNormalisationNeeded)
     {
-        if(this.rdfNormalisationsNeeded == null)
+        if(this.normalisationUris == null)
         {
-            this.rdfNormalisationsNeeded = new LinkedList<URI>();
+            this.normalisationUris = new ArrayList<URI>();
         }
         
-        this.rdfNormalisationsNeeded.add(rdfNormalisationNeeded);
-    }
-    
-    @Override
-    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
-    {
-        this.unrecognisedStatements.add(unrecognisedStatement);
+        this.normalisationUris.add(rdfNormalisationNeeded);
     }
     
     @Override
@@ -256,105 +236,72 @@ public abstract class ProviderImpl implements Provider, HtmlExport
         {
             return true;
         }
-        if(obj == null)
-        {
-            return false;
-        }
-        if(this.getClass() != obj.getClass())
-        {
-            return false;
-        }
-        final ProviderImpl other = (ProviderImpl)obj;
-        if(this.key == null)
-        {
-            if(other.key != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.key.equals(other.key))
+        if(!super.equals(obj))
         {
             return false;
         }
         
-        if(this.curationStatus == null)
+        if(!(obj instanceof Provider))
         {
-            if(other.curationStatus != null)
+            return false;
+        }
+        final Provider other = (Provider)obj;
+        if(this.getIncludedInQueryTypes() == null)
+        {
+            if(other.getIncludedInQueryTypes() != null)
             {
                 return false;
             }
         }
-        else if(!this.curationStatus.equals(other.curationStatus))
+        else if(!this.getIncludedInQueryTypes().equals(other.getIncludedInQueryTypes()))
         {
             return false;
         }
-        if(this.includedInQueryTypes == null)
+        if(this.getIsDefaultSource() != other.getIsDefaultSource())
         {
-            if(other.includedInQueryTypes != null)
+            return false;
+        }
+        if(this.getNamespaces() == null)
+        {
+            if(other.getNamespaces() != null)
             {
                 return false;
             }
         }
-        else if(!this.includedInQueryTypes.equals(other.includedInQueryTypes))
+        else if(!this.getNamespaces().equals(other.getNamespaces()))
         {
             return false;
         }
-        if(this.isDefaultSourceVar != other.isDefaultSourceVar)
+        if(this.getProfileIncludeExcludeOrder() == null)
         {
-            return false;
-        }
-        if(this.namespaces == null)
-        {
-            if(other.namespaces != null)
+            if(other.getProfileIncludeExcludeOrder() != null)
             {
                 return false;
             }
         }
-        else if(!this.namespaces.equals(other.namespaces))
+        else if(!this.getProfileIncludeExcludeOrder().equals(other.getProfileIncludeExcludeOrder()))
         {
             return false;
         }
-        if(this.profileIncludeExcludeOrder == null)
+        if(this.getNormalisationUris() == null)
         {
-            if(other.profileIncludeExcludeOrder != null)
+            if(other.getNormalisationUris() != null)
             {
                 return false;
             }
         }
-        else if(!this.profileIncludeExcludeOrder.equals(other.profileIncludeExcludeOrder))
+        else if(!this.getNormalisationUris().equals(other.getNormalisationUris()))
         {
             return false;
         }
-        if(this.rdfNormalisationsNeeded == null)
+        if(this.getRedirectOrProxy() == null)
         {
-            if(other.rdfNormalisationsNeeded != null)
+            if(other.getRedirectOrProxy() != null)
             {
                 return false;
             }
         }
-        else if(!this.rdfNormalisationsNeeded.equals(other.rdfNormalisationsNeeded))
-        {
-            return false;
-        }
-        if(this.redirectOrProxy == null)
-        {
-            if(other.redirectOrProxy != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.redirectOrProxy.equals(other.redirectOrProxy))
-        {
-            return false;
-        }
-        if(this.title == null)
-        {
-            if(other.title != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.title.equals(other.title))
+        else if(!this.getRedirectOrProxy().equals(other.getRedirectOrProxy()))
         {
             return false;
         }
@@ -366,12 +313,6 @@ public abstract class ProviderImpl implements Provider, HtmlExport
     public String getAssumedContentType()
     {
         return this.assumedContentType;
-    }
-    
-    @Override
-    public URI getCurationStatus()
-    {
-        return this.curationStatus;
     }
     
     /**
@@ -409,15 +350,6 @@ public abstract class ProviderImpl implements Provider, HtmlExport
         return this.isDefaultSourceVar;
     }
     
-    /**
-     * @return the key
-     */
-    @Override
-    public URI getKey()
-    {
-        return this.key;
-    }
-    
     @Override
     public Collection<URI> getNamespaces()
     {
@@ -427,11 +359,11 @@ public abstract class ProviderImpl implements Provider, HtmlExport
     @Override
     public Collection<URI> getNormalisationUris()
     {
-        return this.rdfNormalisationsNeeded;
+        return this.normalisationUris;
     }
     
     @Override
-    public URI getProfileIncludeExcludeOrder()
+    public ProfileIncludeExclude getProfileIncludeExcludeOrder()
     {
         return this.profileIncludeExcludeOrder;
     }
@@ -443,34 +375,21 @@ public abstract class ProviderImpl implements Provider, HtmlExport
     }
     
     @Override
-    public String getTitle()
-    {
-        return this.title;
-    }
-    
-    @Override
-    public Collection<Statement> getUnrecognisedStatements()
-    {
-        return this.unrecognisedStatements;
-    }
-    
-    @Override
     public int hashCode()
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.curationStatus == null) ? 0 : this.curationStatus.hashCode());
+        result = prime * result + ((this.getCurationStatus() == null) ? 0 : this.getCurationStatus().hashCode());
         result = prime * result + ((this.includedInQueryTypes == null) ? 0 : this.includedInQueryTypes.hashCode());
         result = prime * result + (this.isDefaultSourceVar ? 1231 : 1237);
-        result = prime * result + ((this.key == null) ? 0 : this.key.hashCode());
+        result = prime * result + ((this.getKey() == null) ? 0 : this.getKey().hashCode());
         result = prime * result + ((this.namespaces == null) ? 0 : this.namespaces.hashCode());
         result =
                 prime * result
                         + ((this.profileIncludeExcludeOrder == null) ? 0 : this.profileIncludeExcludeOrder.hashCode());
-        result =
-                prime * result + ((this.rdfNormalisationsNeeded == null) ? 0 : this.rdfNormalisationsNeeded.hashCode());
+        result = prime * result + ((this.normalisationUris == null) ? 0 : this.normalisationUris.hashCode());
         result = prime * result + ((this.redirectOrProxy == null) ? 0 : this.redirectOrProxy.hashCode());
-        result = prime * result + ((this.title == null) ? 0 : this.title.hashCode());
+        result = prime * result + ((this.getTitle() == null) ? 0 : this.getTitle().hashCode());
         return result;
     }
     
@@ -478,7 +397,7 @@ public abstract class ProviderImpl implements Provider, HtmlExport
     public boolean isUsedWithProfileList(final List<Profile> orderedProfileList, final boolean allowImplicitInclusions,
             final boolean includeNonProfileMatched)
     {
-        return ProfileUtils.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions,
+        return ProfileMatch.isUsedWithProfileList(this, orderedProfileList, allowImplicitInclusions,
                 includeNonProfileMatched);
     }
     
@@ -495,6 +414,63 @@ public abstract class ProviderImpl implements Provider, HtmlExport
     }
     
     @Override
+    public boolean resetIncludedInQueryTypes()
+    {
+        try
+        {
+            this.includedInQueryTypes.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProviderImpl.log.debug("Could not clear collection");
+        }
+        
+        this.includedInQueryTypes = new HashSet<URI>();
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetNamespaces()
+    {
+        try
+        {
+            this.namespaces.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProviderImpl.log.debug("Could not clear collection");
+        }
+        
+        this.namespaces = new HashSet<URI>();
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetNormalisationUris()
+    {
+        try
+        {
+            this.normalisationUris.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProviderImpl.log.debug("Could not clear collection");
+        }
+        
+        this.normalisationUris = new HashSet<URI>();
+        
+        return true;
+    }
+    
+    @Override
     public void setAssumedContentType(final String assumedContentType)
     {
         this.assumedContentType = assumedContentType;
@@ -502,21 +478,9 @@ public abstract class ProviderImpl implements Provider, HtmlExport
     }
     
     @Override
-    public void setCurationStatus(final URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
-    }
-    
-    @Override
     public void setEndpointMethod(final URI endpointMethod)
     {
         this.endpointMethod = endpointMethod;
-    }
-    
-    @Override
-    public void setIncludedInQueryTypes(final Collection<URI> includedInCustomQueries)
-    {
-        this.includedInQueryTypes = includedInCustomQueries;
     }
     
     @Override
@@ -534,30 +498,8 @@ public abstract class ProviderImpl implements Provider, HtmlExport
         this.isDefaultSourceVar = isDefaultSourceVar;
     }
     
-    /**
-     * @param key
-     *            the key to set
-     */
     @Override
-    public void setKey(final String nextKey)
-    {
-        this.setKey(StringUtils.createURI(nextKey));
-    }
-    
-    @Override
-    public void setKey(final URI nextKey)
-    {
-        this.key = nextKey;
-    }
-    
-    @Override
-    public void setNamespaces(final Collection<URI> namespaces)
-    {
-        this.namespaces = namespaces;
-    }
-    
-    @Override
-    public void setProfileIncludeExcludeOrder(final URI profileIncludeExcludeOrder)
+    public void setProfileIncludeExcludeOrder(final ProfileIncludeExclude profileIncludeExcludeOrder)
     {
         this.profileIncludeExcludeOrder = profileIncludeExcludeOrder;
     }
@@ -566,12 +508,6 @@ public abstract class ProviderImpl implements Provider, HtmlExport
     public void setRedirectOrProxy(final URI redirectOrProxy)
     {
         this.redirectOrProxy = redirectOrProxy;
-    }
-    
-    @Override
-    public void setTitle(final String title)
-    {
-        this.title = title;
     }
     
     @Override
@@ -652,75 +588,53 @@ public abstract class ProviderImpl implements Provider, HtmlExport
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextKey)
         throws OpenRDFException
     {
+        super.toRdf(myRepository, modelVersion, contextKey);
+        
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
-            if(ProviderImpl._TRACE)
+            if(ProviderImpl.TRACE)
             {
-                ProviderImpl.log.trace("Provider.toRdf: keyToUse=" + keyToUse);
+                ProviderImpl.log.trace("Provider.toRdf: keyToUse=" + contextKey);
             }
             
             // create some resources and literals to make statements out of
             final URI providerInstanceUri = this.getKey();
-            
-            Literal titleLiteral;
-            
-            if(this.getTitle() == null)
-            {
-                titleLiteral = f.createLiteral("");
-            }
-            else
-            {
-                titleLiteral = f.createLiteral(this.getTitle());
-            }
             
             final URI redirectOrProxyLiteral = this.getRedirectOrProxy();
             final URI endpointMethodLiteral = this.getEndpointMethod();
             final Literal isDefaultSourceLiteral = f.createLiteral(this.getIsDefaultSourceVar());
             final Literal assumedContentTypeLiteral = f.createLiteral(this.getAssumedContentType());
             
-            URI curationStatusLiteral = null;
-            
-            if(this.getCurationStatus() == null)
-            {
-                curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
-            }
-            else
-            {
-                curationStatusLiteral = this.getCurationStatus();
-            }
-            
-            final URI profileIncludeExcludeOrderLiteral = this.getProfileIncludeExcludeOrder();
+            final URI profileIncludeExcludeOrderLiteral = this.getProfileIncludeExcludeOrder().getUri();
             
             con.setAutoCommit(false);
             
             for(final URI nextElementType : this.getElementTypes())
             {
-                con.add(providerInstanceUri, RDF.TYPE, nextElementType, keyToUse);
+                con.add(providerInstanceUri, RDF.TYPE, nextElementType, contextKey);
             }
             
-            con.add(providerInstanceUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
-            
-            con.add(providerInstanceUri, Constants.DC_TITLE, titleLiteral, keyToUse);
-            
             con.add(providerInstanceUri, ProviderSchema.getProviderResolutionStrategy(), redirectOrProxyLiteral,
-                    keyToUse);
+                    contextKey);
             
-            con.add(providerInstanceUri, ProviderSchema.getProviderResolutionMethod(), endpointMethodLiteral, keyToUse);
+            con.add(providerInstanceUri, ProviderSchema.getProviderResolutionMethod(), endpointMethodLiteral,
+                    contextKey);
             
-            con.add(providerInstanceUri, ProviderSchema.getProviderIsDefaultSource(), isDefaultSourceLiteral, keyToUse);
+            con.add(providerInstanceUri, ProviderSchema.getProviderIsDefaultSource(), isDefaultSourceLiteral,
+                    contextKey);
             
             con.add(providerInstanceUri, ProfileSchema.getProfileIncludeExcludeOrderUri(),
-                    profileIncludeExcludeOrderLiteral, keyToUse);
+                    profileIncludeExcludeOrderLiteral, contextKey);
             
             con.add(providerInstanceUri, ProviderSchema.getProviderAssumedContentType(), assumedContentTypeLiteral,
-                    keyToUse);
+                    contextKey);
             
             if(this.getNamespaces() != null)
             {
@@ -729,7 +643,7 @@ public abstract class ProviderImpl implements Provider, HtmlExport
                     if(nextNamespace != null)
                     {
                         con.add(providerInstanceUri, ProviderSchema.getProviderHandlesNamespace(), nextNamespace,
-                                keyToUse);
+                                contextKey);
                     }
                 }
             }
@@ -741,7 +655,7 @@ public abstract class ProviderImpl implements Provider, HtmlExport
                     if(nextIncludedInCustomQuery != null)
                     {
                         con.add(providerInstanceUri, ProviderSchema.getProviderIncludedInQuery(),
-                                nextIncludedInCustomQuery, keyToUse);
+                                nextIncludedInCustomQuery, contextKey);
                     }
                 }
             }
@@ -753,18 +667,7 @@ public abstract class ProviderImpl implements Provider, HtmlExport
                     if(nextRdfNormalisationNeeded != null)
                     {
                         con.add(providerInstanceUri, ProviderSchema.getProviderNeedsRdfNormalisation(),
-                                nextRdfNormalisationNeeded, keyToUse);
-                    }
-                }
-            }
-            
-            if(this.unrecognisedStatements != null)
-            {
-                for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
-                {
-                    if(nextUnrecognisedStatement != null)
-                    {
-                        con.add(nextUnrecognisedStatement, keyToUse);
+                                nextRdfNormalisationNeeded, contextKey);
                     }
                 }
             }
@@ -783,7 +686,7 @@ public abstract class ProviderImpl implements Provider, HtmlExport
         }
         catch(final Exception ex)
         {
-            ProviderImpl.log.error("Provider: Exception.. keyToUse=" + keyToUse, ex);
+            ProviderImpl.log.error("Provider: Exception.. keyToUse=" + contextKey, ex);
         }
         finally
         {

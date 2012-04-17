@@ -11,24 +11,31 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.RdfInputQueryType;
 import org.queryall.api.utils.Constants;
 
 /**
- * Abstract unit test for InputQueryType API
+ * Abstract unit test for InputQueryType API.
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public abstract class AbstractRdfInputQueryTypeTest
+public abstract class AbstractRdfInputQueryTypeTest extends AbstractInputQueryTypeTest
 {
     private RdfInputQueryType testRdfInputQueryType1;
     private String testRdfDocument;
     private Map<String, String> testQueryParameters;
     private String testSparqlInputSelect;
     
+    @Override
+    public final InputQueryType getNewTestInputQueryType()
+    {
+        return this.getNewTestRdfInputQueryType();
+    }
+    
     /**
      * This method must be overridden to return a new instance of the implemented QueryType class
-     * for each successive invocation
+     * for each successive invocation.
      * 
      * @return A new instance of the RdfInputQueryType implementation
      */
@@ -37,9 +44,12 @@ public abstract class AbstractRdfInputQueryTypeTest
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @Before
     public void setUp() throws Exception
     {
+        super.setUp();
+        
         // final ValueFactory f = new MemValueFactory();
         
         this.testRdfInputQueryType1 = this.getNewTestRdfInputQueryType();
@@ -67,9 +77,12 @@ public abstract class AbstractRdfInputQueryTypeTest
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @After
     public void tearDown() throws Exception
     {
+        super.tearDown();
+        
         this.testRdfInputQueryType1 = null;
         this.testRdfDocument = null;
         this.testSparqlInputSelect = null;

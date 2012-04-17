@@ -3,136 +3,105 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<groupId>org.queryall</groupId>
-		<artifactId>queryall</artifactId>
-		<version>1.1</version>
+		<artifactId>queryall-parent</artifactId>
+		<version>1.3</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>queryall-webapp</artifactId>
 	<packaging>jar</packaging>
-	<version>1.1</version>
 	<name>Queryall Webapp library</name>
-	<url>http://sourceforge.net/apps/mediawiki/bio2rdf/</url>
-	<inceptionYear>2007</inceptionYear>
-	<developers>
-		<developer>
-			<id>p_ansell</id>
-			<email>p_ansell@yahoo.com</email>
-			<name>Peter Ansell</name>
-		</developer>
-	</developers>
-	<licenses>
-		<license>
-			<name>GNU General Public License 3.0</name>
-			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-	<mailingLists>
-		<mailingList>
-			<name>Bio2RDF Google Group</name>
-			<archive>https://groups.google.com/group/bio2rdf/</archive>
-			<post>bio2rdf@googlegroups.com</post>
-			<subscribe>https://groups.google.com/group/bio2rdf/subscribe</subscribe>
-			<unsubscribe>https://groups.google.com/group/bio2rdf/subscribe</unsubscribe>
-		</mailingList>
-	</mailingLists>
-	<scm>
-		<connection>scm:git:git://bio2rdf.git.sourceforge.net/gitroot/queryall/queryall-webapp</connection>
-		<developerConnection>scm:git:ssh://p_ansell@bio2rdf.git.sourceforge.net/gitroot/queryall/queryall-webapp</developerConnection>
-		<url>http://bio2rdf.git.sourceforge.net/</url>
-	</scm>
 	<dependencies>
 		<dependency>
 			<groupId>org.queryall</groupId>
 			<artifactId>queryall-api</artifactId>
 			<version>${queryall.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.queryall</groupId>
 			<artifactId>queryall-lib</artifactId>
 			<version>${queryall.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.queryall</groupId>
+			<artifactId>queryall-content-negotiation</artifactId>
+			<version>${queryall.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity</artifactId>
-			<version>1.6.4</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<type>jar</type>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>info.aduna.commons</groupId>
 			<artifactId>aduna-commons-xml</artifactId>
-			<version>2.7.0</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-repository-sail</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-sail-api</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-rio-api</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-repository-api</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-model</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-sail-memory</artifactId>
-			<version>${sesame.version}</version>
-			<type>jar</type>
-			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.htmlunit</groupId>
+			<artifactId>htmlunit</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.jwebunit</groupId>
+			<artifactId>jwebunit-htmlunit-plugin</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>logback-classic</artifactId>
+					<groupId>ch.qos.logback</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
 		</dependency>
 	</dependencies>
 	<build>
@@ -142,5 +111,31 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+			</plugin>
+		</plugins>
 	</build>
 </project>

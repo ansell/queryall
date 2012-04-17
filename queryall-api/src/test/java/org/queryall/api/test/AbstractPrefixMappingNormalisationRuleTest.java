@@ -3,7 +3,8 @@
  */
 package org.queryall.api.test;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -27,6 +28,7 @@ import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.rdfrule.PrefixMappingNormalisationRule;
+import org.queryall.exception.QueryAllException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,31 +37,44 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
+@SuppressWarnings("unused")
 public abstract class AbstractPrefixMappingNormalisationRuleTest extends AbstractNormalisationRuleTest
 {
-    private static final Logger log = LoggerFactory.getLogger(AbstractPrefixMappingNormalisationRuleTest.class);
-    private static final boolean _TRACE = AbstractPrefixMappingNormalisationRuleTest.log.isTraceEnabled();
-    private static final boolean _DEBUG = AbstractPrefixMappingNormalisationRuleTest.log.isDebugEnabled();
-    private static final boolean _INFO = AbstractPrefixMappingNormalisationRuleTest.log.isInfoEnabled();
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractPrefixMappingNormalisationRuleTest.class);
+    private static final boolean TRACE = AbstractPrefixMappingNormalisationRuleTest.LOG.isTraceEnabled();
+    private static final boolean DEBUG = AbstractPrefixMappingNormalisationRuleTest.LOG.isDebugEnabled();
+    private static final boolean INFO = AbstractPrefixMappingNormalisationRuleTest.LOG.isInfoEnabled();
     
-    @SuppressWarnings("unused")
     private URI testPrefixMappingNormalisationRuleUri1;
-    @SuppressWarnings("unused")
     private URI testPrefixMappingNormalisationRuleUri2;
     
-    @SuppressWarnings("unused")
     private String testStartingUriAEOBase;
-    @SuppressWarnings("unused")
     private String testFinalUriAEOBase;
     
-    @SuppressWarnings("unused")
     private String testStartingUriPOBase;
-    @SuppressWarnings("unused")
     private String testFinalUriPOBase;
     
     private Repository testRepository;
     private RepositoryConnection testRepositoryConnection;
     private ValueFactory testValueFactory;
+    
+    @Override
+    public final Set<URI> getExpectedValidStages()
+    {
+        final Set<URI> results = new HashSet<URI>();
+        
+        results.add(NormalisationRuleSchema.getRdfruleStageQueryVariables());
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
+        // Not sure how this would be implemented after query parsing, or why it would be
+        // different to after query creation, so leave it off the list for now
+        // results.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
+        results.add(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
+        results.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
+        
+        return results;
+    }
     
     /**
      * Create a new instance of the SparqlNormalisationRule implementation being tested.
@@ -104,18 +119,6 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
         this.testStartingUriPOBase = "http://purl.obolibrary.org/obo/PO_";
         this.testFinalUriPOBase = "http://bio2rdf.org/obo_po:";
         
-        this.invalidStages = new ArrayList<URI>(1);
-        
-        this.invalidStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryParsing());
-        
-        this.validStages = new ArrayList<URI>(6);
-        
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageQueryVariables());
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterQueryCreation());
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsImport());
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToPool());
-        this.validStages.add(NormalisationRuleSchema.getRdfruleStageAfterResultsToDocument());
     }
     
     /**
@@ -155,7 +158,7 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
     }
     
     /**
-     * Tests the addMatchingTriples mode of the SparqlNormalisationRule interface
+     * Tests the addMatchingTriples mode of the SparqlNormalisationRule interface.
      * 
      * @throws RepositoryException
      * @throws QueryEvaluationException
@@ -163,7 +166,8 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
      */
     @Ignore
     @Test
-    public void testAddMatchingTriples() throws RepositoryException, QueryEvaluationException, MalformedQueryException
+    public void testAddMatchingTriples() throws RepositoryException, QueryEvaluationException, MalformedQueryException,
+        QueryAllException
     {
         final URI subjectUri = this.testValueFactory.createURI("http://example.org/po:0000198");
         
@@ -226,15 +230,16 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
     }
     
     /**
-     * Tests the addMatchingTriples mode of the SparqlNormalisationRule interface
+     * Tests the addMatchingTriples mode of the SparqlNormalisationRule interface.
      * 
      * @throws RepositoryException
      * @throws QueryEvaluationException
      * @throws MalformedQueryException
+     * @throws QueryAllException
      */
     @Test
     public void testMoreAddMatchingTriples() throws RepositoryException, QueryEvaluationException,
-        MalformedQueryException
+        MalformedQueryException, QueryAllException
     {
         final URI subjectUri = this.testValueFactory.createURI("http://bio2rdf.org/po:0000198");
         
@@ -303,7 +308,7 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
         for(final Statement nextOutputStatement : this.testRepositoryConnection.getStatements(null, null, null, false)
                 .asList())
         {
-            AbstractPrefixMappingNormalisationRuleTest.log.info(nextOutputStatement.toString());
+            AbstractPrefixMappingNormalisationRuleTest.LOG.info(nextOutputStatement.toString());
         }
         
         Assert.assertTrue("The test output statement was not in the resulting repository",
@@ -323,6 +328,54 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
         
         Assert.assertEquals("The test statements were not added accurately to the repository", 4,
                 this.testRepositoryConnection.size());
+    }
+    
+    @Test
+    public void testResetObjectMappingPredicates()
+    {
+        final PrefixMappingNormalisationRule mappingRule = this.getNewTestMappingRule();
+        
+        Assert.assertEquals(0, mappingRule.getObjectMappingPredicates().size());
+        
+        mappingRule.addObjectMappingPredicate(OWL.SAMEAS);
+        
+        Assert.assertEquals(1, mappingRule.getObjectMappingPredicates().size());
+        
+        Assert.assertTrue(mappingRule.resetObjectMappingPredicates());
+        
+        Assert.assertEquals(0, mappingRule.getObjectMappingPredicates().size());
+    }
+    
+    @Test
+    public void testResetPredicateMappingPredicates()
+    {
+        final PrefixMappingNormalisationRule mappingRule = this.getNewTestMappingRule();
+        
+        Assert.assertEquals(0, mappingRule.getPredicateMappingPredicates().size());
+        
+        mappingRule.addPredicateMappingPredicate(OWL.EQUIVALENTPROPERTY);
+        
+        Assert.assertEquals(1, mappingRule.getPredicateMappingPredicates().size());
+        
+        Assert.assertTrue(mappingRule.resetPredicateMappingPredicates());
+        
+        Assert.assertEquals(0, mappingRule.getPredicateMappingPredicates().size());
+    }
+    
+    @Test
+    public void testResetSubjectMappingPredicates()
+    {
+        final PrefixMappingNormalisationRule mappingRule = this.getNewTestMappingRule();
+        
+        Assert.assertEquals(0, mappingRule.getSubjectMappingPredicates().size());
+        
+        mappingRule.addSubjectMappingPredicate(OWL.EQUIVALENTCLASS);
+        
+        Assert.assertEquals(1, mappingRule.getSubjectMappingPredicates().size());
+        
+        Assert.assertTrue(mappingRule.resetSubjectMappingPredicates());
+        
+        Assert.assertEquals(0, mappingRule.getSubjectMappingPredicates().size());
     }
     
 }

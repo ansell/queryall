@@ -3,6 +3,7 @@
  */
 package org.queryall.api.ruletest;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -12,6 +13,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
@@ -21,15 +23,16 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class RuleTestSchema
+@MetaInfServices(QueryAllSchema.class)
+public class RuleTestSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(RuleTestSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RuleTestSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = RuleTestSchema.log.isTraceEnabled();
+    private static final boolean TRACE = RuleTestSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = RuleTestSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = RuleTestSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = RuleTestSchema.log.isInfoEnabled();
+    private static final boolean INFO = RuleTestSchema.LOG.isInfoEnabled();
     
     private static URI ruletestTypeUri;
     
@@ -39,7 +42,7 @@ public class RuleTestSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.RULETEST.getBaseURI();
         
@@ -47,6 +50,11 @@ public class RuleTestSchema
         RuleTestSchema.setRuletestHasRuleUri(f.createURI(baseUri, "testsRules"));
         RuleTestSchema.setRuletestTestsStage(f.createURI(baseUri, "testsStages"));
     }
+    
+    /**
+     * The pre-instantiated schema object for RuleTestSchema.
+     */
+    public static final QueryAllSchema RULE_TEST_SCHEMA = new RuleTestSchema();
     
     /**
      * @return the ruletestHasRuleUri
@@ -72,34 +80,76 @@ public class RuleTestSchema
         return RuleTestSchema.ruletestTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    /**
+     * @param nextRuletestHasRuleUri
+     *            the ruletestHasRuleUri to set
+     */
+    public static void setRuletestHasRuleUri(final URI nextRuletestHasRuleUri)
+    {
+        RuleTestSchema.ruletestHasRuleUri = nextRuletestHasRuleUri;
+    }
+    
+    /**
+     * @param nextRuletestTestsStage
+     *            the ruletestTestsStage to set
+     */
+    public static void setRuletestTestsStage(final URI nextRuletestTestsStage)
+    {
+        RuleTestSchema.ruletestTestsStage = nextRuletestTestsStage;
+    }
+    
+    /**
+     * @param nextRuletestTypeUri
+     *            the ruletestTypeUri to set
+     */
+    public static void setRuletestTypeUri(final URI nextRuletestTypeUri)
+    {
+        RuleTestSchema.ruletestTypeUri = nextRuletestTypeUri;
+    }
+    
+    /**
+     * Default constructor, uses the name of this class as the name.
+     */
+    public RuleTestSchema()
+    {
+        this(RuleTestSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public RuleTestSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contexts)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
-            final URI contextKeyUri = keyToUse;
             con.setAutoCommit(false);
             
-            con.add(RuleTestSchema.getRuletestTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(RuleTestSchema.getRuletestTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             con.add(RuleTestSchema.getRuletestTypeUri(), RDFS.LABEL,
-                    f.createLiteral("A test case for normalisation rules."), contextKeyUri);
+                    f.createLiteral("A test case for normalisation rules."), contexts);
             
-            con.add(RuleTestSchema.getRuletestHasRuleUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(RuleTestSchema.getRuletestHasRuleUri(), RDF.TYPE, OWL.OBJECTPROPERTY, contexts);
             con.add(RuleTestSchema.getRuletestHasRuleUri(), RDFS.RANGE,
-                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextKeyUri);
-            con.add(RuleTestSchema.getRuletestHasRuleUri(), RDFS.DOMAIN, RuleTestSchema.getRuletestTypeUri(),
-                    contextKeyUri);
-            con.add(RuleTestSchema.getRuletestHasRuleUri(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contexts);
+            con.add(RuleTestSchema.getRuletestHasRuleUri(), RDFS.DOMAIN, RuleTestSchema.getRuletestTypeUri(), contexts);
+            con.add(RuleTestSchema.getRuletestHasRuleUri(), RDFS.LABEL, f.createLiteral("."), contexts);
             
-            con.add(RuleTestSchema.getRuletestTestsStage(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(RuleTestSchema.getRuletestTestsStage(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
-            con.add(RuleTestSchema.getRuletestTestsStage(), RDFS.DOMAIN, RuleTestSchema.getRuletestTypeUri(),
-                    contextKeyUri);
-            con.add(RuleTestSchema.getRuletestTestsStage(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(RuleTestSchema.getRuletestTestsStage(), RDF.TYPE, OWL.OBJECTPROPERTY, contexts);
+            con.add(RuleTestSchema.getRuletestTestsStage(), RDFS.RANGE, RDFS.RESOURCE, contexts);
+            con.add(RuleTestSchema.getRuletestTestsStage(), RDFS.DOMAIN, RuleTestSchema.getRuletestTypeUri(), contexts);
+            con.add(RuleTestSchema.getRuletestTestsStage(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -114,7 +164,7 @@ public class RuleTestSchema
                 con.rollback();
             }
             
-            RuleTestSchema.log.error("RepositoryException: " + re.getMessage());
+            RuleTestSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {
@@ -127,30 +177,4 @@ public class RuleTestSchema
         return false;
     }
     
-    /**
-     * @param ruletestHasRuleUri
-     *            the ruletestHasRuleUri to set
-     */
-    public static void setRuletestHasRuleUri(final URI ruletestHasRuleUri)
-    {
-        RuleTestSchema.ruletestHasRuleUri = ruletestHasRuleUri;
-    }
-    
-    /**
-     * @param ruletestTestsStage
-     *            the ruletestTestsStage to set
-     */
-    public static void setRuletestTestsStage(final URI ruletestTestsStage)
-    {
-        RuleTestSchema.ruletestTestsStage = ruletestTestsStage;
-    }
-    
-    /**
-     * @param ruletestTypeUri
-     *            the ruletestTypeUri to set
-     */
-    public static void setRuletestTypeUri(final URI ruletestTypeUri)
-    {
-        RuleTestSchema.ruletestTypeUri = ruletestTypeUri;
-    }
 }

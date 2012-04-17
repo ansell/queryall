@@ -3,6 +3,7 @@
  */
 package org.queryall.api.querytype;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -12,6 +13,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.namespace.NamespaceEntrySchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
@@ -22,15 +24,16 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class QueryTypeSchema
+@MetaInfServices(QueryAllSchema.class)
+public class QueryTypeSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(QueryTypeSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(QueryTypeSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = QueryTypeSchema.log.isTraceEnabled();
+    private static final boolean TRACE = QueryTypeSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = QueryTypeSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = QueryTypeSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = QueryTypeSchema.log.isInfoEnabled();
+    private static final boolean INFO = QueryTypeSchema.LOG.isInfoEnabled();
     
     private static URI queryTypeUri;
     
@@ -78,7 +81,7 @@ public class QueryTypeSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.QUERY.getBaseURI();
         
@@ -109,15 +112,10 @@ public class QueryTypeSchema
         
     }
     
-    public static URI getNamespaceMatchAllUri()
-    {
-        return QueryTypeSchema.getQueryNamespaceMatchAll();
-    }
-    
-    public static URI getNamespaceMatchAnyUri()
-    {
-        return QueryTypeSchema.getQueryNamespaceMatchAny();
-    }
+    /**
+     * The pre-instantiated schema object for QueryTypeSchema.
+     */
+    public static final QueryAllSchema QUERY_TYPE_SCHEMA = new QueryTypeSchema();
     
     /**
      * @return the queryHandleAllNamespaces
@@ -300,133 +298,346 @@ public class QueryTypeSchema
         return QueryTypeSchema.queryTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    /**
+     * @param nextQueryHandleAllNamespaces
+     *            the queryHandleAllNamespaces to set
+     */
+    public static void setQueryHandleAllNamespaces(final URI nextQueryHandleAllNamespaces)
+    {
+        QueryTypeSchema.queryHandleAllNamespaces = nextQueryHandleAllNamespaces;
+    }
+    
+    /**
+     * @param nextQueryIncludeDefaults
+     *            the queryIncludeDefaults to set
+     */
+    public static void setQueryIncludeDefaults(final URI nextQueryIncludeDefaults)
+    {
+        QueryTypeSchema.queryIncludeDefaults = nextQueryIncludeDefaults;
+    }
+    
+    /**
+     * @param nextQueryIncludeQueryType
+     *            the queryIncludeQueryType to set
+     */
+    public static void setQueryIncludeQueryType(final URI nextQueryIncludeQueryType)
+    {
+        QueryTypeSchema.queryIncludeQueryType = nextQueryIncludeQueryType;
+    }
+    
+    /**
+     * @param nextQueryInRobotsTxt
+     *            the queryInRobotsTxt to set
+     */
+    public static void setQueryInRobotsTxt(final URI nextQueryInRobotsTxt)
+    {
+        QueryTypeSchema.queryInRobotsTxt = nextQueryInRobotsTxt;
+    }
+    
+    /**
+     * @param nextQueryIsDummyQueryType
+     *            the queryIsDummyQueryType to set
+     */
+    public static void setQueryIsDummyQueryType(final URI nextQueryIsDummyQueryType)
+    {
+        QueryTypeSchema.queryIsDummyQueryType = nextQueryIsDummyQueryType;
+    }
+    
+    /**
+     * @param nextQueryIsPageable
+     *            the queryIsPageable to set
+     */
+    public static void setQueryIsPageable(final URI nextQueryIsPageable)
+    {
+        QueryTypeSchema.queryIsPageable = nextQueryIsPageable;
+    }
+    
+    /**
+     * @param nextQueryNamespaceInputIndex
+     *            the queryNamespaceInputIndex to set
+     */
+    public static void setQueryNamespaceInputIndex(final URI nextQueryNamespaceInputIndex)
+    {
+        QueryTypeSchema.queryNamespaceInputIndex = nextQueryNamespaceInputIndex;
+    }
+    
+    private static void setQueryNamespaceInputTag(final URI nextQueryNamespaceInputTag)
+    {
+        QueryTypeSchema.queryNamespaceInputTag = nextQueryNamespaceInputTag;
+    }
+    
+    /**
+     * @param nextQueryNamespaceMatchAll
+     *            the queryNamespaceMatchAll to set
+     */
+    public static void setQueryNamespaceMatchAll(final URI nextQueryNamespaceMatchAll)
+    {
+        QueryTypeSchema.queryNamespaceMatchAll = nextQueryNamespaceMatchAll;
+    }
+    
+    /**
+     * @param nextQueryNamespaceMatchAny
+     *            the queryNamespaceMatchAny to set
+     */
+    public static void setQueryNamespaceMatchAny(final URI nextQueryNamespaceMatchAny)
+    {
+        QueryTypeSchema.queryNamespaceMatchAny = nextQueryNamespaceMatchAny;
+    }
+    
+    /**
+     * @param nextQueryNamespaceMatchMethod
+     *            the queryNamespaceMatchMethod to set
+     */
+    public static void setQueryNamespaceMatchMethod(final URI nextQueryNamespaceMatchMethod)
+    {
+        QueryTypeSchema.queryNamespaceMatchMethod = nextQueryNamespaceMatchMethod;
+    }
+    
+    /**
+     * @param nextQueryNamespaceSpecific
+     *            the queryNamespaceSpecific to set
+     */
+    public static void setQueryNamespaceSpecific(final URI nextQueryNamespaceSpecific)
+    {
+        QueryTypeSchema.queryNamespaceSpecific = nextQueryNamespaceSpecific;
+    }
+    
+    /**
+     * @param nextQueryNamespaceToHandle
+     *            the queryNamespaceToHandle to set
+     */
+    public static void setQueryNamespaceToHandle(final URI nextQueryNamespaceToHandle)
+    {
+        QueryTypeSchema.queryNamespaceToHandle = nextQueryNamespaceToHandle;
+    }
+    
+    /**
+     * @param nextQueryParameterTemplateTerm
+     *            the queryParameterTemplateTerm to set
+     */
+    public static void setQueryParameterTemplateTerm(final URI nextQueryParameterTemplateTerm)
+    {
+        QueryTypeSchema.queryParameterTemplateTerm = nextQueryParameterTemplateTerm;
+    }
+    
+    /**
+     * @param nextQueryPublicIdentifierIndex
+     *            the queryPublicIdentifierIndex to set
+     */
+    public static void setQueryPublicIdentifierIndex(final URI nextQueryPublicIdentifierIndex)
+    {
+        QueryTypeSchema.queryPublicIdentifierIndex = nextQueryPublicIdentifierIndex;
+    }
+    
+    /**
+     * @param nextQueryPublicIdentifierTag
+     *            the queryPublicIdentifierTag to set
+     */
+    public static void setQueryPublicIdentifierTag(final URI nextQueryPublicIdentifierTag)
+    {
+        QueryTypeSchema.queryPublicIdentifierTag = nextQueryPublicIdentifierTag;
+    }
+    
+    /**
+     * @param nextQueryQueryUriTemplateString
+     *            the queryQueryUriTemplateString to set
+     */
+    public static void setQueryQueryUriTemplateString(final URI nextQueryQueryUriTemplateString)
+    {
+        QueryTypeSchema.queryQueryUriTemplateString = nextQueryQueryUriTemplateString;
+    }
+    
+    /**
+     * @param nextQueryStandardUriTemplateString
+     *            the queryStandardUriTemplateString to set
+     */
+    public static void setQueryStandardUriTemplateString(final URI nextQueryStandardUriTemplateString)
+    {
+        QueryTypeSchema.queryStandardUriTemplateString = nextQueryStandardUriTemplateString;
+    }
+    
+    /**
+     * @param nextQueryStaticOutputTemplateTerm
+     *            the queryStaticOutputTemplateTerm to set
+     */
+    public static void setQueryStaticOutputTemplateTerm(final URI nextQueryStaticOutputTemplateTerm)
+    {
+        QueryTypeSchema.queryStaticOutputTemplateTerm = nextQueryStaticOutputTemplateTerm;
+    }
+    
+    /**
+     * @param nextQueryTemplateString
+     *            the queryTemplateString to set
+     */
+    public static void setQueryTemplateString(final URI nextQueryTemplateString)
+    {
+        QueryTypeSchema.queryTemplateString = nextQueryTemplateString;
+    }
+    
+    /**
+     * @param nextQueryTemplateTerm
+     *            the queryTemplateTerm to set
+     */
+    public static void setQueryTemplateTerm(final URI nextQueryTemplateTerm)
+    {
+        QueryTypeSchema.queryTemplateTerm = nextQueryTemplateTerm;
+    }
+    
+    /**
+     * @param nextQueryTitle
+     *            the queryTitle to set
+     */
+    public static void setQueryTitle(final URI nextQueryTitle)
+    {
+        QueryTypeSchema.queryTitle = nextQueryTitle;
+    }
+    
+    /**
+     * @param nextQueryTypeUri
+     *            the queryTypeUri to set
+     */
+    public static void setQueryTypeUri(final URI nextQueryTypeUri)
+    {
+        QueryTypeSchema.queryTypeUri = nextQueryTypeUri;
+    }
+    
+    /**
+     * Default constructor, uses the name of this class as the name.
+     */
+    public QueryTypeSchema()
+    {
+        this(QueryTypeSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public QueryTypeSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contexts)
         throws OpenRDFException
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
-            final URI contextKeyUri = keyToUse;
             con.setAutoCommit(false);
             
-            con.add(QueryTypeSchema.getQueryTypeUri(), RDF.TYPE, OWL.CLASS, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             
             if(modelVersion == 1)
             {
-                con.add(QueryTypeSchema.getQueryTitle(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contextKeyUri);
-                con.add(QueryTypeSchema.getQueryTitle(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE, contextKeyUri);
+                con.add(QueryTypeSchema.getQueryTitle(), RDF.TYPE, OWL.DEPRECATEDPROPERTY, contexts);
+                con.add(QueryTypeSchema.getQueryTitle(), RDFS.SUBPROPERTYOF, Constants.DC_TITLE, contexts);
             }
             
-            con.add(QueryTypeSchema.getQueryNamespaceToHandle(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceToHandle(), RDF.TYPE, OWL.OBJECTPROPERTY, contexts);
             con.add(QueryTypeSchema.getQueryNamespaceToHandle(), RDFS.RANGE,
-                    NamespaceEntrySchema.getNamespaceTypeUri(), contextKeyUri);
+                    NamespaceEntrySchema.getNamespaceTypeUri(), contexts);
             con.add(QueryTypeSchema.getQueryNamespaceToHandle(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceToHandle(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+                    contexts);
+            con.add(QueryTypeSchema.getQueryNamespaceToHandle(), RDFS.LABEL, f.createLiteral("."), contexts);
             
-            con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDFS.RANGE, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
+            con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDF.TYPE, OWL.OBJECTPROPERTY, contexts);
+            con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDFS.RANGE, QueryTypeSchema.getQueryTypeUri(), contexts);
             con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+                    contexts);
+            con.add(QueryTypeSchema.getQueryIncludeQueryType(), RDFS.LABEL, f.createLiteral("."), contexts);
             
-            con.add(QueryTypeSchema.getQueryNamespaceMatchMethod(), RDF.TYPE, OWL.OBJECTPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceMatchMethod(), RDFS.RANGE, RDFS.RESOURCE, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceMatchMethod(), RDF.TYPE, OWL.OBJECTPROPERTY, contexts);
+            con.add(QueryTypeSchema.getQueryNamespaceMatchMethod(), RDFS.RANGE, RDFS.RESOURCE, contexts);
             con.add(QueryTypeSchema.getQueryNamespaceMatchMethod(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceMatchMethod(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+                    contexts);
+            con.add(QueryTypeSchema.getQueryNamespaceMatchMethod(), RDFS.LABEL, f.createLiteral("."), contexts);
             
-            con.add(QueryTypeSchema.getQueryHandleAllNamespaces(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryHandleAllNamespaces(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryHandleAllNamespaces(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(QueryTypeSchema.getQueryHandleAllNamespaces(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(QueryTypeSchema.getQueryHandleAllNamespaces(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryHandleAllNamespaces(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+                    contexts);
+            con.add(QueryTypeSchema.getQueryHandleAllNamespaces(), RDFS.LABEL, f.createLiteral("."), contexts);
             
-            con.add(QueryTypeSchema.getQueryNamespaceSpecific(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceSpecific(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceSpecific(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(QueryTypeSchema.getQueryNamespaceSpecific(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(QueryTypeSchema.getQueryNamespaceSpecific(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceSpecific(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+                    contexts);
+            con.add(QueryTypeSchema.getQueryNamespaceSpecific(), RDFS.LABEL, f.createLiteral("."), contexts);
             
-            con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDFS.RANGE, RDFS.LITERAL, contexts);
+            con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(), contexts);
+            con.add(QueryTypeSchema.getQueryIncludeDefaults(), RDFS.LABEL, f.createLiteral("."), contexts);
             
-            con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDFS.RANGE, RDFS.LITERAL, contexts);
+            con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(), contexts);
+            con.add(QueryTypeSchema.getQueryInRobotsTxt(), RDFS.LABEL, f.createLiteral("."), contexts);
             
-            con.add(QueryTypeSchema.getQueryIsPageable(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIsPageable(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIsPageable(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIsPageable(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(QueryTypeSchema.getQueryIsPageable(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(QueryTypeSchema.getQueryIsPageable(), RDFS.RANGE, RDFS.LITERAL, contexts);
+            con.add(QueryTypeSchema.getQueryIsPageable(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(), contexts);
+            con.add(QueryTypeSchema.getQueryIsPageable(), RDFS.LABEL, f.createLiteral("."), contexts);
             
-            con.add(QueryTypeSchema.getQueryIsDummyQueryType(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIsDummyQueryType(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryIsDummyQueryType(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(QueryTypeSchema.getQueryIsDummyQueryType(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(QueryTypeSchema.getQueryIsDummyQueryType(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryIsDummyQueryType(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+                    contexts);
+            con.add(QueryTypeSchema.getQueryIsDummyQueryType(), RDFS.LABEL, f.createLiteral("."), contexts);
             
-            con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
+                    contexts);
             con.add(QueryTypeSchema.getQueryPublicIdentifierIndex(), RDFS.LABEL,
-                    f.createLiteral("Deprecated: use publicIdentifierTag with input_N where N is the index."),
-                    contextKeyUri);
+                    f.createLiteral("Deprecated: use publicIdentifierTag with input_N where N is the index."), contexts);
             
-            con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
+                    contexts);
             con.add(QueryTypeSchema.getQueryNamespaceInputIndex(), RDFS.LABEL,
-                    f.createLiteral("Deprecated: use namespaceInputTag with input_N where N is the index."),
-                    contextKeyUri);
+                    f.createLiteral("Deprecated: use namespaceInputTag with input_N where N is the index."), contexts);
             
-            con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(QueryTypeSchema.getQueryPublicIdentifierTag(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
+                    contexts);
             con.add(QueryTypeSchema.getQueryPublicIdentifierTag(),
                     RDFS.LABEL,
                     f.createLiteral("Defines the tags that are to be identified as public, and hence convertable according to public registries and rules."),
-                    contextKeyUri);
+                    contexts);
             
-            con.add(QueryTypeSchema.getQueryNamespaceInputTag(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryNamespaceInputTag(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryNamespaceInputTag(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(QueryTypeSchema.getQueryNamespaceInputTag(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(QueryTypeSchema.getQueryNamespaceInputTag(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
+                    contexts);
             con.add(QueryTypeSchema.getQueryNamespaceInputTag(),
                     RDFS.LABEL,
                     f.createLiteral("Defines the tags that are to be identified as namespaces, and hence convertable according to namespace registries."),
-                    contextKeyUri);
+                    contexts);
             
-            con.add(QueryTypeSchema.getQueryTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryTemplateString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryTemplateString(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryTemplateString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+            con.add(QueryTypeSchema.getQueryTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(QueryTypeSchema.getQueryTemplateString(), RDFS.RANGE, RDFS.LITERAL, contexts);
+            con.add(QueryTypeSchema.getQueryTemplateString(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(), contexts);
+            con.add(QueryTypeSchema.getQueryTemplateString(), RDFS.LABEL, f.createLiteral("."), contexts);
             
-            con.add(QueryTypeSchema.getQueryQueryUriTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryQueryUriTemplateString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryQueryUriTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(QueryTypeSchema.getQueryQueryUriTemplateString(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(QueryTypeSchema.getQueryQueryUriTemplateString(), RDFS.DOMAIN, QueryTypeSchema.getQueryTypeUri(),
-                    contextKeyUri);
-            con.add(QueryTypeSchema.getQueryQueryUriTemplateString(), RDFS.LABEL, f.createLiteral("."), contextKeyUri);
+                    contexts);
+            con.add(QueryTypeSchema.getQueryQueryUriTemplateString(), RDFS.LABEL, f.createLiteral("."), contexts);
             
-            con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextKeyUri);
-            con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDFS.RANGE, RDFS.LITERAL, contextKeyUri);
+            con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
+            con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDFS.RANGE, RDFS.LITERAL, contexts);
             con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDFS.DOMAIN,
-                    QueryTypeSchema.getQueryTypeUri(), contextKeyUri);
-            con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDFS.LABEL, f.createLiteral("."),
-                    contextKeyUri);
+                    QueryTypeSchema.getQueryTypeUri(), contexts);
+            con.add(QueryTypeSchema.getQueryStandardUriTemplateString(), RDFS.LABEL, f.createLiteral("."), contexts);
             
             // If everything went as planned, we can commit the result
             con.commit();
@@ -442,7 +653,7 @@ public class QueryTypeSchema
                 con.rollback();
             }
             
-            QueryTypeSchema.log.error("RepositoryException: " + re.getMessage());
+            QueryTypeSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {
@@ -454,208 +665,4 @@ public class QueryTypeSchema
         
         return false;
     }
-    
-    /**
-     * @param queryHandleAllNamespaces
-     *            the queryHandleAllNamespaces to set
-     */
-    public static void setQueryHandleAllNamespaces(final URI queryHandleAllNamespaces)
-    {
-        QueryTypeSchema.queryHandleAllNamespaces = queryHandleAllNamespaces;
-    }
-    
-    /**
-     * @param queryIncludeDefaults
-     *            the queryIncludeDefaults to set
-     */
-    public static void setQueryIncludeDefaults(final URI queryIncludeDefaults)
-    {
-        QueryTypeSchema.queryIncludeDefaults = queryIncludeDefaults;
-    }
-    
-    /**
-     * @param queryIncludeQueryType
-     *            the queryIncludeQueryType to set
-     */
-    public static void setQueryIncludeQueryType(final URI queryIncludeQueryType)
-    {
-        QueryTypeSchema.queryIncludeQueryType = queryIncludeQueryType;
-    }
-    
-    /**
-     * @param queryInRobotsTxt
-     *            the queryInRobotsTxt to set
-     */
-    public static void setQueryInRobotsTxt(final URI queryInRobotsTxt)
-    {
-        QueryTypeSchema.queryInRobotsTxt = queryInRobotsTxt;
-    }
-    
-    /**
-     * @param queryIsDummyQueryType
-     *            the queryIsDummyQueryType to set
-     */
-    public static void setQueryIsDummyQueryType(final URI queryIsDummyQueryType)
-    {
-        QueryTypeSchema.queryIsDummyQueryType = queryIsDummyQueryType;
-    }
-    
-    /**
-     * @param queryIsPageable
-     *            the queryIsPageable to set
-     */
-    public static void setQueryIsPageable(final URI queryIsPageable)
-    {
-        QueryTypeSchema.queryIsPageable = queryIsPageable;
-    }
-    
-    /**
-     * @param queryNamespaceInputIndex
-     *            the queryNamespaceInputIndex to set
-     */
-    public static void setQueryNamespaceInputIndex(final URI queryNamespaceInputIndex)
-    {
-        QueryTypeSchema.queryNamespaceInputIndex = queryNamespaceInputIndex;
-    }
-    
-    private static void setQueryNamespaceInputTag(final URI queryNamespaceInputTag)
-    {
-        QueryTypeSchema.queryNamespaceInputTag = queryNamespaceInputTag;
-    }
-    
-    /**
-     * @param queryNamespaceMatchAll
-     *            the queryNamespaceMatchAll to set
-     */
-    public static void setQueryNamespaceMatchAll(final URI queryNamespaceMatchAll)
-    {
-        QueryTypeSchema.queryNamespaceMatchAll = queryNamespaceMatchAll;
-    }
-    
-    /**
-     * @param queryNamespaceMatchAny
-     *            the queryNamespaceMatchAny to set
-     */
-    public static void setQueryNamespaceMatchAny(final URI queryNamespaceMatchAny)
-    {
-        QueryTypeSchema.queryNamespaceMatchAny = queryNamespaceMatchAny;
-    }
-    
-    /**
-     * @param queryNamespaceMatchMethod
-     *            the queryNamespaceMatchMethod to set
-     */
-    public static void setQueryNamespaceMatchMethod(final URI queryNamespaceMatchMethod)
-    {
-        QueryTypeSchema.queryNamespaceMatchMethod = queryNamespaceMatchMethod;
-    }
-    
-    /**
-     * @param queryNamespaceSpecific
-     *            the queryNamespaceSpecific to set
-     */
-    public static void setQueryNamespaceSpecific(final URI queryNamespaceSpecific)
-    {
-        QueryTypeSchema.queryNamespaceSpecific = queryNamespaceSpecific;
-    }
-    
-    /**
-     * @param queryNamespaceToHandle
-     *            the queryNamespaceToHandle to set
-     */
-    public static void setQueryNamespaceToHandle(final URI queryNamespaceToHandle)
-    {
-        QueryTypeSchema.queryNamespaceToHandle = queryNamespaceToHandle;
-    }
-    
-    /**
-     * @param queryParameterTemplateTerm
-     *            the queryParameterTemplateTerm to set
-     */
-    public static void setQueryParameterTemplateTerm(final URI queryParameterTemplateTerm)
-    {
-        QueryTypeSchema.queryParameterTemplateTerm = queryParameterTemplateTerm;
-    }
-    
-    /**
-     * @param queryPublicIdentifierIndex
-     *            the queryPublicIdentifierIndex to set
-     */
-    public static void setQueryPublicIdentifierIndex(final URI queryPublicIdentifierIndex)
-    {
-        QueryTypeSchema.queryPublicIdentifierIndex = queryPublicIdentifierIndex;
-    }
-    
-    /**
-     * @param queryPublicIdentifierTag
-     *            the queryPublicIdentifierTag to set
-     */
-    public static void setQueryPublicIdentifierTag(final URI queryPublicIdentifierTag)
-    {
-        QueryTypeSchema.queryPublicIdentifierTag = queryPublicIdentifierTag;
-    }
-    
-    /**
-     * @param queryQueryUriTemplateString
-     *            the queryQueryUriTemplateString to set
-     */
-    public static void setQueryQueryUriTemplateString(final URI queryQueryUriTemplateString)
-    {
-        QueryTypeSchema.queryQueryUriTemplateString = queryQueryUriTemplateString;
-    }
-    
-    /**
-     * @param queryStandardUriTemplateString
-     *            the queryStandardUriTemplateString to set
-     */
-    public static void setQueryStandardUriTemplateString(final URI queryStandardUriTemplateString)
-    {
-        QueryTypeSchema.queryStandardUriTemplateString = queryStandardUriTemplateString;
-    }
-    
-    /**
-     * @param queryStaticOutputTemplateTerm
-     *            the queryStaticOutputTemplateTerm to set
-     */
-    public static void setQueryStaticOutputTemplateTerm(final URI queryStaticOutputTemplateTerm)
-    {
-        QueryTypeSchema.queryStaticOutputTemplateTerm = queryStaticOutputTemplateTerm;
-    }
-    
-    /**
-     * @param queryTemplateString
-     *            the queryTemplateString to set
-     */
-    public static void setQueryTemplateString(final URI queryTemplateString)
-    {
-        QueryTypeSchema.queryTemplateString = queryTemplateString;
-    }
-    
-    /**
-     * @param queryTemplateTerm
-     *            the queryTemplateTerm to set
-     */
-    public static void setQueryTemplateTerm(final URI queryTemplateTerm)
-    {
-        QueryTypeSchema.queryTemplateTerm = queryTemplateTerm;
-    }
-    
-    /**
-     * @param queryTitle
-     *            the queryTitle to set
-     */
-    public static void setQueryTitle(final URI queryTitle)
-    {
-        QueryTypeSchema.queryTitle = queryTitle;
-    }
-    
-    /**
-     * @param queryTypeUri
-     *            the queryTypeUri to set
-     */
-    public static void setQueryTypeUri(final URI queryTypeUri)
-    {
-        QueryTypeSchema.queryTypeUri = queryTypeUri;
-    }
-    
 }

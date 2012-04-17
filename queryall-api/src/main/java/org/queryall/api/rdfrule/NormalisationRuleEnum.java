@@ -3,14 +3,12 @@
  */
 package org.queryall.api.rdfrule;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import org.openrdf.model.URI;
 import org.queryall.api.services.QueryAllEnum;
+import org.queryall.api.services.ServiceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,124 +21,24 @@ import org.slf4j.LoggerFactory;
  */
 public class NormalisationRuleEnum extends QueryAllEnum
 {
-    private static final Logger log = LoggerFactory.getLogger(NormalisationRuleEnum.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NormalisationRuleEnum.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = NormalisationRuleEnum.log.isTraceEnabled();
-    private static final boolean _DEBUG = NormalisationRuleEnum.log.isDebugEnabled();
+    private static final boolean TRACE = NormalisationRuleEnum.LOG.isTraceEnabled();
+    private static final boolean DEBUG = NormalisationRuleEnum.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = NormalisationRuleEnum.log.isInfoEnabled();
+    private static final boolean INFO = NormalisationRuleEnum.LOG.isInfoEnabled();
     
-    protected static final Collection<NormalisationRuleEnum> ALL_NORMALISATION_RULES =
-            new ArrayList<NormalisationRuleEnum>(5);
-    
+    /**
+     * @deprecated Use {@link ServiceUtils#getNormalisationRuleEnumsByTypeUris(Set<URI>)} instead
+     */
+    @Deprecated
     public static Collection<NormalisationRuleEnum> byTypeUris(final Set<URI> nextTypeUris)
     {
-        if(nextTypeUris.size() == 0)
-        {
-            if(NormalisationRuleEnum._DEBUG)
-            {
-                NormalisationRuleEnum.log.debug("found an empty URI set for nextNormalisationRuleUris=" + nextTypeUris);
-            }
-            
-            return Collections.emptyList();
-        }
-        
-        final List<NormalisationRuleEnum> results =
-                new ArrayList<NormalisationRuleEnum>(NormalisationRuleEnum.ALL_NORMALISATION_RULES.size());
-        
-        for(final NormalisationRuleEnum nextEnum : NormalisationRuleEnum.ALL_NORMALISATION_RULES)
-        {
-            // NOTE: This restriction would force developers to include implementations for every
-            // possible combination of functionalities
-            // This is not likely to be practical or useful, so it is not implemented
-            // The minimum restriction is that there is at least one URI, ie, the standard default
-            // URI for this type of object
-            // boolean matching = (nextNormalisationRuleEnum.getTypeURIs().size() ==
-            // nextNormalisationRuleUris.size());
-            boolean matching = true;
-            
-            for(final URI nextURI : nextTypeUris)
-            {
-                if(!nextEnum.getTypeURIs().contains(nextURI))
-                {
-                    if(NormalisationRuleEnum._DEBUG)
-                    {
-                        NormalisationRuleEnum.log.debug("found an empty URI set for nextURI=" + nextURI.stringValue());
-                    }
-                    
-                    matching = false;
-                }
-            }
-            
-            if(matching)
-            {
-                if(NormalisationRuleEnum._DEBUG)
-                {
-                    NormalisationRuleEnum.log.debug("found an matching URI set for nextNormalisationRuleUris="
-                            + nextTypeUris);
-                }
-                results.add(nextEnum);
-            }
-        }
-        
-        if(NormalisationRuleEnum._DEBUG)
-        {
-            NormalisationRuleEnum.log.debug("returning results.size()=" + results.size()
-                    + " for nextNormalisationRuleUris=" + nextTypeUris);
-        }
-        
-        return results;
+        return ServiceUtils.getNormalisationRuleEnumsByTypeUris(nextTypeUris);
     }
     
     /**
-     * Registers the specified normalisation rule.
-     */
-    public static void register(final NormalisationRuleEnum nextRdfRule)
-    {
-        if(NormalisationRuleEnum.valueOf(nextRdfRule.getName()) != null)
-        {
-            if(NormalisationRuleEnum._DEBUG)
-            {
-                NormalisationRuleEnum.log.debug("Cannot register this normalisation rule again name="
-                        + nextRdfRule.getName());
-            }
-        }
-        else
-        {
-            NormalisationRuleEnum.ALL_NORMALISATION_RULES.add(nextRdfRule);
-        }
-    }
-    
-    public static NormalisationRuleEnum register(final String name, final Set<URI> typeURIs)
-    {
-        final NormalisationRuleEnum newRdfRuleEnum = new NormalisationRuleEnum(name, typeURIs);
-        NormalisationRuleEnum.register(newRdfRuleEnum);
-        return newRdfRuleEnum;
-    }
-    
-    public static NormalisationRuleEnum valueOf(final String string)
-    {
-        for(final NormalisationRuleEnum nextRdfRuleEnum : NormalisationRuleEnum.ALL_NORMALISATION_RULES)
-        {
-            if(nextRdfRuleEnum.getName().equals(string))
-            {
-                return nextRdfRuleEnum;
-            }
-        }
-        
-        return null;
-    }
-    
-    /**
-     * Returns all known/registered normalisation rules.
-     */
-    public static Collection<NormalisationRuleEnum> values()
-    {
-        return Collections.unmodifiableCollection(NormalisationRuleEnum.ALL_NORMALISATION_RULES);
-    }
-    
-    /**
-     * Create a new RdfRule enum using the given name, which must be unique
+     * Create a new RdfRule enum using the given name, which must be unique.
      * 
      * @param nextName
      * @param nextTypeURIs
@@ -148,6 +46,5 @@ public class NormalisationRuleEnum extends QueryAllEnum
     public NormalisationRuleEnum(final String nextName, final Set<URI> nextTypeURIs)
     {
         super(nextName, nextTypeURIs);
-        NormalisationRuleEnum.ALL_NORMALISATION_RULES.add(this);
     }
 }

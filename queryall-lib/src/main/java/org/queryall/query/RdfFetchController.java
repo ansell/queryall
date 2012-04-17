@@ -2,11 +2,12 @@ package org.queryall.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.openrdf.model.URI;
 import org.queryall.api.base.QueryAllConfiguration;
@@ -20,17 +21,19 @@ import org.queryall.api.provider.Provider;
 import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.provider.SparqlProvider;
 import org.queryall.api.provider.SparqlProviderSchema;
-import org.queryall.api.querytype.OutputQueryType;
+import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
-import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.SortOrder;
+import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.exception.QueryAllException;
+import org.queryall.exception.UnnormalisableRuleException;
 import org.queryall.utils.ListUtils;
 import org.queryall.utils.ProviderUtils;
+import org.queryall.utils.QueryBundleUtils;
 import org.queryall.utils.QueryTypeUtils;
 import org.queryall.utils.RuleUtils;
-import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,101 +43,37 @@ import org.slf4j.LoggerFactory;
 public class RdfFetchController
 {
     private static final Logger log = LoggerFactory.getLogger(RdfFetchController.class);
-    private static final boolean _TRACE = RdfFetchController.log.isTraceEnabled();
-    private static final boolean _DEBUG = RdfFetchController.log.isDebugEnabled();
-    private static final boolean _INFO = RdfFetchController.log.isInfoEnabled();
+    private static final boolean TRACE = RdfFetchController.log.isTraceEnabled();
+    private static final boolean DEBUG = RdfFetchController.log.isDebugEnabled();
+    private static final boolean INFO = RdfFetchController.log.isInfoEnabled();
     
-    public static void fetchRdfForQueries(final Collection<RdfFetcherQueryRunnable> fetchThreads)
-        throws InterruptedException
-    {
-        final long start = System.currentTimeMillis();
-        
-        // TODO: FIXME: Should be using this to recover from errors if possible when there is an
-        // alternative endpoint available
-        final Collection<RdfFetcherQueryRunnable> temporaryEndpointBlacklist = new HashSet<RdfFetcherQueryRunnable>();
-        
-        for(final RdfFetcherQueryRunnable nextThread : fetchThreads)
-        {
-            if(RdfFetchController._DEBUG)
-            {
-                RdfFetchController.log.debug("RdfFetchController.fetchRdfForQueries: about to start thread name="
-                        + nextThread.getName());
-            }
-            
-            nextThread.start();
-        }
-        
-        if(RdfFetchController._DEBUG)
-        {
-            RdfFetchController.log
-                    .debug("RdfFetchController.fetchRdfForQueries: about to sleep to let other threads do some work");
-        }
-        
-        // do some very minor waiting to let the other threads start to do some work
-        try
-        {
-            Thread.sleep(2);
-        }
-        catch(final InterruptedException ie)
-        {
-            RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: Thread interruption occurred");
-            throw ie;
-        }
-        
-        for(final RdfFetcherQueryRunnable nextThread : fetchThreads)
-        {
-            try
-            {
-                // effectively attempt to join each of the threads, this loop will complete when
-                // they are all completed
-                nextThread.join();
-            }
-            catch(final InterruptedException ie)
-            {
-                RdfFetchController.log
-                        .error("RdfFetchController.fetchRdfForQueries: caught interrupted exception message="
-                                + ie.getMessage());
-                throw ie;
-            }
-        }
-        
-        // This loop is a safety check, although it doesn't actually fallover if something is wrong
-        for(final RdfFetcherQueryRunnable nextThread : fetchThreads)
-        {
-            if(!nextThread.getCompleted())
-            {
-                RdfFetchController.log
-                        .error("RdfFetchController.fetchRdfForQueries: Thread not completed properly name="
-                                + nextThread.getName());
-            }
-        }
-        
-        if(RdfFetchController._INFO)
-        {
-            final long end = System.currentTimeMillis();
-            
-            RdfFetchController.log.info(String.format("%s: timing=%10d", "RdfFetchController.fetchRdfForQueries",
-                    (end - start)));
-        }
-    }
+    private final ExecutorService executor = Executors.newCachedThreadPool();
     
-    private Collection<RdfFetcherQueryRunnable> errorResults = new HashSet<RdfFetcherQueryRunnable>(10);
-    private Collection<RdfFetcherQueryRunnable> successfulResults = new HashSet<RdfFetcherQueryRunnable>(10);
-    private Collection<RdfFetcherQueryRunnable> uncalledThreads = new HashSet<RdfFetcherQueryRunnable>(4);
+    private volatile Collection<RdfFetcherQueryRunnable> fetchThreadGroup = new ArrayList<RdfFetcherQueryRunnable>(20);
     
-    private Collection<RdfFetcherQueryRunnable> fetchThreadGroup = new HashSet<RdfFetcherQueryRunnable>(20);
+    private volatile Collection<RdfFetcherQueryRunnable> errorResults = new ArrayList<RdfFetcherQueryRunnable>(10);
+    private volatile Collection<RdfFetcherQueryRunnable> successfulResults = new ArrayList<RdfFetcherQueryRunnable>(10);
+    private volatile Collection<RdfFetcherQueryRunnable> uncalledThreads = new ArrayList<RdfFetcherQueryRunnable>(4);
     
-    private volatile Collection<QueryBundle> queryBundles = null;
+    private volatile Collection<QueryBundle> queryBundles = new ArrayList<QueryBundle>();
+    
+    private volatile boolean namespaceNotRecognised = false;
+    
     private Map<String, String> queryParameters;
     private List<Profile> sortedIncludedProfiles;
-    private boolean useDefaultProviders = true;
     private String realHostName;
     private int pageOffset;
-    private boolean includeNonPagedQueries = true;
     private QueryAllConfiguration localSettings;
     private BlacklistController localBlacklistController;
     
-    private boolean namespaceNotRecognised = false;
+    /**
+     * Default constructor. In this case, the fetch threads must be set directly before attempting
+     * to call fetchRdfForQueries.
+     */
+    public RdfFetchController()
+    {
+        
+    }
     
     /**
      * Sets the controller up using a collection of predefined query bundles, along with the
@@ -143,15 +82,15 @@ public class RdfFetchController
      * @param settingsClass
      * @param localBlacklistController
      * @param nextQueryBundles
+     * @throws QueryAllException
      */
     public RdfFetchController(final QueryAllConfiguration settingsClass,
             final BlacklistController localBlacklistController, final Collection<QueryBundle> nextQueryBundles)
+        throws QueryAllException
     {
-        this.localSettings = settingsClass;
-        this.localBlacklistController = localBlacklistController;
-        this.queryBundles = nextQueryBundles;
-        
-        this.initialise();
+        this.setSettings(settingsClass);
+        this.setBlacklistController(localBlacklistController);
+        this.setQueryBundles(nextQueryBundles);
     }
     
     /**
@@ -165,43 +104,23 @@ public class RdfFetchController
      * @param localBlacklistController
      * @param nextQueryParameters
      * @param nextIncludedSortedProfiles
-     * @param nextUseDefaultProviders
      * @param nextRealHostName
      * @param nextPageOffset
+     * @throws QueryAllException
      */
     public RdfFetchController(final QueryAllConfiguration settingsClass,
             final BlacklistController localBlacklistController, final Map<String, String> nextQueryParameters,
-            final List<Profile> nextIncludedSortedProfiles, final boolean nextUseDefaultProviders,
-            final String nextRealHostName, final int nextPageOffset)
+            final List<Profile> nextIncludedSortedProfiles, final String nextRealHostName, final int nextPageOffset)
+        throws QueryAllException
     {
-        this.localSettings = settingsClass;
-        this.localBlacklistController = localBlacklistController;
+        this.setSettings(settingsClass);
+        this.setBlacklistController(localBlacklistController);
         this.queryParameters = nextQueryParameters;
         this.sortedIncludedProfiles = nextIncludedSortedProfiles;
-        this.useDefaultProviders = nextUseDefaultProviders;
-        this.realHostName = nextRealHostName;
+        this.setRealHostName(nextRealHostName);
+        this.setPageOffset(nextPageOffset);
         
-        if(nextPageOffset < 1)
-        {
-            RdfFetchController.log
-                    .warn("RdfFetchController.initialise: correcting pageoffset to 1, previous pageOffset="
-                            + nextPageOffset);
-            
-            this.pageOffset = 1;
-        }
-        else
-        {
-            this.pageOffset = nextPageOffset;
-        }
-        
-        this.includeNonPagedQueries = (this.pageOffset == 1);
-        
-        this.initialise();
-    }
-    
-    private void addQueryBundles(final Collection<QueryBundle> queryBundles)
-    {
-        this.queryBundles.addAll(queryBundles);
+        this.initialise(true);
     }
     
     public boolean anyNamespaceNotRecognised()
@@ -209,34 +128,56 @@ public class RdfFetchController
         return this.namespaceNotRecognised;
     }
     
-    public void fetchRdfForQueries() throws InterruptedException
+    /**
+     * Fetches RDF for the currently configured fetch thread groups, including normalisation after
+     * the fact.
+     * 
+     * @throws InterruptedException
+     * @throws UnnormalisableRuleException
+     * @throws QueryAllException
+     */
+    public void fetchRdfForQueries() throws InterruptedException, UnnormalisableRuleException, QueryAllException
     {
-        RdfFetchController.fetchRdfForQueries(this.getFetchThreadGroup());
+        this.fetchRdfForQueriesWithoutNormalisation(this.getFetchThreadGroup());
         
         for(final RdfFetcherQueryRunnable nextThread : this.getFetchThreadGroup())
         {
             if(nextThread.getCompleted())
             {
+                URI queryKey = null;
+                
+                if(nextThread.getOriginalQueryBundle() != null
+                        && nextThread.getOriginalQueryBundle().getQueryType() != null)
+                {
+                    queryKey = nextThread.getOriginalQueryBundle().getQueryType().getKey();
+                }
+                
                 if(!nextThread.getWasSuccessful())
                 {
                     if(nextThread.getLastException() != null)
                     {
-                        RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: endpoint="
-                                + nextThread.getEndpointUrl() + " message="
+                        RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: originalendpoint="
+                                + nextThread.getOriginalEndpointUrl() + " actualendpoint="
+                                + nextThread.getActualEndpointUrl() + " message="
                                 + nextThread.getLastException().getMessage());
                         
-                        URI queryKey = null;
-                        
-                        if(nextThread.getOriginalQueryBundle() != null
-                                && nextThread.getOriginalQueryBundle().getQueryType() != null)
-                        {
-                            queryKey = nextThread.getOriginalQueryBundle().getQueryType().getKey();
-                        }
-                        
-                        nextThread.setResultDebugString("FAILURE: endpoint=" + nextThread.getEndpointUrl()
-                                + " querykey=" + queryKey + " query=" + nextThread.getQuery() + " message="
+                        nextThread.setResultDebugString("FAILURE: originalendpoint="
+                                + nextThread.getOriginalEndpointUrl() + " actualendpoint="
+                                + nextThread.getActualEndpointUrl() + " querykey=" + queryKey + " query="
+                                + nextThread.getOriginalQuery() + " message="
                                 + nextThread.getLastException().getMessage());
                         
+                    }
+                    else
+                    {
+                        RdfFetchController.log.error("Found unknown error for originalendpoint="
+                                + nextThread.getOriginalEndpointUrl() + " actualendpoint="
+                                + nextThread.getActualEndpointUrl());
+                        
+                        nextThread.setResultDebugString("FAILURE: originalendpoint="
+                                + nextThread.getOriginalEndpointUrl() + " actualendpoint="
+                                + nextThread.getActualEndpointUrl() + " querykey=" + queryKey + " query="
+                                + nextThread.getOriginalQuery() + " (no message)");
                     }
                     
                     this.errorResults.add(nextThread);
@@ -246,43 +187,40 @@ public class RdfFetchController
                     final String nextResult = nextThread.getRawResult();
                     
                     final String convertedResult =
-                            (String)RuleUtils.normaliseByStage(NormalisationRuleSchema
-                                    .getRdfruleStageBeforeResultsImport(), nextResult, RuleUtils.getSortedRulesByUris(
-                                    this.localSettings.getAllNormalisationRules(), nextThread.getOriginalQueryBundle()
-                                            .getProvider().getNormalisationUris(), SortOrder.HIGHEST_ORDER_FIRST),
-                                    this.sortedIncludedProfiles, this.localSettings.getBooleanProperty(
-                                            "recogniseImplicitRdfRuleInclusions", true), this.localSettings
-                                            .getBooleanProperty("includeNonProfileMatchedRdfRules", true));
+                            (String)RuleUtils.normaliseByStage(
+                                    NormalisationRuleSchema.getRdfruleStageBeforeResultsImport(),
+                                    nextResult,
+                                    RuleUtils.getSortedRulesByUris(this.getSettings().getAllNormalisationRules(),
+                                            nextThread.getOriginalQueryBundle().getProvider().getNormalisationUris(),
+                                            SortOrder.HIGHEST_ORDER_FIRST),
+                                    this.sortedIncludedProfiles,
+                                    this.getSettings().getBooleanProperty(
+                                            WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS), this.getSettings()
+                                            .getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
                     
                     nextThread.setNormalisedResult(convertedResult);
                     
-                    if(RdfFetchController._DEBUG)
+                    nextThread.setResultDebugString("SUCCESS: originalendpoint=" + nextThread.getOriginalEndpointUrl()
+                            + " actualendpoint=" + nextThread.getActualEndpointUrl() + " querykey=" + queryKey
+                            + " query=" + nextThread.getOriginalQuery());
+                    
+                    if(RdfFetchController.TRACE)
                     {
-                        RdfFetchController.log.debug("RdfFetchController.fetchRdfForQueries: Query successful query="
-                                + nextThread.getOriginalQueryBundle().getQueryType().getKey());
-                        
-                        if(RdfFetchController._TRACE)
-                        {
-                            RdfFetchController.log
-                                    .trace("RdfFetchController.fetchRdfForQueries: Query successful nextResult="
-                                            + nextResult + " convertedResult=" + convertedResult);
-                        }
+                        RdfFetchController.log
+                                .debug("RdfFetchController.fetchRdfForQueries: Query successful nextThread.getOriginalEndpointUrl()={} query={}",
+                                        nextThread.getOriginalEndpointUrl(), nextThread.getOriginalQueryBundle()
+                                                .getQueryType().getKey());
+                        RdfFetchController.log
+                                .trace("RdfFetchController.fetchRdfForQueries: Query successful nextResult={} convertedResult={}",
+                                        nextResult, convertedResult);
                     }
-                    
-                    URI queryKey = null;
-                    
-                    if(nextThread.getOriginalQueryBundle() != null
-                            && nextThread.getOriginalQueryBundle().getQueryType() != null)
+                    else if(RdfFetchController.DEBUG)
                     {
-                        queryKey = nextThread.getOriginalQueryBundle().getQueryType().getKey();
+                        RdfFetchController.log
+                                .debug("RdfFetchController.fetchRdfForQueries: Query successful nextThread.getOriginalEndpointUrl()={} query={}",
+                                        nextThread.getOriginalEndpointUrl(), nextThread.getOriginalQueryBundle()
+                                                .getQueryType().getKey());
                     }
-                    
-                    // TODO: expand to include details of the actual endpoint
-                    nextThread.setResultDebugString("SUCCESS: queryKey=" + queryKey);
-                    // nextThread.setResultDebugString("SUCCESS: endpoint="
-                    // + nextThread.getOriginalQueryBundle().getQueryEndpoint() + " queryKey=" +
-                    // queryKey);
-                    // + " query=" + nextThread.getOriginalQueryBundle().getQuery());
                     
                     this.getSuccessfulResults().add(nextThread);
                 }
@@ -291,7 +229,58 @@ public class RdfFetchController
             {
                 // this.uncalledThreads.add(nextThread);
                 RdfFetchController.log.error("Thread wasn't completed after fetchRdfForQueries completed endpointUrl="
-                        + nextThread.getEndpointUrl());
+                        + nextThread.getOriginalEndpointUrl());
+            }
+        }
+    }
+    
+    public void fetchRdfForQueriesWithoutNormalisation(final Collection<RdfFetcherQueryRunnable> fetchThreads)
+        throws InterruptedException
+    {
+        final long start = System.currentTimeMillis();
+        
+        final CountDownLatch isDone = new CountDownLatch(fetchThreads.size());
+        
+        for(final RdfFetcherQueryRunnable nextThread : fetchThreads)
+        {
+            nextThread.setCountDownLatch(isDone);
+            this.executor.submit(nextThread);
+        }
+        
+        try
+        {
+            isDone.await();
+            this.executor.shutdown();
+            for(int count = 0; !this.executor.isTerminated() && count < 30; count++)
+            {
+                if(RdfFetchController.DEBUG)
+                {
+                    RdfFetchController.log.debug("awaiting executor termination count={}", count);
+                }
+                
+                this.executor.awaitTermination(1, TimeUnit.SECONDS);
+            }
+            
+            if(!this.executor.isTerminated())
+            {
+                RdfFetchController.log
+                        .error("Fetch executor was not terminated, attempting to force shutdown with shutdownNow");
+                this.executor.shutdownNow();
+                RdfFetchController.log.error("Force shutdownNow returned");
+            }
+        }
+        catch(final InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+        }
+        finally
+        {
+            if(RdfFetchController.INFO)
+            {
+                final long end = System.currentTimeMillis();
+                
+                RdfFetchController.log.info(String.format("%s: timing=%10d", "RdfFetchController.fetchRdfForQueries",
+                        (end - start)));
             }
         }
     }
@@ -299,81 +288,123 @@ public class RdfFetchController
     private Collection<RdfFetcherQueryRunnable> generateFetchThreadsFromQueryBundles(
             final Collection<QueryBundle> nextQueryBundles, final int pageoffsetIndividualQueryLimit)
     {
-        final Collection<RdfFetcherQueryRunnable> results = new LinkedList<RdfFetcherQueryRunnable>();
+        final Collection<RdfFetcherQueryRunnable> results =
+                new ArrayList<RdfFetcherQueryRunnable>(nextQueryBundles.size());
         
         for(final QueryBundle nextBundle : nextQueryBundles)
         {
-            // randomly choose one of the alternatives, the others will be resolved if necessary
-            // automagically
-            final String nextEndpoint =
-                    ListUtils.chooseRandomItemFromCollection(nextBundle.getAlternativeEndpointsAndQueries().keySet());
-            // nextBundle.getQueryEndpoint();
-            final String nextQuery = nextBundle.getAlternativeEndpointsAndQueries().get(nextEndpoint);
-            // nextBundle.getQuery();
-            
-            if(RdfFetchController._DEBUG)
+            if(RdfFetchController.DEBUG)
             {
                 RdfFetchController.log
-                        .debug("RdfFetchController.generateFetchThreadsFromQueryBundles: About to create a thread for query on endpoint="
-                                + nextEndpoint
-                                + " query="
-                                + nextQuery
-                                + " provider="
-                                + nextBundle.getOriginalProvider().getKey());
+                        .debug("RdfFetchController.generateFetchThreadsFromQueryBundles: About to create a thread for query on "
+                                // + "endpoint="
+                                // + nextEndpoint
+                                // + " query="
+                                // + nextQuery
+                                + " provider=" + nextBundle.getProvider().getKey());
             }
             
-            RdfFetcherQueryRunnable nextThread = null;
+            RdfFetcherQueryRunnableImpl nextThread = null;
             
             boolean addToFetchQueue = false;
             
-            if(nextBundle.getOriginalProvider() instanceof HttpSparqlProvider
-                    && nextBundle.getOriginalProvider().getEndpointMethod()
+            if(nextBundle.getProvider() == null)
+            {
+                RdfFetchController.log
+                        .error("nextBundle.getOriginalProvider() was null. not generating fetch thread for this query bundle");
+            }
+            // TODO: Make this section extensible, preferably defined by the provider itself
+            else if(nextBundle.getProvider() instanceof HttpSparqlProvider
+                    && nextBundle.getProvider().getEndpointMethod()
                             .equals(SparqlProviderSchema.getProviderHttpPostSparql()))
             {
+                // randomly choose one of the alternatives, the others will be resolved if necessary
+                // automagically
+                final Map<String, String> nextAlternativeEndpointsAndQueries =
+                        nextBundle.getAlternativeEndpointsAndQueries();
+                final String nextEndpoint =
+                        ListUtils.chooseRandomItemFromCollection(nextAlternativeEndpointsAndQueries.keySet());
+                
+                if(nextEndpoint == null)
+                {
+                    RdfFetchController.log.error("nextEndpoint was retrieved as null nextBundle.getOriginalProvider()="
+                            + nextBundle.getProvider().getKey());
+                    continue;
+                }
+                
+                // nextBundle.getQueryEndpoint();
+                final String nextQuery = nextAlternativeEndpointsAndQueries.get(nextEndpoint);
+                // nextBundle.getQuery();
+                
+                if(nextQuery == null)
+                {
+                    RdfFetchController.log.error("nextQuery was retrieved as null nextBundle.getOriginalProvider()="
+                            + nextBundle.getProvider().getKey());
+                    continue;
+                }
+                
                 nextThread =
-                        new RdfFetcherSparqlQueryRunnable(nextEndpoint,
-                                ((SparqlProvider)nextBundle.getOriginalProvider()).getSparqlGraphUri(), nextQuery,
-                                "off",
-                                ((HttpProvider)nextBundle.getOriginalProvider())
-                                        .getAcceptHeaderString(this.localSettings.getStringProperty(
-                                                "defaultAcceptHeader", "application/rdf+xml, text/rdf+n3")),
-                                pageoffsetIndividualQueryLimit, this.localSettings, this.localBlacklistController,
+                        new RdfFetcherSparqlQueryRunnableImpl(nextEndpoint,
+                                ((SparqlProvider)nextBundle.getProvider()).getSparqlGraphUri(), nextQuery, "off",
+                                ((HttpProvider)nextBundle.getProvider()).getAcceptHeaderString(this.getSettings()
+                                        .getStringProperty(WebappConfig.DEFAULT_ACCEPT_HEADER)),
+                                pageoffsetIndividualQueryLimit, this.getSettings(), this.getBlacklistController(),
                                 nextBundle);
                 
                 addToFetchQueue = true;
                 
-                if(RdfFetchController._TRACE)
+                if(RdfFetchController.TRACE)
                 {
                     RdfFetchController.log
                             .trace("RdfFetchController.generateFetchThreadsFromQueryBundles: created HTTP POST SPARQL query thread on nextEndpoint="
-                                    + nextEndpoint + " provider.getKey()=" + nextBundle.getOriginalProvider().getKey());
+                                    + nextEndpoint + " provider.getKey()=" + nextBundle.getProvider().getKey());
                 }
             }
-            else if(nextBundle.getOriginalProvider() instanceof HttpProvider
-                    && nextBundle.getOriginalProvider().getEndpointMethod()
-                            .equals(HttpProviderSchema.getProviderHttpGetUrl()))
+            else if(nextBundle.getProvider() instanceof HttpProvider
+                    && nextBundle.getProvider().getEndpointMethod().equals(HttpProviderSchema.getProviderHttpGetUrl()))
             {
+                // randomly choose one of the alternatives, the others will be resolved if necessary
+                // automagically
+                final Map<String, String> nextAlternativeEndpointsAndQueries =
+                        nextBundle.getAlternativeEndpointsAndQueries();
+                final String nextEndpoint =
+                        ListUtils.chooseRandomItemFromCollection(nextAlternativeEndpointsAndQueries.keySet());
+                
+                if(nextEndpoint == null)
+                {
+                    RdfFetchController.log.error("nextEndpoint was retrieved as null nextBundle.getOriginalProvider()="
+                            + nextBundle.getProvider().getKey());
+                    continue;
+                }
+                
+                // nextBundle.getQueryEndpoint();
+                final String nextQuery = nextAlternativeEndpointsAndQueries.get(nextEndpoint);
+                // nextBundle.getQuery();
+                
+                if(nextQuery == null)
+                {
+                    RdfFetchController.log.warn("nextQuery was retrieved as null");
+                }
+                
                 nextThread =
-                        new RdfFetcherUriQueryRunnable(nextEndpoint, nextQuery, "off",
-                                ((HttpProvider)nextBundle.getOriginalProvider())
-                                        .getAcceptHeaderString(this.localSettings.getStringProperty(
-                                                "defaultAcceptHeader", "application/rdf+xml, text/rdf+n3")),
-                                this.localSettings, this.localBlacklistController, nextBundle);
+                        new RdfFetcherUriQueryRunnableImpl(nextEndpoint, nextQuery, "off",
+                                ((HttpProvider)nextBundle.getProvider()).getAcceptHeaderString(this.getSettings()
+                                        .getStringProperty(WebappConfig.DEFAULT_ACCEPT_HEADER)), this.getSettings(),
+                                this.getBlacklistController(), nextBundle);
                 
                 addToFetchQueue = true;
                 
-                if(RdfFetchController._TRACE)
+                if(RdfFetchController.TRACE)
                 {
                     RdfFetchController.log
                             .trace("RdfFetchController.generateFetchThreadsFromQueryBundles: created HTTP GET query thread on nextEndpoint="
-                                    + nextEndpoint + " provider.getKey()=" + nextBundle.getOriginalProvider().getKey());
+                                    + nextEndpoint + " provider.getKey()=" + nextBundle.getProvider().getKey());
                 }
             }
-            else if(nextBundle.getOriginalProvider() instanceof NoCommunicationProvider
-                    && nextBundle.getOriginalProvider().getEndpointMethod()
-                            .equals(ProviderSchema.getProviderNoCommunication()))
+            else if(nextBundle.getProvider() instanceof NoCommunicationProvider
+                    && nextBundle.getProvider().getEndpointMethod().equals(ProviderSchema.getProviderNoCommunication()))
             {
-                if(RdfFetchController._TRACE)
+                if(RdfFetchController.TRACE)
                 {
                     RdfFetchController.log
                             .trace("RdfFetchController.generateFetchThreadsFromQueryBundles: not including no communication provider in fetch queue or creating thread");
@@ -387,8 +418,9 @@ public class RdfFetchController
                 
                 RdfFetchController.log
                         .warn("RdfFetchController.generateFetchThreadsFromQueryBundles: endpointMethod did not match any known values. Not adding endpointMethod="
-                                + nextBundle.getOriginalProvider().getEndpointMethod().stringValue()
-                                + " providerConfig=" + nextBundle.getOriginalProvider().getKey().stringValue());
+                                + nextBundle.getProvider().getEndpointMethod().stringValue()
+                                + " providerConfig="
+                                + nextBundle.getProvider().getKey().stringValue());
             }
             
             if(addToFetchQueue)
@@ -402,7 +434,7 @@ public class RdfFetchController
                 // getUncalledThreads().add( nextThread );
                 // }
                 
-                if(RdfFetchController._DEBUG)
+                if(RdfFetchController.DEBUG)
                 {
                     RdfFetchController.log
                             .debug("RdfFetchController.generateFetchThreadsFromQueryBundles: not adding bundle/provider to the fetch group for some reason");
@@ -413,281 +445,24 @@ public class RdfFetchController
         return results;
     }
     
-    /**
-     * @param nextQueryType
-     * @param chosenProviders
-     */
-    private Collection<QueryBundle> generateQueryBundlesForQueryTypeAndProviders(
-            final QueryAllConfiguration localSettings, final QueryType nextQueryType,
-            final Map<String, Collection<NamespaceEntry>> namespaceInputVariables,
-            final Collection<Provider> chosenProviders, final boolean useAllEndpointsForEachProvider)
+    public Collection<Provider> getAllUsedProviders()
     {
-        final Collection<QueryBundle> results = new HashSet<QueryBundle>();
+        final Collection<Provider> results = new ArrayList<Provider>(this.getQueryBundles().size());
         
-        // Note: We default to converting alternate namespaces to preferred unless it is turned off
-        // in the configuration. It can always be turned off for each namespace entry individually
-        final boolean overallConvertAlternateToPreferredPrefix =
-                localSettings.getBooleanProperty("convertAlternateNamespacePrefixesToPreferred", true);
-        
-        if(RdfFetchController._DEBUG)
+        for(final QueryBundle nextQueryBundle : this.getQueryBundles())
         {
-            RdfFetchController.log
-                    .debug("RdfFetchController.generateQueryBundlesForQueryTypeAndProviders: nextQueryType="
-                            + nextQueryType.getKey().stringValue() + " chosenProviders.size=" + chosenProviders.size());
-        }
-        
-        for(final Provider nextProvider : chosenProviders)
-        {
-            final boolean noCommunicationProvider =
-                    nextProvider.getEndpointMethod().equals(ProviderSchema.getProviderNoCommunication());
-            
-            if(nextProvider instanceof HttpProvider)
+            if(nextQueryBundle.getProvider() != null)
             {
-                if(RdfFetchController._DEBUG)
-                {
-                    RdfFetchController.log.debug("instanceof HttpProvider key=" + nextProvider.getKey());
-                }
-                final HttpProvider nextHttpProvider = (HttpProvider)nextProvider;
-                Map<String, String> attributeList = new HashMap<String, String>();
-                
-                final List<String> nextEndpointUrls = ListUtils.randomiseListLayout(nextHttpProvider.getEndpointUrls());
-                
-                final Map<String, Map<String, String>> replacedEndpoints = new HashMap<String, Map<String, String>>();
-                
-                for(final String nextEndpoint : nextEndpointUrls)
-                {
-                    String replacedEndpoint =
-                            nextEndpoint.replace(Constants.TEMPLATE_REAL_HOST_NAME, this.realHostName)
-                                    .replace(Constants.TEMPLATE_DEFAULT_SEPARATOR, localSettings.getSeparator())
-                                    .replace(Constants.TEMPLATE_OFFSET, String.valueOf(this.pageOffset));
-                    
-                    // perform the ${input_1} ${urlEncoded_input_1} ${xmlEncoded_input_1} etc
-                    // replacements on nextEndpoint before using it in the attribute list
-                    replacedEndpoint =
-                            QueryCreator.matchAndReplaceInputVariablesForQueryType(nextQueryType, this.queryParameters,
-                                    replacedEndpoint, new ArrayList<String>(),
-                                    overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
-                    
-                    attributeList =
-                            QueryCreator.getAttributeListFor(nextQueryType, nextProvider, this.queryParameters,
-                                    replacedEndpoint, this.realHostName, this.pageOffset, localSettings);
-                    
-                    // This step is needed in order to replace endpointSpecific related template
-                    // elements on the provider URL
-                    replacedEndpoint =
-                            QueryCreator.replaceAttributesOnEndpointUrl(replacedEndpoint, nextQueryType, nextProvider,
-                                    attributeList, this.sortedIncludedProfiles,
-                                    localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
-                                    localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                    overallConvertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
-                    
-                    final String nextEndpointQuery =
-                            QueryCreator.createQuery(nextQueryType, nextProvider, attributeList,
-                                    this.sortedIncludedProfiles,
-                                    localSettings.getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
-                                    localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                    overallConvertAlternateToPreferredPrefix, localSettings, namespaceInputVariables);
-                    
-                    // replace the query on the endpoint URL if necessary
-                    replacedEndpoint =
-                            replacedEndpoint.replace(Constants.TEMPLATE_PERCENT_ENCODED_ENDPOINT_QUERY,
-                                    StringUtils.percentEncode(nextEndpointQuery));
-                    
-                    final Map<String, String> newList = new HashMap<String, String>();
-                    newList.put(replacedEndpoint, nextEndpointQuery);
-                    
-                    if(replacedEndpoints.containsKey(nextEndpoint))
-                    {
-                        replacedEndpoints.get(nextEndpoint).put(replacedEndpoint, nextEndpointQuery);
-                    }
-                    else
-                    {
-                        replacedEndpoints.put(nextEndpoint, newList);
-                    }
-                }
-                
-                String nextStaticRdfXmlString = "";
-                
-                for(final URI nextCustomInclude : nextQueryType.getLinkedQueryTypes())
-                {
-                    // pick out all of the QueryType's which have been delegated for this
-                    // particular
-                    // query as static includes
-                    final QueryType nextCustomIncludeType = localSettings.getAllQueryTypes().get(nextCustomInclude);
-                    
-                    if(nextCustomIncludeType == null)
-                    {
-                        RdfFetchController.log
-                                .warn("RdfFetchController: no included queries found for nextCustomInclude="
-                                        + nextCustomInclude);
-                    }
-                    else
-                    {
-                        // then also create the statically defined rdf/xml string to go with this
-                        // query based on the current attributes, we assume that both queries have
-                        // been intelligently put into the configuration file so that they have an
-                        // equivalent number of arguments as ${input_1} etc, in them. There is no
-                        // general solution for determining how these should work other than naming
-                        // them as ${namespace} and ${identifier} and ${searchTerm}, but these can
-                        // be worked around by only offering compatible services as alternatives
-                        // with the static rdf/xml portions
-                        if(nextCustomIncludeType instanceof OutputQueryType)
-                        {
-                            nextStaticRdfXmlString +=
-                                    QueryCreator.createStaticRdfXmlString(nextQueryType,
-                                            (OutputQueryType)nextCustomIncludeType, nextProvider, attributeList,
-                                            namespaceInputVariables, this.sortedIncludedProfiles, localSettings
-                                                    .getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
-                                            localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                            overallConvertAlternateToPreferredPrefix, localSettings);
-                        }
-                        else
-                        {
-                            RdfFetchController.log
-                                    .warn("Attempted to include a query type that was not parsed as an output query type key="
-                                            + nextCustomIncludeType.getKey()
-                                            + " types="
-                                            + nextCustomIncludeType.getElementTypes());
-                        }
-                    }
-                }
-                
-                final QueryBundle nextProviderQueryBundle = new QueryBundle();
-                
-                nextProviderQueryBundle.setOutputString(nextStaticRdfXmlString);
-                nextProviderQueryBundle.setOriginalProvider(nextProvider);
-                nextProviderQueryBundle.setQueryType(nextQueryType);
-                nextProviderQueryBundle.setRelevantProfiles(this.sortedIncludedProfiles);
-                nextProviderQueryBundle.setQueryallSettings(localSettings);
-                
-                RdfFetchController.log.info("nextQueryType=" + nextQueryType.getKey().stringValue());
-                
-                for(final String nextEndpoint : ListUtils.randomiseListLayout(replacedEndpoints.keySet()))
-                {
-                    final Map<String, String> originalEndpointEntries = replacedEndpoints.get(nextEndpoint);
-                    
-                    RdfFetchController.log.info("nextEndpoint=" + nextEndpoint);
-                    for(final String nextReplacedEndpoint : originalEndpointEntries.keySet())
-                    {
-                        RdfFetchController.log.info("nextReplacedEndpoint=" + nextReplacedEndpoint);
-                        
-                        // Then test whether the endpoint is blacklisted before accepting it
-                        if(noCommunicationProvider
-                                || !this.localBlacklistController.isUrlBlacklisted(nextReplacedEndpoint))
-                        {
-                            RdfFetchController.log.info("not blacklisted");
-                            
-                            // no need to worry about redundant endpoint alternates if we are going
-                            // to try to query all of the endpoints for each provider
-                            if(useAllEndpointsForEachProvider)
-                            {
-                                nextProviderQueryBundle.addAlternativeEndpointAndQuery(nextReplacedEndpoint,
-                                        originalEndpointEntries.get(nextReplacedEndpoint));
-                            }
-                            else if(nextProviderQueryBundle.getAlternativeEndpointsAndQueries().size() == 0)
-                            {
-                                nextProviderQueryBundle.addAlternativeEndpointAndQuery(nextReplacedEndpoint,
-                                        originalEndpointEntries.get(nextReplacedEndpoint));
-                            }
-                            else
-                            {
-                                RdfFetchController.log
-                                        .warn("Not adding an endpoint because we are not told to attempt to use all endpoints, and we have already chosen one");
-                            }
-                        }
-                        else
-                        {
-                            RdfFetchController.log
-                                    .warn("Not including provider because it is not no-communication and is a blacklisted url nextProvider.getKey()="
-                                            + nextProvider.getKey());
-                        }
-                    }
-                    
-                    results.add(nextProviderQueryBundle);
-                }
-            } // end if(nextProvider instanceof HttpProvider)
-            else if(noCommunicationProvider)
-            {
-                RdfFetchController.log.info("endpoint method = noCommunication key=" + nextProvider.getKey());
-                String nextStaticRdfXmlString = "";
-                
-                for(final URI nextCustomInclude : nextQueryType.getLinkedQueryTypes())
-                {
-                    // pick out all of the QueryType's which have been delegated for this particular
-                    // query as static includes
-                    final QueryType nextCustomIncludeType = localSettings.getAllQueryTypes().get(nextCustomInclude);
-                    
-                    if(nextCustomIncludeType == null)
-                    {
-                        RdfFetchController.log
-                                .warn("Attempted to include an unknown include type using the URI nextCustomInclude="
-                                        + nextCustomInclude.stringValue());
-                    }
-                    else
-                    {
-                        final Map<String, String> attributeList =
-                                QueryCreator.getAttributeListFor(nextCustomIncludeType, nextProvider,
-                                        this.queryParameters, "", this.realHostName, this.pageOffset, localSettings);
-                        
-                        if(nextCustomIncludeType instanceof OutputQueryType)
-                        {
-                            nextStaticRdfXmlString +=
-                                    QueryCreator.createStaticRdfXmlString(nextQueryType,
-                                            (OutputQueryType)nextCustomIncludeType, nextProvider, attributeList,
-                                            namespaceInputVariables, this.sortedIncludedProfiles, localSettings
-                                                    .getBooleanProperty("recogniseImplicitRdfRuleInclusions", true),
-                                            localSettings.getBooleanProperty("includeNonProfileMatchedRdfRules", true),
-                                            overallConvertAlternateToPreferredPrefix, localSettings);
-                        }
-                        else
-                        {
-                            RdfFetchController.log
-                                    .warn("Attempted to include a query type that was not parsed as an output query type key="
-                                            + nextCustomIncludeType.getKey()
-                                            + " types="
-                                            + nextCustomIncludeType.getElementTypes());
-                        }
-                    }
-                }
-                
-                final QueryBundle nextProviderQueryBundle = new QueryBundle();
-                
-                nextProviderQueryBundle.setOutputString(nextStaticRdfXmlString);
-                nextProviderQueryBundle.setProvider(nextProvider);
-                nextProviderQueryBundle.setQueryType(nextQueryType);
-                nextProviderQueryBundle.setRelevantProfiles(this.sortedIncludedProfiles);
-                nextProviderQueryBundle.setQueryallSettings(localSettings);
-                
-                results.add(nextProviderQueryBundle);
+                results.add(nextQueryBundle.getProvider());
             }
-            else
-            {
-                RdfFetchController.log.warn("Unrecognised provider endpoint method type nextProvider.getKey()="
-                        + nextProvider.getKey() + " nextProvider.getClass().getName()="
-                        + nextProvider.getClass().getName() + " endpointMethod=" + nextProvider.getEndpointMethod());
-            }
-        } // end for(Provider nextProvider : QueryTypeProviders)
-        
-        if(RdfFetchController._DEBUG)
-        {
-            RdfFetchController.log
-                    .debug("RdfFetchController.generateQueryBundlesForQueryTypeAndProviders: results.size()="
-                            + results.size());
         }
         
         return results;
     }
     
-    public Collection<Provider> getAllUsedProviders()
+    public BlacklistController getBlacklistController()
     {
-        final Collection<Provider> results = new LinkedList<Provider>();
-        
-        for(final QueryBundle nextQueryBundle : this.queryBundles)
-        {
-            results.add(nextQueryBundle.getOriginalProvider());
-        }
-        
-        return results;
+        return this.localBlacklistController;
     }
     
     /**
@@ -699,6 +474,18 @@ public class RdfFetchController
     }
     
     /**
+     * Helper method to determine whether this fetch controller would currently exclude non-paged
+     * queries. The result is based directly on the current boolean result of the expression
+     * (getPageOffset() > 1).
+     * 
+     * @return the excludeNonPagedQueries
+     */
+    public boolean getExcludeNonPagedQueries()
+    {
+        return this.getPageOffset() > 1;
+    }
+    
+    /**
      * @return the fetchThreadGroup
      */
     public Collection<RdfFetcherQueryRunnable> getFetchThreadGroup()
@@ -706,19 +493,40 @@ public class RdfFetchController
         return this.fetchThreadGroup;
     }
     
+    /**
+     * @return the pageOffset
+     */
+    public int getPageOffset()
+    {
+        return this.pageOffset;
+    }
+    
     public Collection<QueryBundle> getQueryBundles()
     {
         return this.queryBundles;
     }
     
+    /**
+     * @return the realHostName
+     */
+    public String getRealHostName()
+    {
+        return this.realHostName;
+    }
+    
     public Collection<RdfFetcherQueryRunnable> getResults()
     {
-        final Collection<RdfFetcherQueryRunnable> results = new HashSet<RdfFetcherQueryRunnable>();
+        final Collection<RdfFetcherQueryRunnable> results = new ArrayList<RdfFetcherQueryRunnable>();
         
         results.addAll(this.getSuccessfulResults());
         results.addAll(this.getErrorResults());
         
         return results;
+    }
+    
+    public QueryAllConfiguration getSettings()
+    {
+        return this.localSettings;
     }
     
     /**
@@ -737,164 +545,142 @@ public class RdfFetchController
         return this.uncalledThreads;
     }
     
-    // Synchronize access to this method to ensure that only one thread tries to setup queryBundles
-    // for each controller instance
-    private synchronized void initialise()
+    private synchronized void initialise(final boolean generateQueryBundles) throws QueryAllException
     {
         final long start = System.currentTimeMillis();
         
-        if(this.queryBundles == null)
+        if(generateQueryBundles)
         {
-            this.queryBundles = new LinkedList<QueryBundle>();
+            // overwrite any query bundles that may have been inserted previously as we were told to
+            // generate new query bundles
+            this.queryBundles = new ArrayList<QueryBundle>(20);
             
             // Note: this set contains queries that matched without taking into account the
             // namespaces assigned to each query type
             // The calculation of the namespace matching is done later
             final Map<QueryType, Map<String, Collection<NamespaceEntry>>> allCustomQueries =
-                    QueryTypeUtils.getQueryTypesMatchingQuery(this.queryParameters, this.sortedIncludedProfiles,
-                            this.localSettings.getAllQueryTypes(), this.localSettings.getNamespacePrefixesToUris(),
-                            this.localSettings.getAllNamespaceEntries(),
-                            this.localSettings.getBooleanProperty(Constants.RECOGNISE_IMPLICIT_QUERY_INCLUSIONS, true),
-                            this.localSettings.getBooleanProperty(Constants.INCLUDE_NON_PROFILE_MATCHED_QUERIES, true));
+                    QueryTypeUtils.getQueryTypesMatchingQuery(this.queryParameters, this.sortedIncludedProfiles, this
+                            .getSettings().getAllQueryTypes(), this.getSettings().getNamespacePrefixesToUris(), this
+                            .getSettings().getAllNamespaceEntries(),
+                            this.getSettings().getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_QUERY_INCLUSIONS),
+                            this.getSettings().getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_QUERIES));
             
-            if(RdfFetchController._DEBUG)
+            if(RdfFetchController.DEBUG)
             {
                 RdfFetchController.log.debug("RdfFetchController.initialise: found " + allCustomQueries.size()
                         + " matching queries");
             }
             
-            // TODO: should we do classification in the results based on the QueryType that
-            // generated the particular subset of QueryBundles to make it easier to distinguish them
             for(final QueryType nextQueryType : allCustomQueries.keySet())
             {
                 // Non-paged queries are a special case. The caller decides whether
                 // they want to use non-paged queries, for example, they may say no
                 // if they have decided that they need only extra results from paged
                 // queries
-                if(!this.includeNonPagedQueries && !nextQueryType.getIsPageable())
+                if(this.getExcludeNonPagedQueries() && !nextQueryType.getIsPageable())
                 {
-                    if(RdfFetchController._INFO)
+                    if(RdfFetchController.INFO)
                     {
                         RdfFetchController.log
                                 .info("RdfFetchController: not using query as it is not pageable nonPagedQuery="
                                         + nextQueryType.getKey());
                     }
-                    
-                    continue;
                 }
-                
-                final Collection<Provider> chosenProviders = new HashSet<Provider>();
-                
-                if(!nextQueryType.getIsNamespaceSpecific())
+                else if(!(nextQueryType instanceof InputQueryType))
                 {
-                    chosenProviders.addAll(ProviderUtils.getProvidersForQueryNonNamespaceSpecific(
-                            this.localSettings.getAllProviders(), nextQueryType.getKey(), this.sortedIncludedProfiles,
-                            this.localSettings.getBooleanProperty("recogniseImplicitProviderInclusions", true),
-                            this.localSettings.getBooleanProperty("includeNonProfileMatchedProviders", true)));
+                    if(RdfFetchController.INFO)
+                    {
+                        RdfFetchController.log
+                                .info("RdfFetchController: not using query as it is not an InputQueryType"
+                                        + nextQueryType.getKey());
+                    }
                 }
                 else
                 {
-                    chosenProviders.addAll(ProviderUtils.getProvidersForQueryNamespaceSpecific(
-                            this.localSettings.getAllProviders(), this.sortedIncludedProfiles, nextQueryType,
-                            this.localSettings.getNamespacePrefixesToUris(), this.queryParameters,
-                            this.localSettings.getBooleanProperty("recogniseImplicitProviderInclusions", true),
-                            this.localSettings.getBooleanProperty("includeNonProfileMatchedProviders", true)));
-                }
-                
-                if(nextQueryType.getIncludeDefaults() && this.useDefaultProviders)
-                {
-                    if(RdfFetchController._DEBUG)
-                    {
-                        RdfFetchController.log
-                                .debug("RdfFetchController.initialise: including defaults for nextQueryType.title="
-                                        + nextQueryType.getTitle() + " nextQueryType.getKey()="
-                                        + nextQueryType.getKey());
-                    }
+                    final InputQueryType nextInputQueryType = (InputQueryType)nextQueryType;
                     
-                    chosenProviders.addAll(ProviderUtils.getDefaultProviders(this.localSettings.getAllProviders(),
-                            nextQueryType, this.sortedIncludedProfiles,
-                            this.localSettings.getBooleanProperty("recogniseImplicitProviderInclusions", true),
-                            this.localSettings.getBooleanProperty("includeNonProfileMatchedProviders", true)));
-                }
-                
-                if(RdfFetchController._DEBUG)
-                {
-                    final int QueryTypeProvidersSize = chosenProviders.size();
+                    final Collection<Provider> chosenProviders =
+                            ProviderUtils.getProvidersForQuery(nextInputQueryType, this.queryParameters,
+                                    this.sortedIncludedProfiles, this.getSettings());
                     
-                    if(QueryTypeProvidersSize > 0)
+                    final Collection<QueryBundle> queryBundlesForQueryType =
+                            QueryBundleUtils
+                                    .generateQueryBundlesForQueryTypeAndProviders(
+                                            nextInputQueryType,
+                                            chosenProviders,
+                                            this.queryParameters,
+                                            allCustomQueries.get(nextQueryType),
+                                            this.sortedIncludedProfiles,
+                                            this.localSettings.getAllQueryTypes(),
+                                            this.getSettings(),
+                                            this.getBlacklistController(),
+                                            this.getRealHostName(),
+                                            this.getSettings().getBooleanProperty(
+                                                    WebappConfig.TRY_ALL_ENDPOINTS_FOR_EACH_PROVIDER),
+                                            this.getPageOffset(),
+                                            this.localSettings
+                                                    .getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
+                                            this.localSettings
+                                                    .getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                                            this.localSettings
+                                                    .getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
+                    
+                    this.queryBundles.addAll(queryBundlesForQueryType);
+                    
+                    // if there are still no query bundles check for the non-namespace specific
+                    // version
+                    // of the query type to flag any instances of the namespace not being recognised
+                    if(queryBundlesForQueryType.size() == 0)
                     {
-                        RdfFetchController.log.debug("RdfFetchController.initialise: found " + QueryTypeProvidersSize
-                                + " providers for nextQueryType.getKey()=" + nextQueryType.getKey());
+                        // For namespace specific query types, do a check ignoring the namespace
+                        // conditions to determine whether namespace matching was the only reason
+                        // that
+                        // the query type did not match this provider
                         
-                        if(RdfFetchController._TRACE)
+                        // NOTE: We only do this expensive, generally optional, check if there were
+                        // no previous unrecognised namespaces
+                        if(!this.namespaceNotRecognised)
                         {
-                            for(final Provider nextQueryTypeProvider : chosenProviders)
+                            if(nextQueryType.getIsNamespaceSpecific()
+                                    && ProviderUtils.getProvidersForQueryNonNamespaceSpecific(
+                                            this.getSettings().getAllProviders(),
+                                            nextInputQueryType,
+                                            this.sortedIncludedProfiles,
+                                            this.getSettings().getBooleanProperty(
+                                                    WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
+                                            this.getSettings().getBooleanProperty(
+                                                    WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS)).size() > 0)
                             {
-                                RdfFetchController.log.trace("RdfFetchController.initialise: nextQueryTypeProvider="
-                                        + nextQueryTypeProvider.getKey());
+                                this.namespaceNotRecognised = true;
                             }
                         }
                     }
-                    else if(RdfFetchController._TRACE && QueryTypeProvidersSize == 0)
-                    {
-                        RdfFetchController.log
-                                .trace("RdfFetchController.initialise: found NO suitable providers for custom type="
-                                        + nextQueryType.getKey());
-                    }
-                } // end if(_DEBUG}
-                
-                // Default to safe setting of useAllEndpointsForEachProvider=true here
-                final Collection<QueryBundle> queryBundlesForQueryType =
-                        this.generateQueryBundlesForQueryTypeAndProviders(this.localSettings, nextQueryType,
-                                allCustomQueries.get(nextQueryType), chosenProviders,
-                                this.localSettings.getBooleanProperty("tryAllEndpointsForEachProvider", true));
-                
-                if(RdfFetchController._DEBUG)
-                {
-                    RdfFetchController.log.debug("RdfFetchController.initialise: queryBundlesForQueryType.size()="
-                            + queryBundlesForQueryType.size());
-                    
-                    if(RdfFetchController._TRACE)
-                    {
-                        for(final QueryBundle nextQueryBundleForQueryType : queryBundlesForQueryType)
-                        {
-                            RdfFetchController.log.trace("RdfFetchController.initialise: nextQueryBundleForQueryType="
-                                    + nextQueryBundleForQueryType.toString());
-                        }
-                    }
-                }
-                
-                this.addQueryBundles(queryBundlesForQueryType);
-                
-                // if there are still no query bundles check for the non-namespace specific version
-                // of the query type to flag any instances of the namespace not being recognised
-                if(queryBundlesForQueryType.size() == 0)
-                {
-                    if(nextQueryType.getIsNamespaceSpecific()
-                            && ProviderUtils.getProvidersForQueryNonNamespaceSpecific(
-                                    this.localSettings.getAllProviders(), nextQueryType.getKey(),
-                                    this.sortedIncludedProfiles,
-                                    this.localSettings.getBooleanProperty("recogniseImplicitProviderInclusions", true),
-                                    this.localSettings.getBooleanProperty("includeNonProfileMatchedProviders", true))
-                                    .size() > 0)
-                    {
-                        this.namespaceNotRecognised = true;
-                    }
                 }
             } // end for(QueryType nextQueryType : allCustomQueries)
-            
-            if(RdfFetchController._INFO)
+        }
+        
+        // replace the fetch thread group if we were instructed to generate the query bundles or the
+        // fetch thread group was empty
+        if(generateQueryBundles || this.fetchThreadGroup.size() == 0)
+        {
+            this.setFetchThreadGroup(this.generateFetchThreadsFromQueryBundles(this.getQueryBundles(), this
+                    .getSettings().getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT)));
+        }
+        
+        // ---------------------------------
+        // LOGGING
+        if(RdfFetchController.INFO)
+        {
+            if(this.getQueryBundles().size() == 0)
             {
-                if(this.queryBundles.size() == 0)
-                {
-                    RdfFetchController.log.info("RdfFetchController.initialise: no query bundles given or created");
-                }
+                RdfFetchController.log.info("RdfFetchController.initialise: no query bundles given or created");
             }
-            if(RdfFetchController._DEBUG)
+            
+            if(RdfFetchController.DEBUG)
             {
-                if(this.queryBundles.size() > 0)
+                if(this.getQueryBundles().size() > 0)
                 {
-                    for(final QueryBundle nextQueryBundleDebug : this.queryBundles)
+                    for(final QueryBundle nextQueryBundleDebug : this.getQueryBundles())
                     {
                         RdfFetchController.log.debug("RdfFetchController.initialise: nextQueryBundleDebug="
                                 + nextQueryBundleDebug.toString());
@@ -909,44 +695,32 @@ public class RdfFetchController
                 RdfFetchController.log.debug(String.format("%s: timing=%10d", "RdfFetchController.initialise",
                         (end - start)));
             }
-        } // end if(queryBundles == null)
-        
-        if(this.fetchThreadGroup.size() == 0)
-        {
-            this.setFetchThreadGroup(this.generateFetchThreadsFromQueryBundles(this.queryBundles,
-                    this.localSettings.getIntProperty("pageoffsetIndividualQueryLimit", 500)));
         }
+        // ---------------------------------
     }
     
     public boolean queryKnown()
     {
-        if(this.queryBundles.size() == 0)
+        if(this.getQueryBundles() == null || this.getQueryBundles().size() == 0)
         {
             return false;
         }
         
-        for(final QueryBundle nextQueryBundle : this.queryBundles)
+        for(final QueryBundle nextQueryBundle : this.getQueryBundles())
         {
-            // if the query type for this query bundle is not a dummy query, return true
-            if(!nextQueryBundle.getQueryType().getIsDummyQueryType())
+            // if the query type for any query bundle is not a dummy query, return true
+            if(nextQueryBundle.getQueryType() != null && !nextQueryBundle.getQueryType().getIsDummyQueryType())
             {
-                if(RdfFetchController._DEBUG)
-                {
-                    RdfFetchController.log
-                            .debug("RdfFetchController.queryKnown: returning true after looking at nextQueryBundle.getQueryType()="
-                                    + nextQueryBundle.getQueryType().getKey().stringValue());
-                }
-                
                 return true;
             }
         }
         
-        if(RdfFetchController._DEBUG)
-        {
-            RdfFetchController.log.debug("RdfFetchController.queryKnown: returning false at end of method");
-        }
-        
         return false;
+    }
+    
+    public void setBlacklistController(final BlacklistController localBlacklistController)
+    {
+        this.localBlacklistController = localBlacklistController;
     }
     
     /**
@@ -965,6 +739,52 @@ public class RdfFetchController
     public void setFetchThreadGroup(final Collection<RdfFetcherQueryRunnable> fetchThreadGroup)
     {
         this.fetchThreadGroup = fetchThreadGroup;
+    }
+    
+    public void setPageOffset(final int nextPageOffset)
+    {
+        if(nextPageOffset < 1)
+        {
+            RdfFetchController.log
+                    .warn("RdfFetchController.setPageOffset: correcting pageoffset to 1, previous pageOffset="
+                            + nextPageOffset);
+            
+            this.pageOffset = 1;
+        }
+        else
+        {
+            this.pageOffset = nextPageOffset;
+        }
+    }
+    
+    /**
+     * Sets the query bundles and initialises the controllers internal settings using these new
+     * query bundles
+     * 
+     * @param queryBundles
+     *            The query bundles to use to set
+     * @throws QueryAllException
+     *             If the query bundles were not valid in any way, or could not be used to
+     *             successfully generate fetch threads
+     */
+    public void setQueryBundles(final Collection<QueryBundle> queryBundles) throws QueryAllException
+    {
+        this.queryBundles = queryBundles;
+        this.initialise(false);
+    }
+    
+    /**
+     * @param realHostName
+     *            the realHostName to set
+     */
+    public void setRealHostName(final String realHostName)
+    {
+        this.realHostName = realHostName;
+    }
+    
+    public void setSettings(final QueryAllConfiguration localSettings)
+    {
+        this.localSettings = localSettings;
     }
     
     /**

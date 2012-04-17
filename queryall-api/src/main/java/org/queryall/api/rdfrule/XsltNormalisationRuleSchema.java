@@ -3,6 +3,7 @@
  */
 package org.queryall.api.rdfrule;
 
+import org.kohsuke.MetaInfServices;
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.URI;
 import org.openrdf.model.ValueFactory;
@@ -12,6 +13,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.queryall.api.base.QueryAllSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
@@ -21,15 +23,16 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class XsltNormalisationRuleSchema
+@MetaInfServices(QueryAllSchema.class)
+public class XsltNormalisationRuleSchema extends QueryAllSchema
 {
-    private static final Logger log = LoggerFactory.getLogger(XsltNormalisationRuleSchema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(XsltNormalisationRuleSchema.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = XsltNormalisationRuleSchema.log.isTraceEnabled();
+    private static final boolean TRACE = XsltNormalisationRuleSchema.LOG.isTraceEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _DEBUG = XsltNormalisationRuleSchema.log.isDebugEnabled();
+    private static final boolean DEBUG = XsltNormalisationRuleSchema.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = XsltNormalisationRuleSchema.log.isInfoEnabled();
+    private static final boolean INFO = XsltNormalisationRuleSchema.LOG.isInfoEnabled();
     
     private static URI xsltRuleTypeUri;
     
@@ -37,7 +40,7 @@ public class XsltNormalisationRuleSchema
     
     static
     {
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         final String baseUri = QueryAllNamespaces.RDFRULE.getBaseURI();
         
@@ -45,6 +48,11 @@ public class XsltNormalisationRuleSchema
         XsltNormalisationRuleSchema.setXsltRuleStylesheetUri(f.createURI(baseUri, "xsltStylesheet"));
         
     }
+    
+    /**
+     * A pre-instantiated schema object for XsltNormalisationRuleSchema.
+     */
+    public static final QueryAllSchema XSLT_NORMALISATION_RULE_SCHEMA = new XsltNormalisationRuleSchema();
     
     /**
      * @return the xsltRuleStylesheetUri
@@ -62,11 +70,45 @@ public class XsltNormalisationRuleSchema
         return XsltNormalisationRuleSchema.xsltRuleTypeUri;
     }
     
-    public static boolean schemaToRdf(final Repository myRepository, final URI contextUri, final int modelVersion)
+    /**
+     * @param nextXsltRuleStylesheetUri
+     *            the xsltRuleStylesheetUri to set
+     */
+    public static void setXsltRuleStylesheetUri(final URI nextXsltRuleStylesheetUri)
+    {
+        XsltNormalisationRuleSchema.xsltRuleStylesheetUri = nextXsltRuleStylesheetUri;
+    }
+    
+    /**
+     * @param nextXsltRuleTypeUri
+     *            the xsltRuleTypeUri to set
+     */
+    public static void setXsltRuleTypeUri(final URI nextXsltRuleTypeUri)
+    {
+        XsltNormalisationRuleSchema.xsltRuleTypeUri = nextXsltRuleTypeUri;
+    }
+    
+    /**
+     * Default constructor, uses the name of this class as the name.
+     */
+    public XsltNormalisationRuleSchema()
+    {
+        this(XsltNormalisationRuleSchema.class.getName());
+    }
+    
+    /**
+     * @param nextName
+     *            The name for this schema object
+     */
+    public XsltNormalisationRuleSchema(final String nextName)
+    {
+        super(nextName);
+    }
+    
+    @Override
+    public boolean schemaToRdf(final Repository myRepository, final int modelVersion, final URI... contextUri)
         throws OpenRDFException
     {
-        NormalisationRuleSchema.schemaToRdf(myRepository, contextUri, modelVersion);
-        
         final RepositoryConnection con = myRepository.getConnection();
         
         final ValueFactory f = myRepository.getValueFactory();
@@ -80,7 +122,7 @@ public class XsltNormalisationRuleSchema
                     f.createLiteral("A XSLT based normalisation rule intended to normalise textual XML documents."),
                     contextUri);
             con.add(XsltNormalisationRuleSchema.getXsltRuleTypeUri(), RDFS.SUBCLASSOF,
-                    NormalisationRuleSchema.getNormalisationRuleTypeUri(), contextUri);
+                    TransformingRuleSchema.getTransformingRuleTypeUri(), contextUri);
             
             con.add(XsltNormalisationRuleSchema.getXsltRuleStylesheetUri(), RDF.TYPE, OWL.DATATYPEPROPERTY, contextUri);
             con.add(XsltNormalisationRuleSchema.getXsltRuleStylesheetUri(), RDFS.RANGE, RDFS.LITERAL, contextUri);
@@ -104,7 +146,7 @@ public class XsltNormalisationRuleSchema
                 con.rollback();
             }
             
-            XsltNormalisationRuleSchema.log.error("RepositoryException: " + re.getMessage());
+            XsltNormalisationRuleSchema.LOG.error("RepositoryException: " + re.getMessage());
         }
         finally
         {
@@ -116,23 +158,4 @@ public class XsltNormalisationRuleSchema
         
         return false;
     }
-    
-    /**
-     * @param xsltRuleStylesheetUri
-     *            the xsltRuleStylesheetUri to set
-     */
-    public static void setXsltRuleStylesheetUri(final URI xsltRuleStylesheetUri)
-    {
-        XsltNormalisationRuleSchema.xsltRuleStylesheetUri = xsltRuleStylesheetUri;
-    }
-    
-    /**
-     * @param xsltRuleTypeUri
-     *            the xsltRuleTypeUri to set
-     */
-    public static void setXsltRuleTypeUri(final URI xsltRuleTypeUri)
-    {
-        XsltNormalisationRuleSchema.xsltRuleTypeUri = xsltRuleTypeUri;
-    }
-    
 }

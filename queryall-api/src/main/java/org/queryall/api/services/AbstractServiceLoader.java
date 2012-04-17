@@ -5,11 +5,10 @@ package org.queryall.api.services;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,21 +21,21 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractServiceLoader<K, S>
 {
-    private static final Logger log = LoggerFactory.getLogger(AbstractServiceLoader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractServiceLoader.class);
     @SuppressWarnings("unused")
-    private static final boolean _TRACE = AbstractServiceLoader.log.isTraceEnabled();
-    private static final boolean _DEBUG = AbstractServiceLoader.log.isDebugEnabled();
+    private static final boolean TRACE = AbstractServiceLoader.LOG.isTraceEnabled();
+    private static final boolean DEBUG = AbstractServiceLoader.LOG.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = AbstractServiceLoader.log.isInfoEnabled();
+    private static final boolean INFO = AbstractServiceLoader.LOG.isInfoEnabled();
     
-    protected Map<K, S> services = Collections.synchronizedMap(new HashMap<K, S>());
+    protected ConcurrentHashMap<K, S> services = new ConcurrentHashMap<K, S>();
     
     protected AbstractServiceLoader(final Class<S> serviceClass)
     {
         final ServiceLoader<S> serviceLoader =
                 java.util.ServiceLoader.load(serviceClass, serviceClass.getClassLoader());
         
-        final Iterator<S> services = serviceLoader.iterator();
+        final Iterator<S> servicesIterator = serviceLoader.iterator();
         
         // Iterator<S> services =
         // javax.imageio.spi.ServiceRegistry.lookupProviders(serviceClass,
@@ -49,38 +48,38 @@ public abstract class AbstractServiceLoader<K, S>
         {
             try
             {
-                if(!services.hasNext())
+                if(!servicesIterator.hasNext())
                 {
                     break;
                 }
                 
-                final S service = services.next();
+                final S service = servicesIterator.next();
                 
                 final S oldService = this.add(service);
                 
-                if(AbstractServiceLoader._DEBUG)
+                if(AbstractServiceLoader.DEBUG)
                 {
                     if(oldService != null)
                     {
-                        AbstractServiceLoader.log.debug("New service {} replaces existing service {}",
+                        AbstractServiceLoader.LOG.debug("New service {} replaces existing service {}",
                                 service.getClass(), oldService.getClass());
                     }
                     
-                    AbstractServiceLoader.log.debug("Registered service class {}", service.getClass().getName());
+                    AbstractServiceLoader.LOG.debug("Registered service class {}", service.getClass().getName());
                 }
             }
-            catch(final Error e)
+            catch(final Exception e)
             {
-                AbstractServiceLoader.log.error("Failed to instantiate service", e);
+                AbstractServiceLoader.LOG.error("Failed to instantiate service", e);
             }
         }
     }
     
     public S add(final S service)
     {
-        if(AbstractServiceLoader._DEBUG)
+        if(AbstractServiceLoader.DEBUG)
         {
-            AbstractServiceLoader.log.debug("add key {} service class {}", this.getKey(service), service.getClass()
+            AbstractServiceLoader.LOG.debug("add key {} service class {}", this.getKey(service), service.getClass()
                     .getName());
         }
         

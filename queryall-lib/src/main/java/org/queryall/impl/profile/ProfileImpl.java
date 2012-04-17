@@ -1,8 +1,9 @@
 package org.queryall.impl.profile;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Set;
 
 import org.openrdf.OpenRDFException;
@@ -17,30 +18,30 @@ import org.openrdf.repository.RepositoryException;
 import org.queryall.api.base.HtmlExport;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.profile.ProfileSchema;
-import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.utils.Constants;
+import org.queryall.api.utils.ProfileIncludeExclude;
 import org.queryall.api.utils.QueryAllNamespaces;
+import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.RdfUtils;
-import org.queryall.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
-public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
+public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable<Profile>, HtmlExport
 {
     private static final Logger log = LoggerFactory.getLogger(ProfileImpl.class);
-    private static final boolean _TRACE = ProfileImpl.log.isTraceEnabled();
-    private static final boolean _DEBUG = ProfileImpl.log.isDebugEnabled();
+    private static final boolean TRACE = ProfileImpl.log.isTraceEnabled();
+    private static final boolean DEBUG = ProfileImpl.log.isDebugEnabled();
     @SuppressWarnings("unused")
-    private static final boolean _INFO = ProfileImpl.log.isInfoEnabled();
+    private static final boolean INFO = ProfileImpl.log.isInfoEnabled();
     
-    private static final Set<URI> PROFILE_IMPL_TYPES = new HashSet<URI>();
+    private static final Set<URI> PROFILE_IMPL_TYPES;
     
     static
     {
-        ProfileImpl.PROFILE_IMPL_TYPES.add(ProfileSchema.getProfileTypeUri());
+        PROFILE_IMPL_TYPES = Collections.singleton(ProfileSchema.getProfileTypeUri());
     }
     
     public static Set<URI> myTypes()
@@ -48,25 +49,17 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
         return ProfileImpl.PROFILE_IMPL_TYPES;
     }
     
-    private Collection<Statement> unrecognisedStatements = new HashSet<Statement>();
-    
-    private URI key;
-    
-    private String title = "";
-    
-    private URI curationStatus = ProjectSchema.getProjectNotCuratedUri();
-    
     private int order = 100;
     
-    private boolean allowImplicitQueryInclusions = false;
+    private boolean allowImplicitQueryInclusions = true;
     
-    private boolean allowImplicitProviderInclusions = false;
+    private boolean allowImplicitProviderInclusions = true;
     
-    private boolean allowImplicitRdfRuleInclusions = false;
+    private boolean allowImplicitRdfRuleInclusions = true;
     
-    private URI defaultProfileIncludeExcludeOrder = ProfileSchema.getProfileIncludeExcludeOrderUndefinedUri();
+    private ProfileIncludeExclude defaultProfileIncludeExcludeOrder = ProfileIncludeExclude.UNDEFINED;
     
-    private Collection<URI> profileAdministrators = new HashSet<URI>();
+    private Collection<URI> profileAdministrators = new ArrayList<URI>();
     
     private Collection<URI> includeProviders = new HashSet<URI>();
     
@@ -87,34 +80,29 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
     public ProfileImpl(final Collection<Statement> inputStatements, final URI keyToUse, final int modelVersion)
         throws OpenRDFException
     {
+        super(inputStatements, keyToUse, modelVersion);
+        
+        final Collection<Statement> currentUnrecognisedStatements = this.resetUnrecognisedStatements();
+        
         boolean defaultProfileIncludeExcludeOrderValidationFailed = true;
         
-        for(final Statement nextStatement : inputStatements)
+        for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(ProfileImpl._DEBUG)
+            if(ProfileImpl.TRACE)
             {
-                ProfileImpl.log.debug("Profile.fromRdf: nextStatement: " + nextStatement.toString());
+                ProfileImpl.log.trace("Profile.fromRdf: nextStatement: " + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(ProfileSchema.getProfileTypeUri()))
             {
-                if(ProfileImpl._TRACE)
+                if(ProfileImpl.TRACE)
                 {
                     ProfileImpl.log.trace("Profile.fromRdf: found valid type predicate for URI: " + keyToUse);
                 }
                 
                 // resultIsValid = true;
                 this.setKey(keyToUse);
-            }
-            else if(nextStatement.getPredicate().equals(ProjectSchema.getProjectCurationStatusUri()))
-            {
-                this.setCurationStatus((URI)nextStatement.getObject());
-            }
-            else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileTitle())
-                    || nextStatement.getPredicate().equals(Constants.DC_TITLE))
-            {
-                this.setTitle(nextStatement.getObject().stringValue());
             }
             else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileOrderUri()))
             {
@@ -126,11 +114,14 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
             }
             else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileDefaultIncludeExcludeOrderUri()))
             {
-                this.setDefaultProfileIncludeExcludeOrder((URI)nextStatement.getObject());
+                final ProfileIncludeExclude profileIncludeExclude =
+                        ProfileIncludeExclude.valueOf((URI)nextStatement.getObject());
                 
-                if(this.getDefaultProfileIncludeExcludeOrder().equals(ProfileSchema.getProfileIncludeThenExcludeUri())
-                        || this.getDefaultProfileIncludeExcludeOrder().equals(
-                                ProfileSchema.getProfileExcludeThenIncludeUri()))
+                this.setDefaultProfileIncludeExcludeOrder(profileIncludeExclude);
+                
+                // check that one of the valid defaults was chosen, ie, not undefined
+                if(profileIncludeExclude == ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE
+                        || profileIncludeExclude == ProfileIncludeExclude.INCLUDE_THEN_EXCLUDE)
                 {
                     defaultProfileIncludeExcludeOrderValidationFailed = false;
                 }
@@ -181,10 +172,10 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
         {
             ProfileImpl.log
                     .warn("The default profile include exclude order for a profile was not valid. This may cause errors if any profilable objects do not explicitly define their order. profile.getKey()="
-                            + this.getKey() + " " + this.getDefaultProfileIncludeExcludeOrder().stringValue());
+                            + this.getKey() + " " + this.getDefaultProfileIncludeExcludeOrder().getUri().stringValue());
         }
         
-        if(ProfileImpl._TRACE)
+        if(ProfileImpl.TRACE)
         {
             ProfileImpl.log.trace("Profile.fromRdf: would have returned... result=" + this.toString());
         }
@@ -193,84 +184,43 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
     @Override
     public void addExcludeProvider(final URI excludeProvider)
     {
-        if(this.excludeProviders == null)
-        {
-            this.excludeProviders = new LinkedList<URI>();
-        }
-        
         this.excludeProviders.add(excludeProvider);
     }
     
     @Override
     public void addExcludeQueryType(final URI excludeQuery)
     {
-        if(this.excludeQueries == null)
-        {
-            this.excludeQueries = new LinkedList<URI>();
-        }
-        
         this.excludeQueries.add(excludeQuery);
     }
     
     @Override
     public void addExcludeRdfRule(final URI excludeRdfRule)
     {
-        if(this.excludeRdfRules == null)
-        {
-            this.excludeRdfRules = new LinkedList<URI>();
-        }
-        
         this.excludeRdfRules.add(excludeRdfRule);
     }
     
     @Override
     public void addIncludeProvider(final URI includeProvider)
     {
-        if(this.includeProviders == null)
-        {
-            this.includeProviders = new LinkedList<URI>();
-        }
-        
         this.includeProviders.add(includeProvider);
     }
     
     @Override
     public void addIncludeQueryType(final URI includeQuery)
     {
-        if(this.includeQueries == null)
-        {
-            this.includeQueries = new LinkedList<URI>();
-        }
-        
         this.includeQueries.add(includeQuery);
     }
     
     @Override
     public void addIncludeRdfRule(final URI includeRdfRule)
     {
-        if(this.includeRdfRules == null)
-        {
-            this.includeRdfRules = new LinkedList<URI>();
-        }
-        
         this.includeRdfRules.add(includeRdfRule);
     }
     
     @Override
     public void addProfileAdministrator(final URI profileAdministrator)
     {
-        if(this.profileAdministrators == null)
-        {
-            this.profileAdministrators = new LinkedList<URI>();
-        }
-        
         this.profileAdministrators.add(profileAdministrator);
-    }
-    
-    @Override
-    public void addUnrecognisedStatement(final Statement unrecognisedStatement)
-    {
-        this.unrecognisedStatements.add(unrecognisedStatement);
     }
     
     @Override
@@ -322,152 +272,123 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
         {
             return true;
         }
-        if(obj == null)
+        if(!super.equals(obj))
         {
             return false;
         }
-        if(!(obj instanceof ProfileImpl))
+        if(!(obj instanceof Profile))
         {
             return false;
         }
-        final ProfileImpl other = (ProfileImpl)obj;
-        if(this.allowImplicitProviderInclusions != other.allowImplicitProviderInclusions)
+        final Profile other = (Profile)obj;
+        
+        if(this.getAllowImplicitProviderInclusions() != other.getAllowImplicitProviderInclusions())
         {
             return false;
         }
-        if(this.allowImplicitQueryInclusions != other.allowImplicitQueryInclusions)
+        if(this.getAllowImplicitQueryTypeInclusions() != other.getAllowImplicitQueryTypeInclusions())
         {
             return false;
         }
-        if(this.allowImplicitRdfRuleInclusions != other.allowImplicitRdfRuleInclusions)
+        if(this.getAllowImplicitRdfRuleInclusions() != other.getAllowImplicitRdfRuleInclusions())
         {
             return false;
         }
-        if(this.curationStatus == null)
+        
+        if(this.getDefaultProfileIncludeExcludeOrder() == null)
         {
-            if(other.curationStatus != null)
+            if(other.getDefaultProfileIncludeExcludeOrder() != null)
             {
                 return false;
             }
         }
-        else if(!this.curationStatus.equals(other.curationStatus))
+        else if(!this.getDefaultProfileIncludeExcludeOrder().equals(other.getDefaultProfileIncludeExcludeOrder()))
         {
             return false;
         }
-        if(this.defaultProfileIncludeExcludeOrder == null)
+        if(this.getExcludeProviders() == null)
         {
-            if(other.defaultProfileIncludeExcludeOrder != null)
+            if(other.getExcludeProviders() != null)
             {
                 return false;
             }
         }
-        else if(!this.defaultProfileIncludeExcludeOrder.equals(other.defaultProfileIncludeExcludeOrder))
+        else if(!this.getExcludeProviders().equals(other.getExcludeProviders()))
         {
             return false;
         }
-        if(this.excludeProviders == null)
+        if(this.getExcludeQueryTypes() == null)
         {
-            if(other.excludeProviders != null)
+            if(other.getExcludeQueryTypes() != null)
             {
                 return false;
             }
         }
-        else if(!this.excludeProviders.equals(other.excludeProviders))
+        else if(!this.getExcludeQueryTypes().equals(other.getExcludeQueryTypes()))
         {
             return false;
         }
-        if(this.excludeQueries == null)
+        if(this.getExcludeRdfRules() == null)
         {
-            if(other.excludeQueries != null)
+            if(other.getExcludeRdfRules() != null)
             {
                 return false;
             }
         }
-        else if(!this.excludeQueries.equals(other.excludeQueries))
+        else if(!this.getExcludeRdfRules().equals(other.getExcludeRdfRules()))
         {
             return false;
         }
-        if(this.excludeRdfRules == null)
+        if(this.getIncludeProviders() == null)
         {
-            if(other.excludeRdfRules != null)
+            if(other.getIncludeProviders() != null)
             {
                 return false;
             }
         }
-        else if(!this.excludeRdfRules.equals(other.excludeRdfRules))
+        else if(!this.getIncludeProviders().equals(other.getIncludeProviders()))
         {
             return false;
         }
-        if(this.includeProviders == null)
+        if(this.getIncludeQueryTypes() == null)
         {
-            if(other.includeProviders != null)
+            if(other.getIncludeQueryTypes() != null)
             {
                 return false;
             }
         }
-        else if(!this.includeProviders.equals(other.includeProviders))
+        else if(!this.getIncludeQueryTypes().equals(other.getIncludeQueryTypes()))
         {
             return false;
         }
-        if(this.includeQueries == null)
+        if(this.getIncludeRdfRules() == null)
         {
-            if(other.includeQueries != null)
+            if(other.getIncludeRdfRules() != null)
             {
                 return false;
             }
         }
-        else if(!this.includeQueries.equals(other.includeQueries))
+        else if(!this.getIncludeRdfRules().equals(other.getIncludeRdfRules()))
         {
             return false;
         }
-        if(this.includeRdfRules == null)
+        
+        if(this.getOrder() != other.getOrder())
         {
-            if(other.includeRdfRules != null)
+            return false;
+        }
+        if(this.getProfileAdministrators() == null)
+        {
+            if(other.getProfileAdministrators() != null)
             {
                 return false;
             }
         }
-        else if(!this.includeRdfRules.equals(other.includeRdfRules))
+        else if(!this.getProfileAdministrators().equals(other.getProfileAdministrators()))
         {
             return false;
         }
-        if(this.key == null)
-        {
-            if(other.key != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.key.equals(other.key))
-        {
-            return false;
-        }
-        if(this.order != other.order)
-        {
-            return false;
-        }
-        if(this.profileAdministrators == null)
-        {
-            if(other.profileAdministrators != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.profileAdministrators.equals(other.profileAdministrators))
-        {
-            return false;
-        }
-        if(this.title == null)
-        {
-            if(other.title != null)
-            {
-                return false;
-            }
-        }
-        else if(!this.title.equals(other.title))
-        {
-            return false;
-        }
+        
         return true;
     }
     
@@ -489,12 +410,6 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
         return this.allowImplicitRdfRuleInclusions;
     }
     
-    @Override
-    public URI getCurationStatus()
-    {
-        return this.curationStatus;
-    }
-    
     /**
      * @return the namespace used to represent objects of this type by default
      */
@@ -505,7 +420,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
     }
     
     @Override
-    public URI getDefaultProfileIncludeExcludeOrder()
+    public ProfileIncludeExclude getDefaultProfileIncludeExcludeOrder()
     {
         return this.defaultProfileIncludeExcludeOrder;
     }
@@ -556,15 +471,6 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
         return this.includeRdfRules;
     }
     
-    /**
-     * @return the key
-     */
-    @Override
-    public URI getKey()
-    {
-        return this.key;
-    }
-    
     @Override
     public int getOrder()
     {
@@ -577,18 +483,6 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
         return this.profileAdministrators;
     }
     
-    @Override
-    public String getTitle()
-    {
-        return this.title;
-    }
-    
-    @Override
-    public Collection<Statement> getUnrecognisedStatements()
-    {
-        return this.unrecognisedStatements;
-    }
-    
     /*
      * (non-Javadoc)
      * 
@@ -598,11 +492,10 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
     public int hashCode()
     {
         final int prime = 31;
-        int result = 1;
+        int result = super.hashCode();
         result = prime * result + (this.allowImplicitProviderInclusions ? 1231 : 1237);
         result = prime * result + (this.allowImplicitQueryInclusions ? 1231 : 1237);
         result = prime * result + (this.allowImplicitRdfRuleInclusions ? 1231 : 1237);
-        result = prime * result + ((this.curationStatus == null) ? 0 : this.curationStatus.hashCode());
         result =
                 prime
                         * result
@@ -614,11 +507,142 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
         result = prime * result + ((this.includeProviders == null) ? 0 : this.includeProviders.hashCode());
         result = prime * result + ((this.includeQueries == null) ? 0 : this.includeQueries.hashCode());
         result = prime * result + ((this.includeRdfRules == null) ? 0 : this.includeRdfRules.hashCode());
-        result = prime * result + ((this.key == null) ? 0 : this.key.hashCode());
         result = prime * result + this.order;
         result = prime * result + ((this.profileAdministrators == null) ? 0 : this.profileAdministrators.hashCode());
-        result = prime * result + ((this.title == null) ? 0 : this.title.hashCode());
         return result;
+    }
+    
+    @Override
+    public boolean resetExcludedProviders()
+    {
+        try
+        {
+            this.excludeProviders.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProfileImpl.log.debug("Could not clear collection");
+        }
+        
+        this.excludeProviders = new ArrayList<URI>();
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetExcludedQueryTypes()
+    {
+        try
+        {
+            this.excludeQueries.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProfileImpl.log.debug("Could not clear collection");
+        }
+        
+        this.excludeQueries = new ArrayList<URI>();
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetExcludedRdfRules()
+    {
+        try
+        {
+            this.excludeRdfRules.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProfileImpl.log.debug("Could not clear collection");
+        }
+        
+        this.excludeRdfRules = new ArrayList<URI>();
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetIncludedProviders()
+    {
+        try
+        {
+            this.includeProviders.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProfileImpl.log.debug("Could not clear collection");
+        }
+        
+        this.includeProviders = new ArrayList<URI>();
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetIncludedQueryTypes()
+    {
+        try
+        {
+            this.includeQueries.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProfileImpl.log.debug("Could not clear collection");
+        }
+        
+        this.includeQueries = new ArrayList<URI>();
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetIncludedRdfRules()
+    {
+        try
+        {
+            this.includeRdfRules.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProfileImpl.log.debug("Could not clear collection");
+        }
+        
+        this.includeRdfRules = new ArrayList<URI>();
+        
+        return true;
+    }
+    
+    @Override
+    public boolean resetProfileAdministrators()
+    {
+        try
+        {
+            this.profileAdministrators.clear();
+            
+            return true;
+        }
+        catch(final UnsupportedOperationException uoe)
+        {
+            ProfileImpl.log.debug("Could not clear collection");
+        }
+        
+        this.profileAdministrators = new ArrayList<URI>();
+        
+        return true;
     }
     
     @Override
@@ -640,43 +664,15 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
     }
     
     @Override
-    public void setCurationStatus(final URI curationStatus)
-    {
-        this.curationStatus = curationStatus;
-    }
-    
-    @Override
-    public void setDefaultProfileIncludeExcludeOrder(final URI defaultProfileIncludeExcludeOrder)
+    public void setDefaultProfileIncludeExcludeOrder(final ProfileIncludeExclude defaultProfileIncludeExcludeOrder)
     {
         this.defaultProfileIncludeExcludeOrder = defaultProfileIncludeExcludeOrder;
-    }
-    
-    /**
-     * @param key
-     *            the key to set
-     */
-    @Override
-    public void setKey(final String nextKey)
-    {
-        this.setKey(StringUtils.createURI(nextKey));
-    }
-    
-    @Override
-    public void setKey(final URI nextKey)
-    {
-        this.key = nextKey;
     }
     
     @Override
     public void setOrder(final int order)
     {
         this.order = order;
-    }
-    
-    @Override
-    public void setTitle(final String title)
-    {
-        this.title = title;
     }
     
     @Override
@@ -702,12 +698,14 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
     }
     
     @Override
-    public boolean toRdf(final Repository myRepository, final URI keyToUse, final int modelVersion)
+    public boolean toRdf(final Repository myRepository, final int modelVersion, final URI... contextKey)
         throws OpenRDFException
     {
+        super.toRdf(myRepository, modelVersion, contextKey);
+        
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = Constants.valueFactory;
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
@@ -715,13 +713,13 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
             
             Literal titleLiteral;
             
-            if(this.title == null)
+            if(this.getTitle() == null)
             {
                 titleLiteral = f.createLiteral("");
             }
             else
             {
-                titleLiteral = f.createLiteral(this.title);
+                titleLiteral = f.createLiteral(this.getTitle());
             }
             
             final Literal orderLiteral = f.createLiteral(this.order);
@@ -729,18 +727,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
             final Literal allowImplicitProviderInclusionsLiteral =
                     f.createLiteral(this.allowImplicitProviderInclusions);
             final Literal allowImplicitRdfRuleInclusionsLiteral = f.createLiteral(this.allowImplicitRdfRuleInclusions);
-            final URI defaultProfileIncludeExcludeOrderLiteral = this.defaultProfileIncludeExcludeOrder;
-            
-            URI curationStatusLiteral = null;
-            
-            if(this.curationStatus == null)
-            {
-                curationStatusLiteral = ProjectSchema.getProjectNotCuratedUri();
-            }
-            else
-            {
-                curationStatusLiteral = this.curationStatus;
-            }
+            final URI defaultProfileIncludeExcludeOrderLiteral = this.defaultProfileIncludeExcludeOrder.getUri();
             
             // log.info("About to add to the repository");
             
@@ -748,39 +735,33 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
             
             for(final URI nextElementType : this.getElementTypes())
             {
-                con.add(profileInstanceUri, RDF.TYPE, nextElementType, keyToUse);
+                con.add(profileInstanceUri, RDF.TYPE, nextElementType, contextKey);
             }
-            
-            con.add(profileInstanceUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, keyToUse);
             
             // log.info("About to add to the repository 2");
             if(modelVersion == 1)
             {
-                con.add(profileInstanceUri, ProfileSchema.getProfileTitle(), titleLiteral, keyToUse);
-            }
-            else
-            {
-                con.add(profileInstanceUri, Constants.DC_TITLE, titleLiteral, keyToUse);
+                con.add(profileInstanceUri, ProfileSchema.getProfileTitle(), titleLiteral, contextKey);
             }
             
             // log.info("About to add to the repository 3");
-            con.add(profileInstanceUri, ProfileSchema.getProfileOrderUri(), orderLiteral, keyToUse);
+            con.add(profileInstanceUri, ProfileSchema.getProfileOrderUri(), orderLiteral, contextKey);
             
             // log.info("About to add to the repository 4");
             con.add(profileInstanceUri, ProfileSchema.getProfileAllowImplicitQueryInclusionsUri(),
-                    allowImplicitQueryInclusionsLiteral, keyToUse);
+                    allowImplicitQueryInclusionsLiteral, contextKey);
             
             // log.info("About to add to the repository 5");
             con.add(profileInstanceUri, ProfileSchema.getProfileAllowImplicitProviderInclusionsUri(),
-                    allowImplicitProviderInclusionsLiteral, keyToUse);
+                    allowImplicitProviderInclusionsLiteral, contextKey);
             
             // log.info("About to add to the repository 6");
             con.add(profileInstanceUri, ProfileSchema.getProfileAllowImplicitRdfRuleInclusionsUri(),
-                    allowImplicitRdfRuleInclusionsLiteral, keyToUse);
+                    allowImplicitRdfRuleInclusionsLiteral, contextKey);
             
             // log.info("About to add to the repository 7");
             con.add(profileInstanceUri, ProfileSchema.getProfileDefaultIncludeExcludeOrderUri(),
-                    defaultProfileIncludeExcludeOrderLiteral, keyToUse);
+                    defaultProfileIncludeExcludeOrderLiteral, contextKey);
             
             // log.info("About to add array based information");
             
@@ -790,7 +771,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
                 for(final URI nextIncludeProviders : this.includeProviders)
                 {
                     con.add(profileInstanceUri, ProfileSchema.getProfileIncludeProviderInProfile(),
-                            nextIncludeProviders, keyToUse);
+                            nextIncludeProviders, contextKey);
                 }
             }
             
@@ -800,7 +781,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
                 for(final URI nextExcludeProviders : this.excludeProviders)
                 {
                     con.add(profileInstanceUri, ProfileSchema.getProfileExcludeProviderFromProfile(),
-                            nextExcludeProviders, keyToUse);
+                            nextExcludeProviders, contextKey);
                 }
             }
             
@@ -810,7 +791,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
                 for(final URI nextProfileAdministrator : this.profileAdministrators)
                 {
                     con.add(profileInstanceUri, ProfileSchema.getProfileAdministratorUri(), nextProfileAdministrator,
-                            keyToUse);
+                            contextKey);
                 }
             }
             
@@ -819,13 +800,13 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
                 
                 for(final URI nextIncludeQuery : this.includeQueries)
                 {
-                    if(ProfileImpl._TRACE)
+                    if(ProfileImpl.TRACE)
                     {
                         ProfileImpl.log.trace("Profile.toRdf: nextIncludeQuery=" + nextIncludeQuery);
                     }
                     
                     con.add(profileInstanceUri, ProfileSchema.getProfileIncludeQueryInProfile(), nextIncludeQuery,
-                            keyToUse);
+                            contextKey);
                 }
             }
             
@@ -834,13 +815,13 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
                 
                 for(final URI nextExcludeQuery : this.excludeQueries)
                 {
-                    if(ProfileImpl._TRACE)
+                    if(ProfileImpl.TRACE)
                     {
                         ProfileImpl.log.trace("Profile.toRdf: nextExcludeQuery=" + nextExcludeQuery);
                     }
                     
                     con.add(profileInstanceUri, ProfileSchema.getProfileExcludeQueryFromProfile(), nextExcludeQuery,
-                            keyToUse);
+                            contextKey);
                 }
             }
             
@@ -850,7 +831,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
                 for(final URI nextIncludeRdfRules : this.includeRdfRules)
                 {
                     con.add(profileInstanceUri, ProfileSchema.getProfileIncludeRdfRuleInProfile(), nextIncludeRdfRules,
-                            keyToUse);
+                            contextKey);
                 }
             }
             
@@ -860,16 +841,7 @@ public class ProfileImpl implements Profile, Comparable<Profile>, HtmlExport
                 for(final URI nextExcludeRdfRules : this.excludeRdfRules)
                 {
                     con.add(profileInstanceUri, ProfileSchema.getProfileExcludeRdfRuleFromProfile(),
-                            nextExcludeRdfRules, keyToUse);
-                }
-            }
-            
-            if(this.unrecognisedStatements != null)
-            {
-                
-                for(final Statement nextUnrecognisedStatement : this.unrecognisedStatements)
-                {
-                    con.add(nextUnrecognisedStatement, keyToUse);
+                            nextExcludeRdfRules, contextKey);
                 }
             }
             
