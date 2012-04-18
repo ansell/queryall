@@ -75,12 +75,24 @@ public final class ProviderUtils
     }
     
     /**
+     * Finds all of the providers in the given list that could be applicable to the given
+     * namespaces.
      * 
+     * Default providers are not returned by this method if they do not also contain matching
+     * namespaces.
      * 
      * @param allProviders
+     *            A map of providers based on their URIs to iterate over to find matching providers.
+     *            Typically this will be a list of providers that are known to support a particular
+     *            query type.
      * @param namespaceUris
+     *            A map of the input tag names to namespace URIs that may match with the value of
+     *            the tag name.
      * @param namespaceMatchMethod
-     * @return
+     *            The match method defined in the NamespaceMatch enum that will be used for this
+     *            method. This was defined in the query type that is being used above this method.
+     * @return A map of URIs to Providers that matched the given namespace tag and URI combinations
+     *         using the given NamespaceMatch method.
      */
     public static Map<URI, Provider> getProvidersForNamespaceUris(final Map<URI, Provider> allProviders,
             final Map<String, Collection<URI>> namespaceUris, final NamespaceMatch namespaceMatchMethod)
@@ -97,6 +109,11 @@ public final class ProviderUtils
             // Assume nothing found for anyFound so we can switch it if anything is found
             boolean anyFound = false;
             // Assume everything found for allFound so we can switch it if anything is not found
+            // FIXME: We assume that we will always go through the for loop below at least once, per
+            // the check on namespaceUris.size() above, but we do not take into account the continue
+            // instruction
+            // In some rare cases nextNamespaceUriList will always be null, and the loop will always
+            // short-circuit.
             boolean allFound = true;
             
             for(final String nextInputParameter : namespaceUris.keySet())
