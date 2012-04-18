@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.openrdf.model.URI;
 import org.queryall.api.namespace.NamespaceEntry;
+import org.queryall.api.namespace.ValidatingNamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.QueryType;
@@ -97,7 +98,16 @@ public final class QueryTypeUtils
                             
                             for(final URI nextNamespaceUri : namespaceMatches.get(nextParameter))
                             {
-                                namespaceParameterMatches.add(allNamespaceEntries.get(nextNamespaceUri));
+                                final NamespaceEntry nextNamespaceEntry = allNamespaceEntries.get(nextNamespaceUri);
+                                
+                                if(nextNamespaceEntry instanceof ValidatingNamespaceEntry)
+                                {
+                                    // TODO: implement validation code here on the queryParameter
+                                    // that is identified as the "identifier" for this namespace in
+                                    // the context of this query
+                                }
+                                
+                                namespaceParameterMatches.add(nextNamespaceEntry);
                             }
                             
                             actualNamespaceEntries.put(nextParameter, namespaceParameterMatches);
