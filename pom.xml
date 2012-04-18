@@ -2,6 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
 	<groupId>org.queryall</groupId>
 	<artifactId>queryall-parent</artifactId>
 	<version>1.3.1-SNAPSHOT</version>
@@ -20,16 +27,15 @@
 		<module>queryall-lib-test</module>
 		<module>queryall-content-negotiation</module>
 		<module>queryall-webapp</module>
-		<!-- Hidden temporarily from reactor <module>queryall-ext-rule-spin</module> -->
 	</modules>
 	<name>Queryall RDF services</name>
-	<description>A package of services enabling access to a variety of datasources, with the results normalised to a single browsable Linked Data set of results.</description>
+	<description>A package of services enabling access to a variety of RDF datasources, with the results normalised to a single browsable Linked Data set of results.</description>
 	<url>http://sourceforge.net/apps/mediawiki/bio2rdf/</url>
 	<inceptionYear>2007</inceptionYear>
 	<scm>
-		<connection>scm:git:git://bio2rdf.git.sourceforge.net/gitroot/queryall/</connection>
-		<developerConnection>scm:git:ssh://p_ansell@bio2rdf.git.sourceforge.net/gitroot/queryall/</developerConnection>
-		<url>http://bio2rdf.git.sourceforge.net/</url>
+		<connection>scm:git:git@github.com:bio2rdf/queryall.git</connection>
+		<developerConnection>scm:git:git@github.com:bio2rdf/queryall.git</developerConnection>
+		<url>git@github.com:bio2rdf/queryall.git</url>
 	</scm>
 	<developers>
 		<developer>
@@ -451,17 +457,6 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>on.cs.unibas.ch</id>
-			<name>DBIS Maven Releases Repository</name>
-			<url>http://on.cs.unibas.ch/maven/repository</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
 			<id>fortytwo.net</id>
 			<name>SesameTools Repository</name>
 			<url>http://fortytwo.net/maven2</url>
@@ -473,16 +468,24 @@
 			</snapshots>
 		</repository>
 	</repositories>
-	<distributionManagement>
-		<repository>
-			<id>maenad-releases</id>
-			<name>maenad-releases</name>
-			<url>http://maven.metadata.net/artifactory/libs-releases-local</url>
-		</repository>
-		<snapshotRepository>
-			<id>maenad-snapshots</id>
-			<name>maenad-snapshots</name>
-			<url>http://maven.metadata.net/artifactory/libs-snapshots-local</url>
-		</snapshotRepository>
-	</distributionManagement>
+	<profiles>
+		<profile>
+			<id>metadatanet-deploy</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<distributionManagement>
+				<repository>
+					<id>maenad-releases</id>
+					<name>maenad-releases</name>
+					<url>http://maven.metadata.net/artifactory/libs-releases-local</url>
+				</repository>
+				<snapshotRepository>
+					<id>maenad-snapshots</id>
+					<name>maenad-snapshots</name>
+					<url>http://maven.metadata.net/artifactory/libs-snapshots-local</url>
+				</snapshotRepository>
+			</distributionManagement>
+		</profile>
+	</profiles>
 </project>
