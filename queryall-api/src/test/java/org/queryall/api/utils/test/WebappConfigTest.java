@@ -23,7 +23,7 @@ public class WebappConfigTest
     /**
      * NOTE: This property needs to be updated if any new properties are added
      */
-    private static final int EXPECTED_CONFIG_SIZE = 114;
+    private static final int EXPECTED_CONFIG_SIZE = 118;
     
     private ValueFactory testValueFactory;
     

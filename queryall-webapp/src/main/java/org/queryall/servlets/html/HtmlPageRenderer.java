@@ -206,11 +206,12 @@ public class HtmlPageRenderer
         velocityContext.put("images", images);
         
         velocityContext.put("shortcut_icon", localSettings.getStringProperty(WebappConfig.SHORTCUT_ICON_PATH));
-        velocityContext.put("scripts", localSettings.getStringProperties(WebappConfig.INDEX_PAGE_SCRIPTS));
-        velocityContext.put("local_scripts", localSettings.getStringProperties(WebappConfig.INDEX_PAGE_SCRIPTS_LOCAL));
-        velocityContext.put("stylesheets", localSettings.getStringProperties(WebappConfig.INDEX_PAGE_STYLESHEETS));
+        velocityContext.put("scripts", localSettings.getStringProperties(WebappConfig.RESULTS_PAGE_SCRIPTS));
+        velocityContext
+                .put("local_scripts", localSettings.getStringProperties(WebappConfig.RESULTS_PAGE_SCRIPTS_LOCAL));
+        velocityContext.put("stylesheets", localSettings.getStringProperties(WebappConfig.RESULTS_PAGE_STYLESHEETS));
         velocityContext.put("local_stylesheets",
-                localSettings.getStringProperties(WebappConfig.INDEX_PAGE_STYLESHEETS_LOCAL));
+                localSettings.getStringProperties(WebappConfig.RESULTS_PAGE_STYLESHEETS_LOCAL));
         
         // For each URI in localSettings.IMAGE_QUERY_TYPES
         // Make sure the URI is a valid QueryType

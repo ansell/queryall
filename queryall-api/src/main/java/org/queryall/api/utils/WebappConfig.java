@@ -283,6 +283,14 @@ public enum WebappConfig
      */
     REDIRECT_TO_EXPLICIT_FORMAT_HTTP_CODE("redirectToExplicitFormatHttpCode", 303),
     
+    RESULTS_PAGE_SCRIPTS("resultsPageScripts", Collections.emptyList()),
+    
+    RESULTS_PAGE_SCRIPTS_LOCAL("resultsPageScriptsLocal", Collections.emptyList()),
+    
+    RESULTS_PAGE_STYLESHEETS("resultsPageStylesheets", Collections.emptyList()),
+    
+    RESULTS_PAGE_STYLESHEETS_LOCAL("resultsPageStylesheetsLocal", Collections.emptyList()),
+    
     RESULTS_TEMPLATE("resultsTemplate", "page.vm"),
     
     ROBOT_HELP_URL("robotHelpUrl", "https://sourceforge.net/apps/mediawiki/bio2rdf/index.php?title=RobotHelp"),
