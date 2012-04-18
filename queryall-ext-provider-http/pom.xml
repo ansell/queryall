@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>queryall-parent</artifactId>
-		<groupId>org.queryall</groupId>
+		<groupId>com.github.queryall</groupId>
 		<version>1.3.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>queryall-ext-provider-http</artifactId>
@@ -31,21 +31,21 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.queryall</groupId>
+			<groupId>com.github.queryall</groupId>
 			<artifactId>queryall-api</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.queryall</groupId>
+			<groupId>com.github.queryall</groupId>
 			<artifactId>queryall-lib</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.queryall</groupId>
+			<groupId>com.github.queryall</groupId>
 			<artifactId>queryall-api</artifactId>
 			<version>${project.version}</version>
 			<type>test-jar</type>
