@@ -2869,7 +2869,9 @@ public final class RdfUtils
                     nextReaderFormat = Rio.getParserFormatForMIMEType(assumedContentType);
                 }
                 
-                if(nextReaderFormat == null)
+                // HACK: Do not try to parse text/html, as it results in meaningless triples that
+                // are confusing
+                if(nextReaderFormat == null && !assumedContentType.equals(Constants.TEXT_HTML))
                 {
                     nextReaderFormat = Rio.getParserFormatForMIMEType(defaultAssumedResponseContentType);
                 }
@@ -2881,7 +2883,7 @@ public final class RdfUtils
                                     + nextResult.getReturnedMIMEType()
                                     + " nextResult.assumedContentType="
                                     + assumedContentType
-                                    + " Settings.getStringPropertyFromConfig(\"assumedResponseContentType\")="
+                                    + " defaultAssumedResponseContentType="
                                     + defaultAssumedResponseContentType);
                     // throw new
                     // RuntimeException("Utilities: Not attempting to parse because there are no content types to use for interpretation");
@@ -2929,7 +2931,8 @@ public final class RdfUtils
             }
             else
             {
-                RdfUtils.log.warn("Not adding anything for next result as the result was empty");
+                RdfUtils.log
+                        .warn("Not adding anything for next result as the result was empty or the format was not understood");
             }
             
             if(RdfUtils.DEBUG)
