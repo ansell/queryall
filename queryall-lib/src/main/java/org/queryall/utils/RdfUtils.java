@@ -2854,6 +2854,7 @@ public final class RdfUtils
                         + nextResult.getReturnedContentType() + " nextReaderFormat=" + nextReaderFormat);
             }
             
+            // TODO: Integrate the Any23 methods here if a fallback is needed
             if(nextReaderFormat == null)
             {
                 String assumedContentType = null;
@@ -2871,7 +2872,7 @@ public final class RdfUtils
                 
                 // HACK: Do not try to parse text/html, as it results in meaningless triples that
                 // are confusing
-                if(nextReaderFormat == null && !assumedContentType.equals(Constants.TEXT_HTML))
+                if(nextReaderFormat == null && !Constants.TEXT_HTML.equals(nextResult.getReturnedMIMEType()))
                 {
                     nextReaderFormat = Rio.getParserFormatForMIMEType(defaultAssumedResponseContentType);
                 }
