@@ -69,6 +69,8 @@ public class QueryBundleUtils
             final boolean convertAlternateToPreferred, final boolean recogniseImplicitRdfruleInclusions,
             final boolean includeNonProfileMatchedRdfrules) throws QueryAllException
     {
+        // NOTE: Important that this is a HashSet, and that QueryBundle implements hashCode and
+        // equals to avoid duplicates
         final Collection<QueryBundle> results = new HashSet<QueryBundle>();
         
         // Note: We default to converting alternate namespaces to preferred unless it is turned off
