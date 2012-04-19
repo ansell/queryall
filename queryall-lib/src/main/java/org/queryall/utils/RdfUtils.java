@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -81,6 +82,7 @@ import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.comparators.StatementComparator;
 import org.queryall.exception.QueryAllException;
 import org.queryall.exception.QueryAllRuntimeException;
 import org.queryall.exception.UnsupportedNamespaceEntryException;
@@ -857,8 +859,12 @@ public final class RdfUtils
     }
     
     /**
-     * Returns a sorted list of all the statements from a repository, in an optional list of
-     * contexts, sorted using a org.queryall.comparators.StatementComparator.
+     * Returns a sorted collection of all the unique Statements from a repository using the default
+     * Statement equals and hashCode which do not take context into account then sorted using the
+     * given comparator to sort the results.
+     * 
+     * Note: This method is implemented using two collections, a set for uniqueness and a list for
+     * order, so it will take twice the memory.
      * 
      * @param nextRepository
      * @param contexts
@@ -866,21 +872,31 @@ public final class RdfUtils
      * @return
      * @throws OpenRDFException
      */
-    public static List<Statement> getAllStatementsFromRepository(final Repository nextRepository,
-            final Resource... contexts) throws OpenRDFException
+    public static Collection<Statement> getAllStatementsFromRepository(final Repository nextRepository,
+            final Comparator<Statement> nextComparator, final Resource... contexts) throws OpenRDFException
     {
-        final List<Statement> results = new ArrayList<Statement>();
-        
         RepositoryConnection con = null;
         
         try
         {
+            // use HashSet to remove duplicates based on the context parameter
+            Set<Statement> resultsSet = new HashSet<Statement>();
+            
             con = nextRepository.getConnection();
             
-            con.getStatements((Resource)null, (URI)null, (Value)null, true, contexts).addTo(results);
+            con.getStatements((Resource)null, (URI)null, (Value)null, true, contexts).addTo(resultsSet);
             
-            // TODO: Make this sorting configurable
-            Collections.sort(results, new org.queryall.comparators.StatementComparator());
+            final List<Statement> results = new ArrayList<Statement>(resultsSet);
+            
+            // clear out the first set and null the reference to regain memory if needed at this
+            // point
+            resultsSet.clear();
+            resultsSet = null;
+            
+            Collections.sort(results, nextComparator);
+            
+            return results;
+            
         }
         catch(final OpenRDFException ordfe)
         {
@@ -899,6 +915,53 @@ public final class RdfUtils
                 catch(final RepositoryException rex)
                 {
                     RdfUtils.log.error("Found repository exception while trying to close connection.");
+                }
+            }
+        }
+    }
+    
+    /**
+     * Returns a collection of all of the statements in the repository including duplicates based on
+     * Context, including sorting on the context position.
+     * 
+     * @param nextRepository
+     * @param contexts
+     *            An optional varargs array of contexts that should be exported.
+     * @return
+     * @throws OpenRDFException
+     */
+    public static Collection<Statement> getAllStatementsFromRepository(final Repository nextRepository,
+            final Resource... contexts) throws OpenRDFException
+    {
+        final List<Statement> results = new ArrayList<Statement>();
+        
+        RepositoryConnection con = null;
+        
+        try
+        {
+            con = nextRepository.getConnection();
+            
+            con.getStatements((Resource)null, (URI)null, (Value)null, true, contexts).addTo(results);
+            
+            Collections.sort(results, new StatementComparator());
+        }
+        catch(final OpenRDFException ordfe)
+        {
+            RdfUtils.log.error("getAllStatementsFromRepository: outer caught exception ", ordfe);
+            
+            throw ordfe;
+        }
+        finally
+        {
+            if(con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch(final RepositoryException rex)
+                {
+                    RdfUtils.log.error("Found repository exception while trying to close connection.", rex);
                 }
             }
         }
@@ -3128,7 +3191,7 @@ public final class RdfUtils
                 localSettings, localBlacklistController, true);
     }
     
-    public static List<Statement> retrieveUrlsToStatements(final Collection<String> retrievalUrls,
+    public static Collection<Statement> retrieveUrlsToStatements(final Collection<String> retrievalUrls,
             final String defaultResultFormat, final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController) throws InterruptedException
     {

@@ -18,6 +18,7 @@ import org.openrdf.repository.Repository;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.utils.PropertyUtils;
 import org.queryall.api.utils.WebappConfig;
+import org.queryall.comparators.ContextInsensitiveStatementComparator;
 import org.queryall.query.QueryBundle;
 import org.queryall.query.RdfFetchController;
 import org.queryall.query.RdfFetcherQueryRunnable;
@@ -221,7 +222,8 @@ public class HtmlPageRenderer
         // localSettings.getProvidersForQueryTypeForNamespaceUris(String customService,
         // Collection<Collection<String>> namespaceUris, NamespaceEntry.)
         
-        final List<Statement> allStatements = RdfUtils.getAllStatementsFromRepository(nextRepository);
+        final Collection<Statement> allStatements =
+                RdfUtils.getAllStatementsFromRepository(nextRepository, new ContextInsensitiveStatementComparator());
         
         // TODO: go through the statements and check an internal label cache to see if there is an
         // existing label available
