@@ -48,9 +48,11 @@ public class StringUtils
                 localSettings.getStringProperty(WebappConfig.PLAIN_NAMESPACE_AND_IDENTIFIER_REGEX), nsAndId);
     }
     
-    public static Map<String, List<String>> getNamespaceAndIdentifierFromUri(final String nextUri,
+    @SuppressWarnings("unused")
+    private static Map<String, List<String>> getNamespaceAndIdentifierFromUri(final String nextUri,
             final QueryAllConfiguration localSettings)
     {
+        // FIXME: Should be attempting to match against the template in a namespace entry
         if(nextUri.startsWith(localSettings.getDefaultHostAddress()))
         {
             return StringUtils.getNamespaceAndIdentifier(
@@ -143,6 +145,8 @@ public class StringUtils
                 matches.add(matcher.group(i + 1));
                 
                 // TODO: is there any way we can make this cleaner?
+                // input_NN here is the convention that was used for the regex matches before the
+                // new string based method, so it is used here to provide backwards compatibility
                 results.put("input_" + (i + 1), matches);
                 
                 found = true;

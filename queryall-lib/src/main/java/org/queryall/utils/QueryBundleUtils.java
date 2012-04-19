@@ -1,8 +1,8 @@
 package org.queryall.utils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -69,7 +69,9 @@ public class QueryBundleUtils
             final boolean convertAlternateToPreferred, final boolean recogniseImplicitRdfruleInclusions,
             final boolean includeNonProfileMatchedRdfrules) throws QueryAllException
     {
-        final Collection<QueryBundle> results = new ArrayList<QueryBundle>();
+        // NOTE: Important that this is a HashSet, and that QueryBundle implements hashCode and
+        // equals to avoid duplicates
+        final Collection<QueryBundle> results = new HashSet<QueryBundle>();
         
         // Note: We default to converting alternate namespaces to preferred unless it is turned off
         // in the configuration. It can always be turned off for each namespace entry individually
@@ -78,13 +80,20 @@ public class QueryBundleUtils
         
         for(final Provider nextProvider : chosenProviders)
         {
-            QueryBundleUtils.log.info("start of loop body for nextProvider=" + nextProvider.getKey().stringValue());
+            if(QueryBundleUtils.DEBUG)
+            {
+                QueryBundleUtils.log.debug("start of loop body for nextProvider={}", nextProvider.getKey()
+                        .stringValue());
+            }
             final boolean noCommunicationProvider =
                     nextProvider.getEndpointMethod().equals(ProviderSchema.getProviderNoCommunication());
             
             if(nextProvider instanceof HttpProvider)
             {
-                QueryBundleUtils.log.info("nextProvider instanceof HttpProvider");
+                if(QueryBundleUtils.DEBUG)
+                {
+                    QueryBundleUtils.log.debug("nextProvider instanceof HttpProvider");
+                }
                 final HttpProvider nextHttpProvider = (HttpProvider)nextProvider;
                 // FIXME: attributeList should not be shared in this way. It will use the last (ie,
                 // random) endpoint for the static inclusions right now, which doesn't seem right.
@@ -218,12 +227,18 @@ public class QueryBundleUtils
             } // end if(nextProvider instanceof HttpProvider)
             else if(noCommunicationProvider)
             {
-                QueryBundleUtils.log.info("noCommunicationProvider == true");
+                if(QueryBundleUtils.DEBUG)
+                {
+                    QueryBundleUtils.log.debug("noCommunicationProvider == true");
+                }
                 final StringBuilder nextStaticRdfXmlString = new StringBuilder();
                 
                 for(final URI nextCustomInclude : nextQueryType.getLinkedQueryTypes())
                 {
-                    QueryBundleUtils.log.info("d");
+                    if(QueryBundleUtils.TRACE)
+                    {
+                        QueryBundleUtils.log.trace("d");
+                    }
                     // pick out all of the QueryType's which have been delegated for this particular
                     // query as static includes
                     final QueryType nextCustomIncludeType = allQueryTypes.get(nextCustomInclude);
@@ -258,7 +273,10 @@ public class QueryBundleUtils
                 results.add(nextProviderQueryBundle);
             }
             
-            QueryBundleUtils.log.info("end of loop body for nextProvider=" + nextProvider.getKey().stringValue());
+            if(QueryBundleUtils.DEBUG)
+            {
+                QueryBundleUtils.log.debug("end of loop body for nextProvider={}", nextProvider.getKey().stringValue());
+            }
         } // end for(Provider nextProvider : QueryTypeProviders)
         
         return results;

@@ -26,6 +26,18 @@ public class ProfileUtils
     private static final boolean DEBUG = ProfileUtils.log.isDebugEnabled();
     private static final boolean INFO = ProfileUtils.log.isInfoEnabled();
     
+    /**
+     * Fetches the profiles in the collection specified by nextProfileUriList from the map given as
+     * allProfiles and then sorts them based on nextSortOrder.
+     * 
+     * Sorting is performed based on the fact that all Profile implementations are required to
+     * implement Comparable<Profile>.
+     * 
+     * @param nextProfileUriList
+     * @param nextSortOrder
+     * @param allProfiles
+     * @return
+     */
     public static List<Profile> getAndSortProfileList(final Collection<URI> nextProfileUriList,
             final SortOrder nextSortOrder, final Map<URI, Profile> allProfiles)
     {
@@ -61,6 +73,7 @@ public class ProfileUtils
         {
             throw new RuntimeException("getAndSortProfileList: sortOrder unrecognised nextSortOrder=" + nextSortOrder);
         }
+        
         return results;
     }
 }

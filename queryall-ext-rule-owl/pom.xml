@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>queryall-parent</artifactId>
-		<groupId>org.queryall</groupId>
+		<groupId>com.github.queryall</groupId>
 		<version>1.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>queryall-ext-rule-owl</artifactId>
@@ -27,9 +27,9 @@
 			<version>2.3.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.queryall</groupId>
+			<groupId>com.github.queryall</groupId>
 			<artifactId>queryall-api</artifactId>
-			<version>${queryall.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 </project>

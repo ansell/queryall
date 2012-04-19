@@ -3,6 +3,16 @@
  */
 package org.queryall.api.utils;
 
+import org.queryall.api.base.BaseQueryAllInterface;
+import org.queryall.api.namespace.NamespaceEntry;
+import org.queryall.api.profile.Profile;
+import org.queryall.api.project.Project;
+import org.queryall.api.provider.Provider;
+import org.queryall.api.querytype.QueryType;
+import org.queryall.api.rdfrule.NormalisationRule;
+import org.queryall.api.ruletest.RuleTest;
+import org.queryall.exception.QueryAllRuntimeException;
+
 /**
  * Generates the namespace ontology URIs based on calls to PropertyUtils.
  * 
@@ -130,6 +140,54 @@ public enum QueryAllNamespaces
     private static String prefix = PropertyUtils.getSystemOrPropertyString("queryall.ontologyPrefix",
             "http://purl.org/queryall/");
     private static String suffix = PropertyUtils.getSystemOrPropertyString("queryall.ontologySuffix", ":");
+    
+    /**
+     * Return a mapping for the QueryAllNamespaces defined here which are also BaseQueryAllInterface
+     * objects. Note, that some of the QueryAllNamespaces are not represented here as they do not
+     * have a mapping to the BaseQueryAllInterface hierarchy.
+     * 
+     * @param object
+     * @return A QueryAllNamespaces enum object matching the given object
+     * @throws QueryAllRuntimeException
+     *             if the object was not mapped to the QueryAllNamespaces hierarchy.
+     */
+    public static QueryAllNamespaces getDefaultNamespace(final BaseQueryAllInterface object)
+        throws QueryAllRuntimeException
+    {
+        if(object instanceof NamespaceEntry)
+        {
+            return QueryAllNamespaces.NAMESPACEENTRY;
+        }
+        else if(object instanceof Profile)
+        {
+            return QueryAllNamespaces.PROFILE;
+        }
+        else if(object instanceof Project)
+        {
+            return QueryAllNamespaces.PROJECT;
+        }
+        else if(object instanceof Provider)
+        {
+            return QueryAllNamespaces.PROVIDER;
+        }
+        else if(object instanceof QueryType)
+        {
+            return QueryAllNamespaces.QUERY;
+        }
+        else if(object instanceof NormalisationRule)
+        {
+            return QueryAllNamespaces.RDFRULE;
+        }
+        else if(object instanceof RuleTest)
+        {
+            return QueryAllNamespaces.RULETEST;
+        }
+        else
+        {
+            throw new QueryAllRuntimeException(
+                    "Could not determine the QueryAllNamespace for the given BaseQueryAllInterface object");
+        }
+    }
     
     private String baseUri;
     
