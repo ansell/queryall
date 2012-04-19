@@ -665,7 +665,7 @@ public class ProviderUtilsTest
     
     /**
      * Test method for
-     * {@link org.queryall.utils.ProviderUtils#getProvidersForQueryType(java.util.Map, org.openrdf.model.URI)}
+     * {@link org.queryall.utils.ProviderUtils#getProvidersSupportingQueryType(java.util.Map, org.openrdf.model.URI)}
      * .
      */
     @Test
@@ -685,12 +685,12 @@ public class ProviderUtilsTest
             Assert.assertEquals(1, testProviders.size());
             
             final Map<URI, Provider> trueResults =
-                    ProviderUtils.getProvidersForQueryType(testProviders, this.testQueryUri1);
+                    ProviderUtils.getProvidersSupportingQueryType(testProviders, this.testQueryUri1);
             
             Assert.assertEquals(1, trueResults.size());
             
             final Map<URI, Provider> falseResults =
-                    ProviderUtils.getProvidersForQueryType(testProviders, this.testQueryUri2);
+                    ProviderUtils.getProvidersSupportingQueryType(testProviders, this.testQueryUri2);
             
             Assert.assertEquals(0, falseResults.size());
             

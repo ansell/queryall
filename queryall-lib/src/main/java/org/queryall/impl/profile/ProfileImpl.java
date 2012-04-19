@@ -260,11 +260,6 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         return this.getKey().stringValue().compareTo(otherProfile.getKey().stringValue());
     }
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(final Object obj)
     {

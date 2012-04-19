@@ -33,12 +33,13 @@ import org.slf4j.LoggerFactory;
 public class QueryBundle
 {
     private static final Logger log = LoggerFactory.getLogger(QueryBundle.class);
+    
     @SuppressWarnings("unused")
     private static final boolean TRACE = QueryBundle.log.isTraceEnabled();
+    
     @SuppressWarnings("unused")
     private static final boolean DEBUG = QueryBundle.log.isDebugEnabled();
     private static final boolean INFO = QueryBundle.log.isInfoEnabled();
-    
     // This query is specifically tailored for the provider with respect to the URI
     // (de)normalisation rules
     // private String query = "";
@@ -49,17 +50,18 @@ public class QueryBundle
     // private String queryEndpoint = "";
     // The following is the unreplaced endpoint String
     // private String originalEndpointString = "";
-    
     private Provider originalProvider;
-    private QueryType customQueryType;
-    private boolean redirectRequired = false;
     
+    private QueryType customQueryType;
+    
+    private boolean redirectRequired = false;
     private List<Profile> relevantProfiles = new ArrayList<Profile>();
     private Map<String, String> alternativeEndpointsAndQueries = new HashMap<String, String>();
-    private QueryAllConfiguration localSettings;
     
+    private QueryAllConfiguration localSettings;
     public static URI queryBundleTypeUri;
     public static URI queryLiteralUri;
+    
     public static URI queryBundleEndpointUriTerm;
     public static URI queryBundleOriginalEndpointStringTerm;
     public static URI queryBundleAlternativeEndpointUriTerm;
@@ -68,7 +70,6 @@ public class QueryBundle
     public static URI queryBundleProviderUri;
     public static URI queryBundleProfileUri;
     public static URI queryBundleConfigurationApiVersion;
-    
     static
     {
         final ValueFactory f = Constants.VALUE_FACTORY;
@@ -167,6 +168,89 @@ public class QueryBundle
         
     }
     
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if(this == obj)
+        {
+            return true;
+        }
+        if(obj == null)
+        {
+            return false;
+        }
+        if(!(obj instanceof QueryBundle))
+        {
+            return false;
+        }
+        final QueryBundle other = (QueryBundle)obj;
+        if(this.alternativeEndpointsAndQueries == null)
+        {
+            if(other.alternativeEndpointsAndQueries != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.alternativeEndpointsAndQueries.equals(other.alternativeEndpointsAndQueries))
+        {
+            return false;
+        }
+        if(this.customQueryType == null)
+        {
+            if(other.customQueryType != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.customQueryType.equals(other.customQueryType))
+        {
+            return false;
+        }
+        if(this.originalProvider == null)
+        {
+            if(other.originalProvider != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.originalProvider.equals(other.originalProvider))
+        {
+            return false;
+        }
+        if(this.redirectRequired != other.redirectRequired)
+        {
+            return false;
+        }
+        if(this.relevantProfiles == null)
+        {
+            if(other.relevantProfiles != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.relevantProfiles.equals(other.relevantProfiles))
+        {
+            return false;
+        }
+        if(this.staticRdfXmlString == null)
+        {
+            if(other.staticRdfXmlString != null)
+            {
+                return false;
+            }
+        }
+        else if(!this.staticRdfXmlString.equals(other.staticRdfXmlString))
+        {
+            return false;
+        }
+        return true;
+    }
+    
     /**
      * Get an unmodifiable Map containing alternative endpoints as keys and queries as values
      * 
@@ -222,6 +306,29 @@ public class QueryBundle
     public String getStaticRdfXmlString()
     {
         return this.staticRdfXmlString;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result =
+                prime
+                        * result
+                        + ((this.alternativeEndpointsAndQueries == null) ? 0 : this.alternativeEndpointsAndQueries
+                                .hashCode());
+        result = prime * result + ((this.customQueryType == null) ? 0 : this.customQueryType.hashCode());
+        result = prime * result + ((this.originalProvider == null) ? 0 : this.originalProvider.hashCode());
+        result = prime * result + (this.redirectRequired ? 1231 : 1237);
+        result = prime * result + ((this.relevantProfiles == null) ? 0 : this.relevantProfiles.hashCode());
+        result = prime * result + ((this.staticRdfXmlString == null) ? 0 : this.staticRdfXmlString.hashCode());
+        return result;
     }
     
     /**
@@ -425,7 +532,7 @@ public class QueryBundle
         
         // sb.append("queryEndpoint=" + this.getQueryEndpoint() + "\n");
         // sb.append("query=" + this.getQuery() + "\n");
-        // sb.append("staticRdfXmlString=" + this.getStaticRdfXmlString() + "\n");
+        sb.append("staticRdfXmlString=" + this.getStaticRdfXmlString() + "\n");
         
         if(this.getProvider() == null)
         {

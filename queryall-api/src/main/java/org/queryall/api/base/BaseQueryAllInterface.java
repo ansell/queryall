@@ -38,6 +38,8 @@ public interface BaseQueryAllInterface
     /**
      * Returns the namespace used for objects of this type by default. For example, it would
      * correspond to namespaceString in the following: http://myhost.org/namespaceString:identifier
+     * 
+     * This should be consistent with the results of QueryAllNamespaces.getDefaultNamespace(this);
      **/
     QueryAllNamespaces getDefaultNamespace();
     
