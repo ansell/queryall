@@ -122,12 +122,12 @@ public class ListUtils
     public static boolean collectionContainsStringIgnoreCase(final Collection<String> stringCollection,
             String searchString)
     {
-        searchString = searchString.toLowerCase(Locale.ENGLISH);
-        
         if(stringCollection == null)
         {
             return false;
         }
+        
+        searchString = searchString.toLowerCase(Locale.ENGLISH);
         
         for(final String nextString : stringCollection)
         {

@@ -97,7 +97,7 @@ public class NamespaceProvidersServlet extends HttpServlet
                 if(!providersByQueryKey.containsKey(nextQueryKey))
                 {
                     final Map<URI, Provider> queryProviders =
-                            ProviderUtils.getProvidersForQueryType(allProviders, nextQueryKey);
+                            ProviderUtils.getProvidersSupportingQueryType(allProviders, nextQueryKey);
                     
                     providersByQueryKey.put(nextQueryKey, queryProviders.values());
                     
@@ -325,7 +325,7 @@ public class NamespaceProvidersServlet extends HttpServlet
                     // localSettings.getAllQueryTypes().get(nextUniqueQueryTitle);
                     
                     final Map<URI, Provider> queryTypesForNamespace =
-                            ProviderUtils.getProvidersForQueryType(allProviders, nextUniqueQueryTitle);
+                            ProviderUtils.getProvidersSupportingQueryType(allProviders, nextUniqueQueryTitle);
                     
                     if(queryTypesForNamespace.size() > 0)
                     {

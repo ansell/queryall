@@ -140,29 +140,6 @@ public class QueryTypeUtilsTest
      * .
      */
     @Test
-    public void testGetQueryTypesMatchingQueryPreferred()
-    {
-        final Map<QueryType, Map<String, Collection<NamespaceEntry>>> queryTypesMatchingQueryPreferred =
-                QueryTypeUtils.getQueryTypesMatchingQuery(this.testParametersRawPreferredConverted,
-                        new ArrayList<Profile>(0), this.testAllQueryTypes, this.testNamespacePrefixMap,
-                        this.testAllNamespaceEntries, true, true);
-        
-        Assert.assertEquals("preferred namespaces did not generate a single result", 1,
-                queryTypesMatchingQueryPreferred.size());
-        
-        Assert.assertTrue("Query type was not in the preferred namespaces results set",
-                queryTypesMatchingQueryPreferred.containsKey(this.testRegexInputQueryType1));
-        
-        Assert.assertEquals("preferred namespaces result did not have a parameter to namespace map attached to it", 1,
-                queryTypesMatchingQueryPreferred.get(this.testRegexInputQueryType1).size());
-    }
-    
-    /**
-     * Test method for
-     * {@link org.queryall.utils.QueryTypeUtils#getQueryTypesMatchingQuery(java.util.Map, java.util.List, java.util.Map, java.util.Map, java.util.Map, boolean, boolean)}
-     * .
-     */
-    @Test
     public void testGetQueryTypesMatchingQueryAlternate()
     {
         final Map<QueryType, Map<String, Collection<NamespaceEntry>>> queryTypesMatchingQueryAlternate =
@@ -186,21 +163,37 @@ public class QueryTypeUtilsTest
      * .
      */
     @Test
-    public void testGetQueryTypesMatchingQueryUnconvertedPreferred()
+    public void testGetQueryTypesMatchingQueryFalse()
     {
-        final Map<QueryType, Map<String, Collection<NamespaceEntry>>> queryTypesMatchingQueryUnconvertedPreferred =
+        final Map<QueryType, Map<String, Collection<NamespaceEntry>>> queryTypesMatchingQueryFalse =
+                QueryTypeUtils.getQueryTypesMatchingQuery(this.testParametersRawFalse, new ArrayList<Profile>(0),
+                        this.testAllQueryTypes, this.testNamespacePrefixMap, this.testAllNamespaceEntries, true, true);
+        
+        Assert.assertEquals("false namespaces did not generated an empty result", 0,
+                queryTypesMatchingQueryFalse.size());
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.utils.QueryTypeUtils#getQueryTypesMatchingQuery(java.util.Map, java.util.List, java.util.Map, java.util.Map, java.util.Map, boolean, boolean)}
+     * .
+     */
+    @Test
+    public void testGetQueryTypesMatchingQueryPreferred()
+    {
+        final Map<QueryType, Map<String, Collection<NamespaceEntry>>> queryTypesMatchingQueryPreferred =
                 QueryTypeUtils.getQueryTypesMatchingQuery(this.testParametersRawPreferredConverted,
                         new ArrayList<Profile>(0), this.testAllQueryTypes, this.testNamespacePrefixMap,
                         this.testAllNamespaceEntries, true, true);
         
         Assert.assertEquals("preferred namespaces did not generate a single result", 1,
-                queryTypesMatchingQueryUnconvertedPreferred.size());
+                queryTypesMatchingQueryPreferred.size());
         
         Assert.assertTrue("Query type was not in the preferred namespaces results set",
-                queryTypesMatchingQueryUnconvertedPreferred.containsKey(this.testRegexInputQueryType1));
+                queryTypesMatchingQueryPreferred.containsKey(this.testRegexInputQueryType1));
         
         Assert.assertEquals("preferred namespaces result did not have a parameter to namespace map attached to it", 1,
-                queryTypesMatchingQueryUnconvertedPreferred.get(this.testRegexInputQueryType1).size());
+                queryTypesMatchingQueryPreferred.get(this.testRegexInputQueryType1).size());
     }
     
     /**
@@ -232,14 +225,21 @@ public class QueryTypeUtilsTest
      * .
      */
     @Test
-    public void testGetQueryTypesMatchingQueryFalse()
+    public void testGetQueryTypesMatchingQueryUnconvertedPreferred()
     {
-        final Map<QueryType, Map<String, Collection<NamespaceEntry>>> queryTypesMatchingQueryFalse =
-                QueryTypeUtils.getQueryTypesMatchingQuery(this.testParametersRawFalse, new ArrayList<Profile>(0),
-                        this.testAllQueryTypes, this.testNamespacePrefixMap, this.testAllNamespaceEntries, true, true);
+        final Map<QueryType, Map<String, Collection<NamespaceEntry>>> queryTypesMatchingQueryUnconvertedPreferred =
+                QueryTypeUtils.getQueryTypesMatchingQuery(this.testParametersRawPreferredConverted,
+                        new ArrayList<Profile>(0), this.testAllQueryTypes, this.testNamespacePrefixMap,
+                        this.testAllNamespaceEntries, true, true);
         
-        Assert.assertEquals("false namespaces did not generated an empty result", 0,
-                queryTypesMatchingQueryFalse.size());
+        Assert.assertEquals("preferred namespaces did not generate a single result", 1,
+                queryTypesMatchingQueryUnconvertedPreferred.size());
+        
+        Assert.assertTrue("Query type was not in the preferred namespaces results set",
+                queryTypesMatchingQueryUnconvertedPreferred.containsKey(this.testRegexInputQueryType1));
+        
+        Assert.assertEquals("preferred namespaces result did not have a parameter to namespace map attached to it", 1,
+                queryTypesMatchingQueryUnconvertedPreferred.get(this.testRegexInputQueryType1).size());
     }
     
     /**

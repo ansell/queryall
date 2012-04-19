@@ -233,8 +233,8 @@ public final class ProviderUtils
     
     /**
      * 
-     * 
-     * NOTE: this method relies on the regular expression matching behaviour of QueryType
+     * This method calls nextQueryType.matchesForQueryParameters to determine the tags and their
+     * relevant values for the given query type.
      * 
      * @param allProviders
      * @param sortedIncludedProfiles
@@ -334,7 +334,7 @@ public final class ProviderUtils
         // if we aren't specific to namespace we simply find all providers for this type of custom
         // query
         final Map<URI, Provider> relevantProviders =
-                ProviderUtils.getProvidersForQueryType(allProviders, nextQueryType.getKey());
+                ProviderUtils.getProvidersSupportingQueryType(allProviders, nextQueryType.getKey());
         
         final Collection<Provider> results = new ArrayList<Provider>(relevantProviders.size());
         
@@ -365,12 +365,52 @@ public final class ProviderUtils
     }
     
     /**
+     * Fetches the results of ProviderUtils.getProvidersForNamespaceUris and pushes them through
+     * ProviderUtils.getProvidersSupportingQueryType to find a list of providers that support both
+     * the namespaces and the given query type.
+     * 
+     * NOTE: namespaceMatchMethod may be derived from the queryType, or it may be substituted with
+     * an alternate value to evaluate different scenarios.
+     * 
+     * This implementation assumes that the namespaces will be available on less providers than the
+     * query types, so it matches namespaces first before matching query types.
      * 
      * @param allProviders
-     * @param nextQueryType
+     * @param queryType
+     *            The query type to search for in the given providers.
+     * @param namespaceUris
+     *            A Map of collections of URIs, where the inner collections all matched to a single
+     *            input parameter which is given as the String key for the map, so that the
+     *            algorithm can distinguish cases where more than one parameter was matched
+     * @param namespaceMatchMethod
+     *            The URI defining the method of matching namespaces. This can override the setting
+     *            in the query type to examine other possible match scenarios, or it can be derived
+     *            from the query type to match the query type creators intention.
      * @return
      */
-    public static Map<URI, Provider> getProvidersForQueryType(final Map<URI, Provider> allProviders,
+    public static Map<URI, Provider> getProvidersForQueryTypeForNamespaceUris(final Map<URI, Provider> allProviders,
+            final QueryType queryType, final Map<String, Collection<URI>> namespaceUris,
+            final NamespaceMatch namespaceMatchMethod)
+    {
+        final Map<URI, Provider> namespaceProviders =
+                ProviderUtils.getProvidersForNamespaceUris(allProviders, namespaceUris, namespaceMatchMethod);
+        
+        final Map<URI, Provider> results =
+                ProviderUtils.getProvidersSupportingQueryType(namespaceProviders, queryType.getKey());
+        
+        return results;
+    }
+    
+    /**
+     * Finds all providers in the given map that support the query type based on its key URI.
+     * 
+     * @param allProviders
+     *            All of the providers that we are searching against.
+     * @param nextQueryType
+     *            The URI of the query type to search against the given providers.
+     * @return A map based on the given providers that support the given query type.
+     */
+    public static Map<URI, Provider> getProvidersSupportingQueryType(final Map<URI, Provider> allProviders,
             final URI nextQueryType)
     {
         final Map<URI, Provider> results = new HashMap<URI, Provider>();
@@ -396,33 +436,6 @@ public final class ProviderUtils
                 }
             }
         }
-        return results;
-    }
-    
-    /**
-     * 
-     * 
-     * @param allProviders
-     * @param queryType
-     * @param namespaceUris
-     *            A Map of collections of URIs, where the inner collections all matched to a single
-     *            input parameter which is given as the String key for the map, so that the
-     *            algorithm can distinguish cases where more than one parameter was matched
-     * @param namespaceMatchMethod
-     *            The URI defining the method of matching namespaces. This can override the setting
-     *            in the query type to examine other possible match scenarios, or it can be derived
-     *            from the query type to match the query type creators intention.
-     * @return
-     */
-    public static Map<URI, Provider> getProvidersForQueryTypeForNamespaceUris(final Map<URI, Provider> allProviders,
-            final QueryType queryType, final Map<String, Collection<URI>> namespaceUris,
-            final NamespaceMatch namespaceMatchMethod)
-    {
-        final Map<URI, Provider> namespaceProviders =
-                ProviderUtils.getProvidersForNamespaceUris(allProviders, namespaceUris, namespaceMatchMethod);
-        
-        final Map<URI, Provider> results =
-                ProviderUtils.getProvidersForQueryType(namespaceProviders, queryType.getKey());
         
         return results;
     }
