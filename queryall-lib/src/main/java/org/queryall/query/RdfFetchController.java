@@ -27,6 +27,7 @@ import org.queryall.api.rdfrule.NormalisationRuleSchema;
 import org.queryall.api.utils.SortOrder;
 import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.exception.ProvidersBlacklistedException;
 import org.queryall.exception.QueryAllException;
 import org.queryall.exception.UnnormalisableRuleException;
 import org.queryall.utils.ListUtils;
@@ -65,6 +66,7 @@ public class RdfFetchController
     private int pageOffset;
     private QueryAllConfiguration localSettings;
     private BlacklistController localBlacklistController;
+    private boolean queryTypeWasBlacklisted;
     
     /**
      * Default constructor. In this case, the fetch threads must be set directly before attempting
@@ -603,57 +605,67 @@ public class RdfFetchController
                             ProviderUtils.getProvidersForQuery(nextInputQueryType, this.queryParameters,
                                     this.sortedIncludedProfiles, this.getSettings());
                     
-                    final Collection<QueryBundle> queryBundlesForQueryType =
-                            QueryBundleUtils
-                                    .generateQueryBundlesForQueryTypeAndProviders(
-                                            nextInputQueryType,
-                                            chosenProviders,
-                                            this.queryParameters,
-                                            allCustomQueries.get(nextQueryType),
-                                            this.sortedIncludedProfiles,
-                                            this.localSettings.getAllQueryTypes(),
-                                            this.getSettings(),
-                                            this.getBlacklistController(),
-                                            this.getRealHostName(),
-                                            this.getSettings().getBooleanProperty(
-                                                    WebappConfig.TRY_ALL_ENDPOINTS_FOR_EACH_PROVIDER),
-                                            this.getPageOffset(),
-                                            this.localSettings
-                                                    .getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
-                                            this.localSettings
-                                                    .getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
-                                            this.localSettings
-                                                    .getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
-                    
-                    this.queryBundles.addAll(queryBundlesForQueryType);
-                    
-                    // if there are still no query bundles check for the non-namespace specific
-                    // version
-                    // of the query type to flag any instances of the namespace not being recognised
-                    if(queryBundlesForQueryType.size() == 0)
+                    try
                     {
-                        // For namespace specific query types, do a check ignoring the namespace
-                        // conditions to determine whether namespace matching was the only reason
-                        // that
-                        // the query type did not match this provider
+                        final Collection<QueryBundle> queryBundlesForQueryType =
+                                QueryBundleUtils
+                                        .generateQueryBundlesForQueryTypeAndProviders(
+                                                nextInputQueryType,
+                                                chosenProviders,
+                                                this.queryParameters,
+                                                allCustomQueries.get(nextQueryType),
+                                                this.sortedIncludedProfiles,
+                                                this.localSettings.getAllQueryTypes(),
+                                                this.getSettings(),
+                                                this.getBlacklistController(),
+                                                this.getRealHostName(),
+                                                this.getSettings().getBooleanProperty(
+                                                        WebappConfig.TRY_ALL_ENDPOINTS_FOR_EACH_PROVIDER),
+                                                this.getPageOffset(),
+                                                this.localSettings
+                                                        .getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
+                                                this.localSettings
+                                                        .getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                                                this.localSettings
+                                                        .getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
                         
-                        // NOTE: We only do this expensive, generally optional, check if there were
-                        // no previous unrecognised namespaces
-                        if(!this.namespaceNotRecognised)
+                        this.queryBundles.addAll(queryBundlesForQueryType);
+                        
+                        // if there are still no query bundles check for the non-namespace specific
+                        // version
+                        // of the query type to flag any instances of the namespace not being
+                        // recognised
+                        if(queryBundlesForQueryType.size() == 0)
                         {
-                            if(nextQueryType.getIsNamespaceSpecific()
-                                    && ProviderUtils.getProvidersForQueryNonNamespaceSpecific(
-                                            this.getSettings().getAllProviders(),
-                                            nextInputQueryType,
-                                            this.sortedIncludedProfiles,
-                                            this.getSettings().getBooleanProperty(
-                                                    WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
-                                            this.getSettings().getBooleanProperty(
-                                                    WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS)).size() > 0)
+                            // For namespace specific query types, do a check ignoring the namespace
+                            // conditions to determine whether namespace matching was the only
+                            // reason
+                            // that
+                            // the query type did not match this provider
+                            
+                            // NOTE: We only do this expensive, generally optional, check if there
+                            // were
+                            // no previous unrecognised namespaces
+                            if(!this.namespaceNotRecognised)
                             {
-                                this.namespaceNotRecognised = true;
+                                if(nextQueryType.getIsNamespaceSpecific()
+                                        && ProviderUtils.getProvidersForQueryNonNamespaceSpecific(
+                                                this.getSettings().getAllProviders(),
+                                                nextInputQueryType,
+                                                this.sortedIncludedProfiles,
+                                                this.getSettings().getBooleanProperty(
+                                                        WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
+                                                this.getSettings().getBooleanProperty(
+                                                        WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS)).size() > 0)
+                                {
+                                    this.namespaceNotRecognised = true;
+                                }
                             }
                         }
+                    }
+                    catch(ProvidersBlacklistedException pbe)
+                    {
+                        this.queryTypeWasBlacklisted = true;
                     }
                 }
             } // end for(QueryType nextQueryType : allCustomQueries)
@@ -803,5 +815,16 @@ public class RdfFetchController
     public void setUncalledThreads(final Collection<RdfFetcherQueryRunnable> uncalledThreads)
     {
         this.uncalledThreads = uncalledThreads;
+    }
+    
+    /**
+     * Returns true if at least one query type had no providers match, and at least one of the
+     * endpoints on one of the providers was not included due to it being blacklisted.
+     * 
+     * @return the queryTypeWasBlacklisted
+     */
+    public boolean getQueryTypeWasBlacklisted()
+    {
+        return queryTypeWasBlacklisted;
     }
 }

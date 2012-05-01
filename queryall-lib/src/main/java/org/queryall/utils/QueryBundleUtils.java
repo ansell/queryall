@@ -19,6 +19,7 @@ import org.queryall.api.querytype.QueryType;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.exception.ProvidersBlacklistedException;
 import org.queryall.exception.QueryAllException;
 import org.queryall.query.QueryBundle;
 import org.queryall.query.QueryCreator;
@@ -77,6 +78,10 @@ public class QueryBundleUtils
         // in the configuration. It can always be turned off for each namespace entry individually
         // FIXME: The current processing code ignores the preferences given by namespace entries,
         // and just uses the convertAlternateToPreferred setting
+        
+        // This variable keeps track of whether any blacklist matches occurred incase we need to
+        // flag this as the cause of no results being generated at the end of the method
+        boolean ignoredBlacklistedEndpoint = false;
         
         for(final Provider nextProvider : chosenProviders)
         {
@@ -208,11 +213,21 @@ public class QueryBundleUtils
                         }
                         
                         // Then test whether the endpoint is blacklisted before accepting it
-                        if(noCommunicationProvider || !localBlacklistController.isUrlBlacklisted(nextReplacedEndpoint))
+                        // HACK: This logic should be delegated to providers
+                        boolean endpointBlacklisted = !localBlacklistController.isUrlBlacklisted(nextReplacedEndpoint);
+                        
+                        if(noCommunicationProvider || endpointBlacklisted)
                         {
+                            if(endpointBlacklisted)
+                            {
+                                ignoredBlacklistedEndpoint = true;
+                            }
+                            
                             // no need to worry about redundant endpoint alternates if we are going
                             // to try to query all of the endpoints for each provider
-                            if(nextProviderQueryBundle.getAlternativeEndpointsAndQueries().size() == 0
+                            // FIXME: This logic seems to be broken as the alternative endpoints are
+                            // designed to be redundant.
+                            if(nextProviderQueryBundle.getAlternativeEndpointsAndQueries().isEmpty()
                                     || useAllEndpointsForEachProvider)
                             {
                                 // FIXME: Check to make sure that this does not generate nulls
@@ -278,6 +293,13 @@ public class QueryBundleUtils
                 QueryBundleUtils.log.debug("end of loop body for nextProvider={}", nextProvider.getKey().stringValue());
             }
         } // end for(Provider nextProvider : QueryTypeProviders)
+        
+        // if the results were empty and we know that we ignored a blacklisted endpoint, then we
+        // need to do something to highlight this
+        if(results.isEmpty() && ignoredBlacklistedEndpoint)
+        {
+            throw new ProvidersBlacklistedException("All providers for this query type were not available");
+        }
         
         return results;
     }
