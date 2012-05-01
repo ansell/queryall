@@ -28,7 +28,7 @@ public class ProvidersBlacklistedException extends QueryAllException
     /**
      * @param message
      */
-    public ProvidersBlacklistedException(String message)
+    public ProvidersBlacklistedException(final String message)
     {
         super(message);
     }
@@ -37,7 +37,7 @@ public class ProvidersBlacklistedException extends QueryAllException
      * @param message
      * @param cause
      */
-    public ProvidersBlacklistedException(String message, Throwable cause)
+    public ProvidersBlacklistedException(final String message, final Throwable cause)
     {
         super(message, cause);
     }
@@ -45,7 +45,7 @@ public class ProvidersBlacklistedException extends QueryAllException
     /**
      * @param cause
      */
-    public ProvidersBlacklistedException(Throwable cause)
+    public ProvidersBlacklistedException(final Throwable cause)
     {
         super(cause);
     }

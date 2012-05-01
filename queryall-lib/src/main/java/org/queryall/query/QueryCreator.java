@@ -155,7 +155,7 @@ public class QueryCreator
         
         final ProcessorQueryType processorQueryType = (ProcessorQueryType)queryType;
         
-        if(queryString.trim().equals(""))
+        if(queryString == null || queryString.trim().equals(""))
         {
             QueryCreator.log.error("QueryCreator.createQuery: queryString was empty");
         }
@@ -1189,8 +1189,11 @@ public class QueryCreator
                 StringUtils.percentEncode(defaultSeparator));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_ENDPOINT_URL, StringUtils.percentEncode(nextEndpoint));
         attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_REAL_HOST_NAME, StringUtils.percentEncode(realHostName));
-        attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_QUERY_STRING,
-                StringUtils.percentEncode(queryParameters.get(Constants.QUERY)));
+        if(queryParameters.containsKey(Constants.QUERY))
+        {
+            attributeList.put(Constants.TEMPLATE_KEY_URL_ENCODED_QUERY_STRING,
+                    StringUtils.percentEncode(queryParameters.get(Constants.QUERY)));
+        }
         
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_DEFAULT_HOST_NAME,
                 StringUtils.xmlEncodeString(configHostName));
@@ -1200,8 +1203,11 @@ public class QueryCreator
                 StringUtils.xmlEncodeString(defaultSeparator));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_ENDPOINT_URL, StringUtils.xmlEncodeString(nextEndpoint));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_REAL_HOST_NAME, StringUtils.xmlEncodeString(realHostName));
-        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_QUERY_STRING,
-                StringUtils.xmlEncodeString(queryParameters.get(Constants.QUERY)));
+        if(queryParameters.containsKey(Constants.QUERY))
+        {
+            attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_QUERY_STRING,
+                    StringUtils.xmlEncodeString(queryParameters.get(Constants.QUERY)));
+        }
         
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_DEFAULT_HOST_NAME,
                 StringUtils.xmlEncodeString(StringUtils.percentEncode(configHostName)));
@@ -1213,8 +1219,11 @@ public class QueryCreator
                 StringUtils.xmlEncodeString(StringUtils.percentEncode(nextEndpoint)));
         attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_REAL_HOST_NAME,
                 StringUtils.xmlEncodeString(StringUtils.percentEncode(realHostName)));
-        attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_QUERY_STRING,
-                StringUtils.xmlEncodeString(StringUtils.percentEncode(queryParameters.get(Constants.QUERY))));
+        if(queryParameters.containsKey(Constants.QUERY))
+        {
+            attributeList.put(Constants.TEMPLATE_KEY_XML_ENCODED_URL_ENCODED_QUERY_STRING,
+                    StringUtils.xmlEncodeString(StringUtils.percentEncode(queryParameters.get(Constants.QUERY))));
+        }
         
         if(QueryCreator.DEBUG)
         {
@@ -1578,7 +1587,7 @@ public class QueryCreator
     {
         final String queryString = attributeList.get(Constants.TEMPLATE_KEY_QUERY_STRING);
         
-        if(queryString.trim().equals(""))
+        if(queryString == null || queryString.trim().equals(""))
         {
             QueryCreator.log.error("QueryCreator.replaceAttributesOnEndpointUrl: queryString was empty");
         }

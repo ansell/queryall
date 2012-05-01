@@ -214,15 +214,16 @@ public class QueryBundleUtils
                         
                         // Then test whether the endpoint is blacklisted before accepting it
                         // HACK: This logic should be delegated to providers
-                        boolean endpointBlacklisted = !localBlacklistController.isUrlBlacklisted(nextReplacedEndpoint);
+                        final boolean endpointBlacklisted =
+                                localBlacklistController.isUrlBlacklisted(nextReplacedEndpoint);
                         
-                        if(noCommunicationProvider || endpointBlacklisted)
+                        if(endpointBlacklisted)
                         {
-                            if(endpointBlacklisted)
-                            {
-                                ignoredBlacklistedEndpoint = true;
-                            }
-                            
+                            ignoredBlacklistedEndpoint = true;
+                        }
+                        
+                        if(noCommunicationProvider || !endpointBlacklisted)
+                        {
                             // no need to worry about redundant endpoint alternates if we are going
                             // to try to query all of the endpoints for each provider
                             // FIXME: This logic seems to be broken as the alternative endpoints are
@@ -236,7 +237,10 @@ public class QueryBundleUtils
                             }
                         }
                     }
-                    
+                }
+                
+                if(!nextProviderQueryBundle.getAlternativeEndpointsAndQueries().isEmpty())
+                {
                     results.add(nextProviderQueryBundle);
                 }
             } // end if(nextProvider instanceof HttpProvider)

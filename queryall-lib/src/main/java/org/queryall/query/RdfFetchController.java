@@ -509,6 +509,17 @@ public class RdfFetchController
     }
     
     /**
+     * Returns true if at least one query type had no providers match, and at least one of the
+     * endpoints on one of the providers was not included due to it being blacklisted.
+     * 
+     * @return the queryTypeWasBlacklisted
+     */
+    public boolean getQueryTypeWasBlacklisted()
+    {
+        return this.queryTypeWasBlacklisted;
+    }
+    
+    /**
      * @return the realHostName
      */
     public String getRealHostName()
@@ -663,7 +674,7 @@ public class RdfFetchController
                             }
                         }
                     }
-                    catch(ProvidersBlacklistedException pbe)
+                    catch(final ProvidersBlacklistedException pbe)
                     {
                         this.queryTypeWasBlacklisted = true;
                     }
@@ -815,16 +826,5 @@ public class RdfFetchController
     public void setUncalledThreads(final Collection<RdfFetcherQueryRunnable> uncalledThreads)
     {
         this.uncalledThreads = uncalledThreads;
-    }
-    
-    /**
-     * Returns true if at least one query type had no providers match, and at least one of the
-     * endpoints on one of the providers was not included due to it being blacklisted.
-     * 
-     * @return the queryTypeWasBlacklisted
-     */
-    public boolean getQueryTypeWasBlacklisted()
-    {
-        return queryTypeWasBlacklisted;
     }
 }

@@ -16,7 +16,7 @@ public class DummyAllBlacklistedController extends BlacklistController
     /**
      * @param queryAllConfiguration
      */
-    public DummyAllBlacklistedController(QueryAllConfiguration queryAllConfiguration)
+    public DummyAllBlacklistedController(final QueryAllConfiguration queryAllConfiguration)
     {
         super(queryAllConfiguration);
     }
@@ -27,7 +27,7 @@ public class DummyAllBlacklistedController extends BlacklistController
      * @see org.queryall.blacklist.BlacklistController#isClientBlacklisted(java.lang.String)
      */
     @Override
-    public boolean isClientBlacklisted(String nextClientIPAddress)
+    public boolean isClientBlacklisted(final String nextClientIPAddress)
     {
         return true;
     }
@@ -39,7 +39,7 @@ public class DummyAllBlacklistedController extends BlacklistController
      * org.queryall.blacklist.BlacklistController#isClientPermanentlyBlacklisted(java.lang.String)
      */
     @Override
-    public boolean isClientPermanentlyBlacklisted(String nextClientIPAddress)
+    public boolean isClientPermanentlyBlacklisted(final String nextClientIPAddress)
     {
         return true;
     }
@@ -50,7 +50,7 @@ public class DummyAllBlacklistedController extends BlacklistController
      * @see org.queryall.blacklist.BlacklistController#isEndpointBlacklisted(java.lang.String)
      */
     @Override
-    public boolean isEndpointBlacklisted(String nextEndpointUrl)
+    public boolean isEndpointBlacklisted(final String nextEndpointUrl)
     {
         return true;
     }
@@ -62,8 +62,8 @@ public class DummyAllBlacklistedController extends BlacklistController
      * long, boolean)
      */
     @Override
-    public boolean isEndpointBlacklisted(String nextEndpointUrl, int blacklistMaxAccumulatedFailures,
-            long blacklistResetPeriodMilliseconds, boolean blacklistResetClientBlacklistWithEndpoints)
+    public boolean isEndpointBlacklisted(final String nextEndpointUrl, final int blacklistMaxAccumulatedFailures,
+            final long blacklistResetPeriodMilliseconds, final boolean blacklistResetClientBlacklistWithEndpoints)
     {
         return true;
     }
@@ -74,7 +74,7 @@ public class DummyAllBlacklistedController extends BlacklistController
      * @see org.queryall.blacklist.BlacklistController#isUrlBlacklisted(java.lang.String)
      */
     @Override
-    public boolean isUrlBlacklisted(String inputUrl)
+    public boolean isUrlBlacklisted(final String inputUrl)
     {
         return true;
     }
@@ -86,8 +86,8 @@ public class DummyAllBlacklistedController extends BlacklistController
      * boolean)
      */
     @Override
-    public boolean isUrlBlacklisted(String inputUrl, int blacklistMaxAccumulatedFailures,
-            long blacklistResetPeriodMilliseconds, boolean blacklistResetClientBlacklistWithEndpoints)
+    public boolean isUrlBlacklisted(final String inputUrl, final int blacklistMaxAccumulatedFailures,
+            final long blacklistResetPeriodMilliseconds, final boolean blacklistResetClientBlacklistWithEndpoints)
     {
         return true;
     }
