@@ -335,7 +335,7 @@ public final class RuleUtils
         
         if(nextStringRuleTest.getStages().contains(NormalisationRuleSchema.getRdfruleStageQueryVariables()))
         {
-            String nextInputTestResult = nextTestInputString;
+            String nextInputTestResult = new String(nextTestInputString);
             
             for(final NormalisationRule nextRule : RuleUtils.getSortedRulesByUris(allNormalisationRules,
                     nextStringRuleTest.getRuleUris(), SortOrder.LOWEST_ORDER_FIRST))
@@ -413,11 +413,9 @@ public final class RuleUtils
                 
                 if(RuleUtils.INFO)
                 {
-                    RuleUtils.log
-                            .info("TEST-FAIL: input test did not result in the output string: nextTestInputString="
-                                    + nextTestInputString + " actual output was nextInputTestResult="
-                                    + nextInputTestResult + " expected output was nextTestOutputString="
-                                    + nextTestOutputString);
+                    RuleUtils.log.info("TEST-FAIL: input test fail: start :: <[[" + nextTestInputString
+                            + "]]> expected output :: <[[" + nextTestOutputString + "]]> actual output :: <[["
+                            + nextInputTestResult + "]]>");
                     RuleUtils.log.info("TEST-FAIL: nextRuleTest.toString()=" + nextStringRuleTest.toString());
                 }
             }
@@ -425,7 +423,7 @@ public final class RuleUtils
         
         if(nextStringRuleTest.getStages().contains(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport()))
         {
-            String nextOutputTestResult = nextTestOutputString;
+            String nextOutputTestResult = new String(nextTestOutputString);
             
             for(final NormalisationRule nextRule : RuleUtils.getSortedRulesByUris(allNormalisationRules,
                     nextStringRuleTest.getRuleUris(), SortOrder.HIGHEST_ORDER_FIRST))
@@ -469,9 +467,9 @@ public final class RuleUtils
             {
                 if(RuleUtils.DEBUG)
                 {
-                    RuleUtils.log.debug("TEST-PASS output test pass: nextTestInputString=" + nextTestInputString
-                            + " actual output :: nextOutputTestResult=" + nextOutputTestResult
-                            + " expected output :: nextTestOutputString=" + nextTestOutputString);
+                    RuleUtils.log.debug("TEST-PASS output test pass: start :: <[[" + nextTestInputString
+                            + "]]> actual output :: <[[" + nextOutputTestResult + "]]> expected output :: <[["
+                            + nextTestOutputString + "]]>");
                 }
             }
             else
@@ -480,11 +478,9 @@ public final class RuleUtils
                 
                 if(RuleUtils.INFO)
                 {
-                    RuleUtils.log
-                            .info("TEST-FAIL: output test did not result in the input string: nextTestInputString="
-                                    + nextTestInputString + " actual output :: nextOutputTestResult="
-                                    + nextOutputTestResult + " expected output :: nextTestOutputString="
-                                    + nextTestOutputString);
+                    RuleUtils.log.info("TEST-FAIL: output test failed: start :: <[[" + nextTestInputString
+                            + "]]> expected output :: <[[" + nextTestOutputString + "]]> actual output :: <[["
+                            + nextOutputTestResult+"]]>");
                     RuleUtils.log.info("TEST-FAIL: nextRuleTest.toString()=" + nextStringRuleTest.toString());
                 }
             }

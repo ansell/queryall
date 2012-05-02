@@ -4,7 +4,9 @@
 package org.queryall.utils.test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,12 +20,14 @@ import org.openrdf.model.URI;
 import org.queryall.api.provider.Provider;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.rdfrule.NormalisationRuleSchema;
+import org.queryall.api.rdfrule.PrefixMappingNormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.ruletest.StringRuleTest;
 import org.queryall.api.test.DummyNormalisationRule;
 import org.queryall.api.test.DummyProvider;
 import org.queryall.api.utils.SortOrder;
 import org.queryall.exception.QueryAllException;
+import org.queryall.impl.rdfrule.PrefixMappingNormalisationRuleImpl;
 import org.queryall.impl.ruletest.StringRuleTestImpl;
 import org.queryall.utils.RuleUtils;
 import org.slf4j.Logger;
@@ -43,7 +47,8 @@ public class RuleUtilsTest
     private NormalisationRule testRuleLowOrder15;
     private NormalisationRule testRuleLowestOrder3;
     
-    private Map<URI, NormalisationRule> testAllNormalisationRules;
+    private Map<URI, NormalisationRule> testNormalisationRulesAll;
+    private Map<URI, NormalisationRule> testNormalisationRulesEmpty;
     private Collection<URI> testRulesNeededAll;
     
     private Provider testProviderNoRules;
@@ -52,11 +57,19 @@ public class RuleUtilsTest
     private Provider testProviderAllRulesRandomInsertion;
     private Collection<Provider> testProvidersAllRulesRandomInsertion;
     
-    private Collection<RuleTest> testRuleTests;
+    private Collection<RuleTest> testRuleTestsEmpty;
     
     private StringRuleTest testStringRuleTestQueryVariables;
     
     private StringRuleTest testStringRuleTestBeforeResultsImport;
+
+    private PrefixMappingNormalisationRule testRulePrefixMatching;
+
+    private StringRuleTest testStringRuleTestPrefixMatching;
+
+    private Collection<RuleTest> testRuleTestsPrefixMatching;
+
+    private Map<URI, NormalisationRule> testNormalisationRulesPrefixMatching;
     
     /**
      * @throws java.lang.Exception
@@ -84,12 +97,23 @@ public class RuleUtilsTest
         this.testRuleHighestOrder600.setKey("http://test.ruleutils.example.com/test/rule/order/500");
         this.testRuleHighestOrder600.setOrder(600);
         
-        this.testAllNormalisationRules = new ConcurrentHashMap<URI, NormalisationRule>();
-        this.testAllNormalisationRules.put(this.testRuleLowestOrder3.getKey(), this.testRuleLowestOrder3);
-        this.testAllNormalisationRules.put(this.testRuleLowOrder15.getKey(), this.testRuleLowOrder15);
-        this.testAllNormalisationRules.put(this.testRuleMidOrder50.getKey(), this.testRuleMidOrder50);
-        this.testAllNormalisationRules.put(this.testRuleHighOrder200.getKey(), this.testRuleHighOrder200);
-        this.testAllNormalisationRules.put(this.testRuleHighestOrder600.getKey(), this.testRuleHighestOrder600);
+        this.testRulePrefixMatching = new PrefixMappingNormalisationRuleImpl();
+        this.testRulePrefixMatching.setKey("http://test.ruleutils.example.com/test/rule/prefixmatching/");
+        this.testRulePrefixMatching.setInputUriPrefix("http://bio2rdf.org/snomedct:");
+        this.testRulePrefixMatching.setOutputUriPrefix("http://bio2rdf.org/snomed:");
+        this.testRulePrefixMatching.addStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+        
+        this.testNormalisationRulesPrefixMatching = new ConcurrentHashMap<URI, NormalisationRule>();
+        this.testNormalisationRulesPrefixMatching.put(this.testRulePrefixMatching.getKey(), this.testRulePrefixMatching);
+        
+        this.testNormalisationRulesEmpty = Collections.emptyMap();
+        
+        this.testNormalisationRulesAll = new ConcurrentHashMap<URI, NormalisationRule>();
+        this.testNormalisationRulesAll.put(this.testRuleLowestOrder3.getKey(), this.testRuleLowestOrder3);
+        this.testNormalisationRulesAll.put(this.testRuleLowOrder15.getKey(), this.testRuleLowOrder15);
+        this.testNormalisationRulesAll.put(this.testRuleMidOrder50.getKey(), this.testRuleMidOrder50);
+        this.testNormalisationRulesAll.put(this.testRuleHighOrder200.getKey(), this.testRuleHighOrder200);
+        this.testNormalisationRulesAll.put(this.testRuleHighestOrder600.getKey(), this.testRuleHighestOrder600);
         
         this.testRulesNeededAll = new ArrayList<URI>();
         this.testRulesNeededAll.add(this.testRuleLowestOrder3.getKey());
@@ -116,7 +140,7 @@ public class RuleUtilsTest
         this.testProvidersAllRulesRandomInsertion = new ArrayList<Provider>();
         this.testProvidersAllRulesRandomInsertion.add(this.testProviderAllRulesRandomInsertion);
         
-        this.testRuleTests = new ArrayList<RuleTest>();
+        this.testRuleTestsEmpty = Collections.emptyList();
         
         this.testStringRuleTestQueryVariables = new StringRuleTestImpl();
         this.testStringRuleTestQueryVariables.addStage(NormalisationRuleSchema.getRdfruleStageQueryVariables());
@@ -124,6 +148,16 @@ public class RuleUtilsTest
         this.testStringRuleTestBeforeResultsImport = new StringRuleTestImpl();
         this.testStringRuleTestBeforeResultsImport.addStage(NormalisationRuleSchema
                 .getRdfruleStageBeforeResultsImport());
+        
+        this.testStringRuleTestPrefixMatching = new StringRuleTestImpl();
+        this.testStringRuleTestPrefixMatching.addRuleUri(this.testRulePrefixMatching.getKey());
+        this.testStringRuleTestPrefixMatching.addStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
+        this.testStringRuleTestPrefixMatching.setTestInputString("http://bio2rdf.org/snomed:161831008");
+        this.testStringRuleTestPrefixMatching.setTestOutputString("http://bio2rdf.org/snomedct:161831008");
+        
+        this.testRuleTestsPrefixMatching = new ArrayList<RuleTest>();
+        this.testRuleTestsPrefixMatching.add(this.testStringRuleTestPrefixMatching);
+        
     }
     
     /**
@@ -138,7 +172,7 @@ public class RuleUtilsTest
         this.testRuleHighOrder200 = null;
         this.testRuleHighestOrder600 = null;
         
-        this.testAllNormalisationRules = null;
+        this.testNormalisationRulesAll = null;
         
         this.testRulesNeededAll = null;
         
@@ -161,7 +195,7 @@ public class RuleUtilsTest
     public void testGetSortedRulesByUrisHighestOrderFirst()
     {
         final List<NormalisationRule> sortedRulesByUris =
-                RuleUtils.getSortedRulesByUris(this.testAllNormalisationRules, this.testRulesNeededAll,
+                RuleUtils.getSortedRulesByUris(this.testNormalisationRulesAll, this.testRulesNeededAll,
                         SortOrder.HIGHEST_ORDER_FIRST);
         
         Assert.assertEquals(5, sortedRulesByUris.size());
@@ -183,7 +217,7 @@ public class RuleUtilsTest
     public void testGetSortedRulesByUrisLowestOrderFirst()
     {
         final List<NormalisationRule> sortedRulesByUris =
-                RuleUtils.getSortedRulesByUris(this.testAllNormalisationRules, this.testRulesNeededAll,
+                RuleUtils.getSortedRulesByUris(this.testNormalisationRulesAll, this.testRulesNeededAll,
                         SortOrder.LOWEST_ORDER_FIRST);
         
         Assert.assertEquals(5, sortedRulesByUris.size());
@@ -205,13 +239,13 @@ public class RuleUtilsTest
     public void testGetSortedRulesForProvidersEmpty()
     {
         final List<NormalisationRule> sortedRulesForProvidersHighestFirst =
-                RuleUtils.getSortedRulesForProviders(this.testProvidersNoRules, this.testAllNormalisationRules,
+                RuleUtils.getSortedRulesForProviders(this.testProvidersNoRules, this.testNormalisationRulesAll,
                         SortOrder.HIGHEST_ORDER_FIRST);
         
         Assert.assertEquals(0, sortedRulesForProvidersHighestFirst.size());
         
         final List<NormalisationRule> sortedRulesForProvidersLowestFirst =
-                RuleUtils.getSortedRulesForProviders(this.testProvidersNoRules, this.testAllNormalisationRules,
+                RuleUtils.getSortedRulesForProviders(this.testProvidersNoRules, this.testNormalisationRulesAll,
                         SortOrder.LOWEST_ORDER_FIRST);
         
         Assert.assertEquals(0, sortedRulesForProvidersLowestFirst.size());
@@ -228,7 +262,7 @@ public class RuleUtilsTest
     {
         final List<NormalisationRule> sortedRulesForProvidersHighestFirst =
                 RuleUtils.getSortedRulesForProviders(this.testProvidersAllRulesRandomInsertion,
-                        this.testAllNormalisationRules, SortOrder.HIGHEST_ORDER_FIRST);
+                        this.testNormalisationRulesAll, SortOrder.HIGHEST_ORDER_FIRST);
         
         Assert.assertEquals(5, sortedRulesForProvidersHighestFirst.size());
         
@@ -250,7 +284,7 @@ public class RuleUtilsTest
     {
         final List<NormalisationRule> sortedRulesForProvidersLowestFirst =
                 RuleUtils.getSortedRulesForProviders(this.testProvidersAllRulesRandomInsertion,
-                        this.testAllNormalisationRules, SortOrder.LOWEST_ORDER_FIRST);
+                        this.testNormalisationRulesAll, SortOrder.LOWEST_ORDER_FIRST);
         
         Assert.assertEquals(5, sortedRulesForProvidersLowestFirst.size());
         
@@ -276,21 +310,40 @@ public class RuleUtilsTest
     /**
      * Test method for
      * {@link org.queryall.utils.RuleUtils#runRuleTests(java.util.Collection, java.util.Map)}.
+     * @throws QueryAllException 
      */
     @Test
-    public void testRunRuleTestsEmpty()
+    public void testRunRuleTestsEmptyWithRules() throws QueryAllException
     {
-        try
-        {
-            final boolean runRuleTests = RuleUtils.runRuleTests(this.testRuleTests, this.testAllNormalisationRules);
-            
-            Assert.assertTrue("Empty rule test running failed", runRuleTests);
-        }
-        catch(final QueryAllException e)
-        {
-            Assert.fail("Empty rule test running threw an exception");
-        }
+        final boolean runRuleTests = RuleUtils.runRuleTests(this.testRuleTestsEmpty, this.testNormalisationRulesAll);
         
+        Assert.assertTrue("Empty rule test running failed", runRuleTests);
     }
     
+    /**
+     * Test method for
+     * {@link org.queryall.utils.RuleUtils#runRuleTests(java.util.Collection, java.util.Map)}.
+     * @throws QueryAllException 
+     */
+    @Test
+    public void testRunRuleTestsEmptyWithoutRules() throws QueryAllException
+    {
+        final boolean runRuleTests = RuleUtils.runRuleTests(this.testRuleTestsEmpty, this.testNormalisationRulesEmpty);
+        
+        Assert.assertTrue("Empty rule test running failed", runRuleTests);
+    }
+
+    /**
+     * Test method for
+     * {@link org.queryall.utils.RuleUtils#runRuleTests(java.util.Collection, java.util.Map)}.
+     * @throws QueryAllException 
+     */
+    @Test
+    public void testRunRuleTestsPrefixMatchingRule() throws QueryAllException
+    {
+        final boolean runRuleTests = RuleUtils.runRuleTests(this.testRuleTestsPrefixMatching, this.testNormalisationRulesPrefixMatching);
+        
+        Assert.assertTrue("Prefix Matching Rule Test running failed", runRuleTests);
+    }
+
 }
