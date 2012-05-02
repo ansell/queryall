@@ -715,6 +715,11 @@ public class BlacklistController
     
     public boolean isClientWhitelisted(final String nextClientIPAddress)
     {
+        if(nextClientIPAddress == null)
+        {
+            return false;
+        }
+        
         return this.getCurrentIPWhitelist().contains(nextClientIPAddress);
     }
     
@@ -726,6 +731,11 @@ public class BlacklistController
      */
     public boolean isEndpointBlacklisted(final String nextEndpointUrl)
     {
+        if(nextEndpointUrl == null)
+        {
+            return false;
+        }
+        
         final int blacklistMaxAccumulatedFailures =
                 this.localSettings.getIntProperty(WebappConfig.BLACKLIST_MAX_ACCUMULATED_FAILURES,
                         (Integer)WebappConfig.BLACKLIST_MAX_ACCUMULATED_FAILURES.getDefaultValue());
@@ -757,6 +767,11 @@ public class BlacklistController
     public boolean isEndpointBlacklisted(final String nextEndpointUrl, final int blacklistMaxAccumulatedFailures,
             final long blacklistResetPeriodMilliseconds, final boolean blacklistResetClientBlacklistWithEndpoints)
     {
+        if(nextEndpointUrl == null)
+        {
+            return false;
+        }
+        
         this.doBlacklistExpiry(blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints);
         
         if(this.accumulatedBlacklistStatistics.containsKey(nextEndpointUrl))
@@ -773,6 +788,8 @@ public class BlacklistController
     
     /**
      * 
+     * NOTE: If inputUrl is null, this method will always return false.
+     * 
      * @param inputUrl
      *            The full URL to check
      * 
@@ -780,6 +797,11 @@ public class BlacklistController
      */
     public boolean isUrlBlacklisted(final String inputUrl)
     {
+        if(inputUrl == null)
+        {
+            return false;
+        }
+        
         final int blacklistMaxAccumulatedFailures =
                 this.localSettings.getIntProperty(WebappConfig.BLACKLIST_MAX_ACCUMULATED_FAILURES,
                         (Integer)WebappConfig.BLACKLIST_MAX_ACCUMULATED_FAILURES.getDefaultValue());
@@ -806,6 +828,11 @@ public class BlacklistController
     public boolean isUrlBlacklisted(final String inputUrl, final int blacklistMaxAccumulatedFailures,
             final long blacklistResetPeriodMilliseconds, final boolean blacklistResetClientBlacklistWithEndpoints)
     {
+        if(inputUrl == null)
+        {
+            return false;
+        }
+        
         URL url = null;
         
         try
