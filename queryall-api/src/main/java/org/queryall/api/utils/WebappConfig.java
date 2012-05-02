@@ -219,6 +219,10 @@ public enum WebappConfig
     
     N3_URL_SUFFIX("n3UrlSuffix", ""),
     
+    NO_ACCESSIBLE_PROVIDERS_HTTP_RESPONSE_CODE("noAccessibleProvidersHttpResponseCode", 503),
+    
+    NO_ACCESSIBLE_PROVIDERS_STATIC_ADDITIONS("noAccessibleProvidersStaticAdditions", Collections.emptyList()),
+    
     NQUADS_URL_PREFIX("nquadsUrlPrefix", "nquads/"),
     
     NQUADS_URL_SUFFIX("nquadsUrlSuffix", ""),

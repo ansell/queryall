@@ -676,6 +676,16 @@ public class RdfFetchController
                     }
                     catch(final ProvidersBlacklistedException pbe)
                     {
+                        if(RdfFetchController.INFO)
+                        {
+                            RdfFetchController.log
+                                    .info("Query type not used on any providers due to 1 or more blacklisted endpoints querytype={}",
+                                            nextInputQueryType.getKey().stringValue());
+                            if(RdfFetchController.DEBUG)
+                            {
+                                RdfFetchController.log.debug("ProvidersBlacklistedException:", pbe);
+                            }
+                        }
                         this.queryTypeWasBlacklisted = true;
                     }
                 }
