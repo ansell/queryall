@@ -181,6 +181,18 @@ public class GeneralServlet extends HttpServlet
             
             final Collection<QueryBundle> multiProviderQueryBundles = fetchController.getQueryBundles();
             
+            // if all of the query types were specified as dummy query types, then ignore them for
+            // the purposes of the query type blacklisted check
+            boolean nonDummyQueryTypeFound = false;
+            
+            for(QueryBundle nextQueryBundle : multiProviderQueryBundles)
+            {
+                if(!nextQueryBundle.getQueryType().getIsDummyQueryType())
+                {
+                    nonDummyQueryTypeFound = true;
+                }
+            }
+            
             final Collection<String> debugStrings = new ArrayList<String>(multiProviderQueryBundles.size() + 5);
             
             // We do not use the default catalina writer as it may not be UTF-8 compliant depending
@@ -204,7 +216,8 @@ public class GeneralServlet extends HttpServlet
                 ServletUtils.doQueryPretend(queryString, responseCode, pageOffset, requestedContentType,
                         multiProviderQueryBundles, myRepository, localSettings.getSeparator());
             }
-            else if(multiProviderQueryBundles.isEmpty() && fetchController.getQueryTypeWasBlacklisted())
+            else if((multiProviderQueryBundles.isEmpty() || !nonDummyQueryTypeFound)
+                    && fetchController.getQueryTypeWasBlacklisted())
             {
                 // Likely case for this is that all providers are temporarily blacklisted, so in
                 // order to avoid sending a 4XX code, we send a 5XX code here before we get to the

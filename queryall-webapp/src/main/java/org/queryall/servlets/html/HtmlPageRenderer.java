@@ -340,7 +340,7 @@ public class HtmlPageRenderer
         
         try
         {
-            if(fetchController == null || fetchController.queryKnown())
+            if(fetchController == null || (fetchController.queryKnown() && !fetchController.getQueryTypeWasBlacklisted()))
             {
                 if(HtmlPageRenderer.DEBUG)
                 {
@@ -360,6 +360,7 @@ public class HtmlPageRenderer
                     HtmlPageRenderer.log.debug("renderHtml: !fetchController.queryKnown(), using error template");
                 }
                 
+                velocityContext.put("queryTypeWasBlacklisted", fetchController.getQueryTypeWasBlacklisted());
                 velocityContext.put("namespaceRecognised", !fetchController.anyNamespaceNotRecognised());
                 velocityContext.put("queryKnown", fetchController.queryKnown());
                 
