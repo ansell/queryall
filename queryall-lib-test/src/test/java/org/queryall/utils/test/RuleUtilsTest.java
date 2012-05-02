@@ -4,7 +4,6 @@
 package org.queryall.utils.test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -62,13 +61,13 @@ public class RuleUtilsTest
     private StringRuleTest testStringRuleTestQueryVariables;
     
     private StringRuleTest testStringRuleTestBeforeResultsImport;
-
+    
     private PrefixMappingNormalisationRule testRulePrefixMatching;
-
+    
     private StringRuleTest testStringRuleTestPrefixMatching;
-
+    
     private Collection<RuleTest> testRuleTestsPrefixMatching;
-
+    
     private Map<URI, NormalisationRule> testNormalisationRulesPrefixMatching;
     
     /**
@@ -104,7 +103,8 @@ public class RuleUtilsTest
         this.testRulePrefixMatching.addStage(NormalisationRuleSchema.getRdfruleStageBeforeResultsImport());
         
         this.testNormalisationRulesPrefixMatching = new ConcurrentHashMap<URI, NormalisationRule>();
-        this.testNormalisationRulesPrefixMatching.put(this.testRulePrefixMatching.getKey(), this.testRulePrefixMatching);
+        this.testNormalisationRulesPrefixMatching
+                .put(this.testRulePrefixMatching.getKey(), this.testRulePrefixMatching);
         
         this.testNormalisationRulesEmpty = Collections.emptyMap();
         
@@ -310,7 +310,22 @@ public class RuleUtilsTest
     /**
      * Test method for
      * {@link org.queryall.utils.RuleUtils#runRuleTests(java.util.Collection, java.util.Map)}.
-     * @throws QueryAllException 
+     * 
+     * @throws QueryAllException
+     */
+    @Test
+    public void testRunRuleTestsEmptyWithoutRules() throws QueryAllException
+    {
+        final boolean runRuleTests = RuleUtils.runRuleTests(this.testRuleTestsEmpty, this.testNormalisationRulesEmpty);
+        
+        Assert.assertTrue("Empty rule test running failed", runRuleTests);
+    }
+    
+    /**
+     * Test method for
+     * {@link org.queryall.utils.RuleUtils#runRuleTests(java.util.Collection, java.util.Map)}.
+     * 
+     * @throws QueryAllException
      */
     @Test
     public void testRunRuleTestsEmptyWithRules() throws QueryAllException
@@ -323,27 +338,16 @@ public class RuleUtilsTest
     /**
      * Test method for
      * {@link org.queryall.utils.RuleUtils#runRuleTests(java.util.Collection, java.util.Map)}.
-     * @throws QueryAllException 
-     */
-    @Test
-    public void testRunRuleTestsEmptyWithoutRules() throws QueryAllException
-    {
-        final boolean runRuleTests = RuleUtils.runRuleTests(this.testRuleTestsEmpty, this.testNormalisationRulesEmpty);
-        
-        Assert.assertTrue("Empty rule test running failed", runRuleTests);
-    }
-
-    /**
-     * Test method for
-     * {@link org.queryall.utils.RuleUtils#runRuleTests(java.util.Collection, java.util.Map)}.
-     * @throws QueryAllException 
+     * 
+     * @throws QueryAllException
      */
     @Test
     public void testRunRuleTestsPrefixMatchingRule() throws QueryAllException
     {
-        final boolean runRuleTests = RuleUtils.runRuleTests(this.testRuleTestsPrefixMatching, this.testNormalisationRulesPrefixMatching);
+        final boolean runRuleTests =
+                RuleUtils.runRuleTests(this.testRuleTestsPrefixMatching, this.testNormalisationRulesPrefixMatching);
         
         Assert.assertTrue("Prefix Matching Rule Test running failed", runRuleTests);
     }
-
+    
 }

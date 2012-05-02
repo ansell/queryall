@@ -185,7 +185,7 @@ public class GeneralServlet extends HttpServlet
             // the purposes of the query type blacklisted check
             boolean nonDummyQueryTypeFound = false;
             
-            for(QueryBundle nextQueryBundle : multiProviderQueryBundles)
+            for(final QueryBundle nextQueryBundle : multiProviderQueryBundles)
             {
                 if(!nextQueryBundle.getQueryType().getIsDummyQueryType())
                 {

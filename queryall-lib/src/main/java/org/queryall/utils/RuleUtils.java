@@ -480,7 +480,7 @@ public final class RuleUtils
                 {
                     RuleUtils.log.info("TEST-FAIL: output test failed: start :: <[[" + nextTestInputString
                             + "]]> expected output :: <[[" + nextTestOutputString + "]]> actual output :: <[["
-                            + nextOutputTestResult+"]]>");
+                            + nextOutputTestResult + "]]>");
                     RuleUtils.log.info("TEST-FAIL: nextRuleTest.toString()=" + nextStringRuleTest.toString());
                 }
             }

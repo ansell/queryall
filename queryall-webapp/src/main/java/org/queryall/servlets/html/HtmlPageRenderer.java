@@ -340,7 +340,8 @@ public class HtmlPageRenderer
         
         try
         {
-            if(fetchController == null || (fetchController.queryKnown() && !fetchController.getQueryTypeWasBlacklisted()))
+            if(fetchController == null
+                    || (fetchController.queryKnown() && !fetchController.getQueryTypeWasBlacklisted()))
             {
                 if(HtmlPageRenderer.DEBUG)
                 {
