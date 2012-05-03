@@ -664,63 +664,68 @@ public class SettingsFactory
                         
                         if(SettingsFactory.INFO)
                         {
-                            SettingsFactory.log
-                                    .info("getServerConfigurationRdf: getting configuration from URL: nextLocation="
-                                            + nextLocation + " url=" + url.toString());
+                            SettingsFactory.log.info("Getting configuration from URL: nextLocation=" + nextLocation
+                                    + " url=" + url.toString());
                         }
                         
                         myRepositoryConnection.add(url, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
                         
                         if(SettingsFactory.INFO)
                         {
-                            SettingsFactory.log
-                                    .info("getServerConfigurationRdf: finished getting configuration from URL: url="
-                                            + url.toString());
+                            SettingsFactory.log.info("Finished getting configuration from URL: url=" + url.toString());
                         }
                     }
                     else
                     {
                         if(SettingsFactory.INFO)
                         {
-                            SettingsFactory.log.info("Settings: getting configuration from file: nextLocation="
-                                    + nextLocation);
+                            SettingsFactory.log.info("Getting configuration from file: nextLocation=" + nextLocation);
                         }
                         final InputStream nextInputStream = SettingsFactory.class.getResourceAsStream(nextLocation);
                         
-                        myRepositoryConnection.add(nextInputStream, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
-                        if(SettingsFactory.INFO)
+                        if(nextInputStream == null)
                         {
                             SettingsFactory.log
-                                    .info("Settings: finished getting configuration from file: nextLocation="
-                                            + nextLocation);
+                                    .error("Could not get resource as inputstream. The file may not be in the classpath. nextLocation={}",
+                                            nextLocation);
+                        }
+                        else
+                        {
+                            myRepositoryConnection.add(nextInputStream, baseURI,
+                                    RDFFormat.forMIMEType(configMIMEFormat));
+                            if(SettingsFactory.INFO)
+                            {
+                                SettingsFactory.log.info("Finished getting configuration from file: nextLocation="
+                                        + nextLocation);
+                            }
                         }
                     }
                 }
                 catch(final RDFParseException rdfpe)
                 {
                     SettingsFactory.log.error(
-                            "Settings: failed to get the configuration repository. Caught RDFParseException. nextLocation="
+                            "failed to get the configuration repository. Caught RDFParseException. nextLocation="
                                     + nextLocation, rdfpe);
                     throw new RuntimeException(
-                            "Settings: failed to initialise the configuration repository. Caught RDFParseException. nextLocation="
+                            "failed to initialise the configuration repository. Caught RDFParseException. nextLocation="
                                     + nextLocation);
                 }
                 catch(final OpenRDFException ordfe)
                 {
                     SettingsFactory.log.error(
-                            "Settings: failed to initialise the configuration repository. Caught OpenRDFException. nextLocation="
+                            "failed to initialise the configuration repository. Caught OpenRDFException. nextLocation="
                                     + nextLocation, ordfe);
                     throw new RuntimeException(
-                            "Settings: failed to initialise the configuration repository. Caught OpenRDFException. nextLocation="
+                            "failed to initialise the configuration repository. Caught OpenRDFException. nextLocation="
                                     + nextLocation);
                 }
                 catch(final java.io.IOException ioe)
                 {
                     SettingsFactory.log.error(
-                            "Settings: failed to initialise the configuration repository. Caught java.io.IOException. nextLocation="
+                            "failed to initialise the configuration repository. Caught java.io.IOException. nextLocation="
                                     + nextLocation, ioe);
                     // throw new
-                    // RuntimeException("Settings: failed to initialise the configuration repository. Caught java.io.IOException");
+                    // RuntimeException("failed to initialise the configuration repository. Caught java.io.IOException");
                     backupNeeded = true;
                 }
                 finally
@@ -734,10 +739,9 @@ public class SettingsFactory
         }
         catch(final OpenRDFException ordfe)
         {
-            SettingsFactory.log.error(
-                    "Settings: failed to initialise the configuration repository. Caught OpenRDFException", ordfe);
-            throw new RuntimeException(
-                    "Settings: failed to initialise the configuration repository. Caught OpenRDFException");
+            SettingsFactory.log.error("failed to initialise the configuration repository. Caught OpenRDFException",
+                    ordfe);
+            throw new RuntimeException("failed to initialise the configuration repository. Caught OpenRDFException");
         }
         
         if(backupNeeded)
@@ -766,63 +770,69 @@ public class SettingsFactory
                             
                             if(SettingsFactory.INFO)
                             {
-                                SettingsFactory.log
-                                        .info("getServerConfigurationRdf: getting backup configuration from URL: nextLocation="
-                                                + nextLocation + " url=" + url.toString());
+                                SettingsFactory.log.info("getting backup configuration from URL: nextLocation="
+                                        + nextLocation + " url=" + url.toString());
                             }
                             
                             myRepositoryConnection.add(url, baseURI, RDFFormat.forMIMEType(configMIMEFormat));
                             
                             if(SettingsFactory.INFO)
                             {
-                                SettingsFactory.log
-                                        .info("getServerConfigurationRdf: finished getting backup configuration from URL: url="
-                                                + url.toString());
+                                SettingsFactory.log.info("finished getting backup configuration from URL: url="
+                                        + url.toString());
                             }
                         }
                         else
                         {
                             if(SettingsFactory.INFO)
                             {
-                                SettingsFactory.log
-                                        .info("Settings: getting backup configuration from file: nextLocation="
-                                                + nextLocation);
+                                SettingsFactory.log.info("getting backup configuration from file: nextLocation="
+                                        + nextLocation);
                             }
                             final InputStream nextInputStream = SettingsFactory.class.getResourceAsStream(nextLocation);
                             
-                            myRepositoryConnection.add(nextInputStream, baseURI,
-                                    RDFFormat.forMIMEType(configMIMEFormat));
-                            if(SettingsFactory.INFO)
+                            if(nextInputStream == null)
                             {
                                 SettingsFactory.log
-                                        .info("Settings: finished getting backup configuration from file: nextLocation="
-                                                + nextLocation);
+                                        .error("Could not get resource as inputstream. The file may not be in the classpath. nextLocation={}",
+                                                nextLocation);
+                            }
+                            else
+                            {
+                                
+                                myRepositoryConnection.add(nextInputStream, baseURI,
+                                        RDFFormat.forMIMEType(configMIMEFormat));
+                                if(SettingsFactory.INFO)
+                                {
+                                    SettingsFactory.log
+                                            .info("finished getting backup configuration from file: nextLocation="
+                                                    + nextLocation);
+                                }
                             }
                         }
                     }
                     catch(final RDFParseException rdfpe)
                     {
-                        SettingsFactory.log
-                                .error("Settings: failed to get the backup configuration repository. Caught RDFParseException",
-                                        rdfpe);
+                        SettingsFactory.log.error(
+                                "failed to get the backup configuration repository. Caught RDFParseException", rdfpe);
                         throw new RuntimeException(
-                                "Settings: failed to initialise the backup configuration repository. Caught RDFParseException");
+                                "failed to initialise the backup configuration repository. Caught RDFParseException");
                     }
                     catch(final OpenRDFException ordfe)
                     {
-                        SettingsFactory.log
-                                .error("Settings: failed to initialise the backup configuration repository. Caught OpenRDFException",
-                                        ordfe);
+                        SettingsFactory.log.error(
+                                "failed to initialise the backup configuration repository. Caught OpenRDFException",
+                                ordfe);
                         throw new RuntimeException(
-                                "Settings: failed to initialise the backup configuration repository. Caught OpenRDFException");
+                                "failed to initialise the backup configuration repository. Caught OpenRDFException");
                     }
                     catch(final java.io.IOException ioe)
                     {
-                        SettingsFactory.log
-                                .error("Settings: failed to initialise the backup configuration repository. Caught java.io.IOException",
-                                        ioe);
+                        SettingsFactory.log.error(
+                                "failed to initialise the backup configuration repository. Caught java.io.IOException",
+                                ioe);
                         throw new RuntimeException(
-                                "Settings: failed to initialise the backup configuration repository. Caught java.io.IOException");
+                                "failed to initialise the backup configuration repository. Caught java.io.IOException");
                     }
                     finally
                     {
@@ -836,10 +846,9 @@ public class SettingsFactory
             catch(final OpenRDFException ordfe)
             {
                 SettingsFactory.log.error(
-                        "Settings: failed to initialise the backup configuration repository. Caught OpenRDFException",
-                        ordfe);
+                        "failed to initialise the backup configuration repository. Caught OpenRDFException", ordfe);
                 throw new RuntimeException(
-                        "Settings: failed to initialise the backup configuration repository. Caught OpenRDFException");
+                        "failed to initialise the backup configuration repository. Caught OpenRDFException");
             }
         } // end if(backupNeeded)
         
@@ -858,12 +867,12 @@ public class SettingsFactory
         {
             try
             {
-                SettingsFactory.log.info("Settings: found " + currentConfigurationRepository.getConnection().size()
+                SettingsFactory.log.info("found " + currentConfigurationRepository.getConnection().size()
                         + " statements in model configuration");
             }
             catch(final RepositoryException rex)
             {
-                SettingsFactory.log.error("Settings: could not determine the number of statements in configuration");
+                SettingsFactory.log.error("could not determine the number of statements in configuration");
             }
         }
         
