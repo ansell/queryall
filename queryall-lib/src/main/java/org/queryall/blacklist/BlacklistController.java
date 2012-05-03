@@ -64,8 +64,8 @@ public class BlacklistController
     private final ConcurrentMap<String, AtomicInteger> allServerQueryTotals =
             new ConcurrentHashMap<String, AtomicInteger>(200);
     
-    private final Collection<RdfFetcherQueryRunnable> allCurrentBadQueries = Collections
-            .synchronizedList(new ArrayList<RdfFetcherQueryRunnable>(200));
+    // private final Collection<RdfFetcherQueryRunnable> allCurrentBadQueries = Collections
+    // .synchronizedList(new ArrayList<RdfFetcherQueryRunnable>(200));
     
     private final ConcurrentMap<String, Collection<QueryDebug>> currentQueryDebugInformation =
             new ConcurrentHashMap<String, Collection<QueryDebug>>(200);
@@ -140,7 +140,8 @@ public class BlacklistController
                     this.accumulatedBlacklistStatistics.put(nextQueryObject.getActualEndpointUrl(), newFailureCount);
                 }
                 
-                this.allCurrentBadQueries.add(nextQueryObject);
+                // we should not be holding onto these items
+                // this.allCurrentBadQueries.add(nextQueryObject);
             }
         }
     }
@@ -179,7 +180,7 @@ public class BlacklistController
                 // increment the AtomicInteger on their map
                 if(putIfAbsent != null)
                 {
-                    AtomicInteger putIfAbsent2 = putIfAbsent.putIfAbsent(errorResponseCode, new AtomicInteger(1));
+                    final AtomicInteger putIfAbsent2 = putIfAbsent.putIfAbsent(errorResponseCode, new AtomicInteger(1));
                     
                     if(putIfAbsent2 != null)
                     {
@@ -190,7 +191,8 @@ public class BlacklistController
         }
         else
         {
-            ConcurrentHashMap<Integer, AtomicInteger> nextErrorList = new ConcurrentHashMap<Integer, AtomicInteger>();
+            final ConcurrentHashMap<Integer, AtomicInteger> nextErrorList =
+                    new ConcurrentHashMap<Integer, AtomicInteger>();
             nextErrorList.put(errorResponseCode, new AtomicInteger(1));
             final ConcurrentHashMap<Integer, AtomicInteger> putIfAbsent =
                     this.allHttpErrorResponseCodesByServer.putIfAbsent(endpointUrl, nextErrorList);
@@ -204,7 +206,7 @@ public class BlacklistController
                 }
                 else
                 {
-                    AtomicInteger putIfAbsent2 = putIfAbsent.putIfAbsent(errorResponseCode, new AtomicInteger(1));
+                    final AtomicInteger putIfAbsent2 = putIfAbsent.putIfAbsent(errorResponseCode, new AtomicInteger(1));
                     
                     if(putIfAbsent2 != null)
                     {
@@ -279,7 +281,7 @@ public class BlacklistController
     
     public void accumulateQueryTotal(final String endpointUrl)
     {
-        AtomicInteger putIfAbsent = this.allServerQueryTotals.putIfAbsent(endpointUrl, new AtomicInteger(1));
+        final AtomicInteger putIfAbsent = this.allServerQueryTotals.putIfAbsent(endpointUrl, new AtomicInteger(1));
         
         if(putIfAbsent != null)
         {
@@ -423,7 +425,7 @@ public class BlacklistController
             
             this.accumulatedBlacklistStatistics.clear();
             
-            this.allCurrentBadQueries.clear();
+            // this.allCurrentBadQueries.clear();
             
             if(blacklistResetClientBlacklistWithEndpoints)
             {
@@ -615,7 +617,7 @@ public class BlacklistController
     
     public Collection<QueryDebug> getCurrentDebugInformationFor(final String nextIpAddress)
     {
-        Collection<QueryDebug> results = this.getCurrentQueryDebugInformation().get(nextIpAddress);
+        final Collection<QueryDebug> results = this.getCurrentQueryDebugInformation().get(nextIpAddress);
         
         if(results == null)
         {
