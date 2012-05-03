@@ -158,7 +158,7 @@ public class RdfFetchController
                 {
                     if(nextThread.getLastException() != null)
                     {
-                        RdfFetchController.log.error("RdfFetchController.fetchRdfForQueries: originalendpoint="
+                        RdfFetchController.log.error("Found exception originalendpoint="
                                 + nextThread.getOriginalEndpointUrl() + " actualendpoint="
                                 + nextThread.getActualEndpointUrl() + " message="
                                 + nextThread.getLastException().getMessage());

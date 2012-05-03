@@ -2,9 +2,9 @@ package org.queryall.blacklist;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.queryall.query.RdfFetcherQueryRunnable;
-import org.queryall.query.RdfFetcherQueryRunnableImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,10 +16,10 @@ public class BlacklistEntry
     @SuppressWarnings("unused")
     private static final Logger log = LoggerFactory.getLogger(BlacklistEntry.class);
     
-    public int numberOfFailures = 0;
+    public AtomicInteger numberOfFailures = new AtomicInteger(0);
     public String endpointUrl = "";
     public long totalTime = 0L;
-    private Collection<RdfFetcherQueryRunnableImpl> errorRunnables = null;
+    // private Collection<RdfFetcherQueryRunnableImpl> errorRunnables = null;
     public Collection<String> errorMessages = new ArrayList<String>();
     
     public void addErrorMessageForRunnable(final RdfFetcherQueryRunnable errorRunnable)
@@ -61,7 +61,7 @@ public class BlacklistEntry
         
         this.errorMessages.add(resultBuffer.toString());
         
-        this.numberOfFailures++;
+        this.numberOfFailures.incrementAndGet();
     }
     
     public String errorMessageSummaryToString()
@@ -83,10 +83,10 @@ public class BlacklistEntry
         
         resultBuffer.append("Total time taken for failed queries: ").append(Long.toString(this.totalTime))
                 .append("<br />\n");
-        resultBuffer.append("Total number of failed queries: ").append(Integer.toString(this.numberOfFailures))
+        resultBuffer.append("Total number of failed queries: ").append(this.numberOfFailures.toString())
                 .append("<br />\n");
-        resultBuffer.append("Average time: ").append(Double.toString((1.0 * this.totalTime) / this.numberOfFailures))
-                .append("<br />\n");
+        resultBuffer.append("Average time: ")
+                .append(Double.toString((1.0 * this.totalTime) / this.numberOfFailures.get())).append("<br />\n");
         
         return resultBuffer.toString();
     }
@@ -94,6 +94,6 @@ public class BlacklistEntry
     @Override
     public String toString()
     {
-        return "Endpoint URL = " + this.endpointUrl + ", Number Of Failures = " + this.numberOfFailures;
+        return "Endpoint URL = " + this.endpointUrl + ", Number Of Failures = " + this.numberOfFailures.toString();
     }
 }

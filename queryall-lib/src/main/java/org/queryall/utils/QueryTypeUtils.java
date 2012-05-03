@@ -27,7 +27,6 @@ public final class QueryTypeUtils
     private static final Logger log = LoggerFactory.getLogger(QueryTypeUtils.class);
     private static final boolean TRACE = QueryTypeUtils.log.isTraceEnabled();
     private static final boolean DEBUG = QueryTypeUtils.log.isDebugEnabled();
-    @SuppressWarnings("unused")
     private static final boolean INFO = QueryTypeUtils.log.isInfoEnabled();
     
     public static Map<QueryType, Map<String, Collection<NamespaceEntry>>> getQueryTypesMatchingQuery(
