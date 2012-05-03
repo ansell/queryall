@@ -251,25 +251,11 @@ public class BlacklistController
     
     public void accumulateQueryTotal(final String endpointUrl)
     {
-        if(this.allServerQueryTotals.containsKey(endpointUrl))
+        AtomicInteger putIfAbsent = this.allServerQueryTotals.putIfAbsent(endpointUrl, new AtomicInteger(1));
+        
+        if(putIfAbsent != null)
         {
-            this.allServerQueryTotals.get(endpointUrl).incrementAndGet();
-        }
-        else
-        {
-            synchronized(this.allServerQueryTotals)
-            {
-                // check inside the synchronized section whether the key has been set, and if so,
-                // increment it instead of putting an empty value in
-                if(this.allServerQueryTotals.containsKey(endpointUrl))
-                {
-                    this.allServerQueryTotals.get(endpointUrl).incrementAndGet();
-                }
-                else
-                {
-                    this.allServerQueryTotals.put(endpointUrl, new AtomicInteger(1));
-                }
-            }
+            putIfAbsent.incrementAndGet();
         }
     }
     
