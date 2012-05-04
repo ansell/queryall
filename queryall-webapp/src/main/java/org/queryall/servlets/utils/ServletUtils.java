@@ -677,13 +677,17 @@ public class ServletUtils
                     + containsExplicitPageOffset + " pageOffset=" + pageOffset + " isPretendQuery=" + isPretendQuery);
             ServletUtils.log.info("GeneralServlet: requestedContentType=" + requestedContentType + " acceptHeader="
                     + acceptHeader + " userAgent=" + userAgentHeader);
-            ServletUtils.log.info("GeneralServlet: locale=" + locale + " characterEncoding=" + characterEncoding);
             
-            if(!originalRequestedContentType.equals(requestedContentType))
+            if(ServletUtils.DEBUG)
             {
-                ServletUtils.log
-                        .info("GeneralServlet: originalRequestedContentType was overwritten originalRequestedContentType="
-                                + originalRequestedContentType + " requestedContentType=" + requestedContentType);
+                ServletUtils.log.debug("GeneralServlet: locale={} characterEncoding={}", locale, characterEncoding);
+                
+                if(!originalRequestedContentType.equals(requestedContentType))
+                {
+                    ServletUtils.log
+                            .debug("GeneralServlet: originalRequestedContentType was overwritten originalRequestedContentType="
+                                    + originalRequestedContentType + " requestedContentType=" + requestedContentType);
+                }
             }
         }
     }
