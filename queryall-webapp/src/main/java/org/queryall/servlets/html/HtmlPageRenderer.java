@@ -1,6 +1,7 @@
 package org.queryall.servlets.html;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -52,6 +53,10 @@ public class HtmlPageRenderer
             final String queryString, final String resolvedUri, String realHostName, String contextPath,
             int pageoffset, final Collection<String> debugStrings) throws OpenRDFException
     {
+        if(DEBUG)
+        {
+            log.debug("Entering renderHtml");
+        }
         boolean nextpagelinkuseful = false;
         boolean previouspagelinkuseful = false;
         int previouspageoffset = pageoffset - 1;
@@ -163,37 +168,53 @@ public class HtmlPageRenderer
         
         velocityContext.put("provider_endpoints", endpointsList);
         
+        if(DEBUG)
+        {
+            log.debug("About to get query bundles from fetch controller");
+        }
+        
         if(fetchController != null)
         {
             velocityContext.put("query_bundles", fetchController.getQueryBundles());
         }
         
+        if(DEBUG)
+        {
+            log.debug("Finished getting query bundles from fetch controller");
+        }
+        
         // Collection<Value> titles = new HashSet<Value>();
         // Collection<Value> comments = new HashSet<Value>();
         // Collection<Value> images = new HashSet<Value>();
-        final Collection<Value> titles =
-                RdfUtils.getValuesFromRepositoryByPredicateUris(nextRepository,
-                        localSettings.getURIProperties(WebappConfig.TITLE_PROPERTIES));
-        final Collection<Value> comments =
-                RdfUtils.getValuesFromRepositoryByPredicateUris(nextRepository,
-                        localSettings.getURIProperties(WebappConfig.COMMENT_PROPERTIES));
-        final Collection<Value> images =
-                RdfUtils.getValuesFromRepositoryByPredicateUris(nextRepository,
-                        localSettings.getURIProperties(WebappConfig.IMAGE_PROPERTIES));
+        final List<Value> titles =
+                ListUtils.randomiseCollectionLayout(RdfUtils.getValuesFromRepositoryByPredicateUris(nextRepository,
+                        localSettings.getURIProperties(WebappConfig.TITLE_PROPERTIES)));
+        
+        final List<Value> comments =
+                ListUtils.randomiseCollectionLayout(RdfUtils.getValuesFromRepositoryByPredicateUris(nextRepository,
+                        localSettings.getURIProperties(WebappConfig.COMMENT_PROPERTIES)));
+        final List<Value> images =
+                ListUtils.randomiseCollectionLayout(RdfUtils.getValuesFromRepositoryByPredicateUris(nextRepository,
+                        localSettings.getURIProperties(WebappConfig.IMAGE_PROPERTIES)));
+        
+        if(DEBUG)
+        {
+            log.debug("Finished getting titles comments and images from repository");
+        }
         
         String chosenTitle = "";
         
-        while(chosenTitle.trim().equals("") && titles.size() > 0)
+        for(Value nextTitle : titles)
         {
-            chosenTitle = RdfUtils.getUTF8StringValueFromSesameValue(ListUtils.chooseRandomItemFromCollection(titles));
+            chosenTitle = RdfUtils.getUTF8StringValueFromSesameValue(nextTitle);
             
-            if(chosenTitle.trim().equals(""))
+            if(!chosenTitle.trim().isEmpty())
             {
-                titles.remove(chosenTitle);
+                break;
             }
         }
         
-        if(chosenTitle.trim().equals(""))
+        if(chosenTitle.trim().isEmpty())
         {
             velocityContext.put("title", localSettings.getStringProperty(WebappConfig.BLANK_TITLE));
         }
@@ -221,6 +242,11 @@ public class HtmlPageRenderer
         // Collection<Provider> providersForThisNamespace =
         // localSettings.getProvidersForQueryTypeForNamespaceUris(String customService,
         // Collection<Collection<String>> namespaceUris, NamespaceEntry.)
+        
+        if(DEBUG)
+        {
+            log.debug("About to get all statements from repository");
+        }
         
         final Collection<Statement> allStatements =
                 RdfUtils.getAllStatementsFromRepository(nextRepository, new ContextInsensitiveStatementComparator());
