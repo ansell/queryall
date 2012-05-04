@@ -425,14 +425,13 @@ public final class ProviderUtils
         
         if(ProviderUtils.DEBUG)
         {
-            ProviderUtils.log.debug("getProvidersForQueryType: Found " + results.size() + " providers for querytype="
-                    + nextQueryType.stringValue());
+            ProviderUtils.log.debug("Found {} providers for querytype={}", results.size(), nextQueryType.stringValue());
             
             if(ProviderUtils.TRACE)
             {
                 for(final Provider nextResult : results.values())
                 {
-                    ProviderUtils.log.trace("getProvidersForQueryType: nextResult=" + nextResult.toString());
+                    ProviderUtils.log.trace("nextResult={}", nextResult.toString());
                 }
             }
         }
