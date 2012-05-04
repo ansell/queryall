@@ -85,9 +85,9 @@ public class NamespaceProvidersServlet extends HttpServlet
         
         final Collection<String> namespaceUseWithoutDefinitions = new ArrayList<String>();
         
-        AtomicInteger overallQueryTypeProviders = new AtomicInteger(0);
-        AtomicInteger overallNamespaceProviders = new AtomicInteger(0);
-        AtomicInteger overallQueryTypeByNamespaceProviders = new AtomicInteger(0);
+        final AtomicInteger overallQueryTypeProviders = new AtomicInteger(0);
+        final AtomicInteger overallNamespaceProviders = new AtomicInteger(0);
+        final AtomicInteger overallQueryTypeByNamespaceProviders = new AtomicInteger(0);
         
         for(final URI nextKey : allProviders.keySet())
         {
