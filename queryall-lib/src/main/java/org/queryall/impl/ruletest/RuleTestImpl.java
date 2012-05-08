@@ -51,9 +51,9 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(RuleTestImpl.DEBUG)
+            if(RuleTestImpl.TRACE)
             {
-                RuleTestImpl.log.debug("RuleTest: nextStatement: " + nextStatement.toString());
+                RuleTestImpl.log.trace("RuleTest: nextStatement: " + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)

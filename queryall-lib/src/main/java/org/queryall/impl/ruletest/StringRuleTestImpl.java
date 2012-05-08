@@ -65,9 +65,9 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(StringRuleTestImpl.DEBUG)
+            if(StringRuleTestImpl.TRACE)
             {
-                StringRuleTestImpl.log.debug("StringRuleTestImpl: nextStatement: " + nextStatement.toString());
+                StringRuleTestImpl.log.trace("StringRuleTestImpl: nextStatement: " + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)

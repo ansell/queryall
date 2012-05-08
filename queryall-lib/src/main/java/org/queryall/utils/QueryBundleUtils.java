@@ -1,8 +1,8 @@
 package org.queryall.utils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +19,7 @@ import org.queryall.api.querytype.QueryType;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.exception.ProvidersBlacklistedException;
 import org.queryall.exception.QueryAllException;
 import org.queryall.query.QueryBundle;
 import org.queryall.query.QueryCreator;
@@ -69,22 +70,35 @@ public class QueryBundleUtils
             final boolean convertAlternateToPreferred, final boolean recogniseImplicitRdfruleInclusions,
             final boolean includeNonProfileMatchedRdfrules) throws QueryAllException
     {
-        final Collection<QueryBundle> results = new ArrayList<QueryBundle>();
+        // NOTE: Important that this is a HashSet, and that QueryBundle implements hashCode and
+        // equals to avoid duplicates
+        final Collection<QueryBundle> results = new HashSet<QueryBundle>();
         
         // Note: We default to converting alternate namespaces to preferred unless it is turned off
         // in the configuration. It can always be turned off for each namespace entry individually
         // FIXME: The current processing code ignores the preferences given by namespace entries,
         // and just uses the convertAlternateToPreferred setting
         
+        // This variable keeps track of whether any blacklist matches occurred incase we need to
+        // flag this as the cause of no results being generated at the end of the method
+        boolean ignoredBlacklistedEndpoint = false;
+        
         for(final Provider nextProvider : chosenProviders)
         {
-            QueryBundleUtils.log.info("start of loop body for nextProvider=" + nextProvider.getKey().stringValue());
+            if(QueryBundleUtils.DEBUG)
+            {
+                QueryBundleUtils.log.debug("start of loop body for nextProvider={}", nextProvider.getKey()
+                        .stringValue());
+            }
             final boolean noCommunicationProvider =
                     nextProvider.getEndpointMethod().equals(ProviderSchema.getProviderNoCommunication());
             
             if(nextProvider instanceof HttpProvider)
             {
-                QueryBundleUtils.log.info("nextProvider instanceof HttpProvider");
+                if(QueryBundleUtils.DEBUG)
+                {
+                    QueryBundleUtils.log.debug("nextProvider instanceof HttpProvider");
+                }
                 final HttpProvider nextHttpProvider = (HttpProvider)nextProvider;
                 // FIXME: attributeList should not be shared in this way. It will use the last (ie,
                 // random) endpoint for the static inclusions right now, which doesn't seem right.
@@ -199,11 +213,22 @@ public class QueryBundleUtils
                         }
                         
                         // Then test whether the endpoint is blacklisted before accepting it
-                        if(noCommunicationProvider || !localBlacklistController.isUrlBlacklisted(nextReplacedEndpoint))
+                        // HACK: This logic should be delegated to providers
+                        final boolean endpointBlacklisted =
+                                localBlacklistController.isUrlBlacklisted(nextReplacedEndpoint);
+                        
+                        if(endpointBlacklisted)
+                        {
+                            ignoredBlacklistedEndpoint = true;
+                        }
+                        
+                        if(noCommunicationProvider || !endpointBlacklisted)
                         {
                             // no need to worry about redundant endpoint alternates if we are going
                             // to try to query all of the endpoints for each provider
-                            if(nextProviderQueryBundle.getAlternativeEndpointsAndQueries().size() == 0
+                            // FIXME: This logic seems to be broken as the alternative endpoints are
+                            // designed to be redundant.
+                            if(nextProviderQueryBundle.getAlternativeEndpointsAndQueries().isEmpty()
                                     || useAllEndpointsForEachProvider)
                             {
                                 // FIXME: Check to make sure that this does not generate nulls
@@ -212,18 +237,27 @@ public class QueryBundleUtils
                             }
                         }
                     }
-                    
+                }
+                
+                if(!nextProviderQueryBundle.getAlternativeEndpointsAndQueries().isEmpty())
+                {
                     results.add(nextProviderQueryBundle);
                 }
             } // end if(nextProvider instanceof HttpProvider)
             else if(noCommunicationProvider)
             {
-                QueryBundleUtils.log.info("noCommunicationProvider == true");
+                if(QueryBundleUtils.DEBUG)
+                {
+                    QueryBundleUtils.log.debug("noCommunicationProvider == true");
+                }
                 final StringBuilder nextStaticRdfXmlString = new StringBuilder();
                 
                 for(final URI nextCustomInclude : nextQueryType.getLinkedQueryTypes())
                 {
-                    QueryBundleUtils.log.info("d");
+                    if(QueryBundleUtils.TRACE)
+                    {
+                        QueryBundleUtils.log.trace("d");
+                    }
                     // pick out all of the QueryType's which have been delegated for this particular
                     // query as static includes
                     final QueryType nextCustomIncludeType = allQueryTypes.get(nextCustomInclude);
@@ -258,8 +292,18 @@ public class QueryBundleUtils
                 results.add(nextProviderQueryBundle);
             }
             
-            QueryBundleUtils.log.info("end of loop body for nextProvider=" + nextProvider.getKey().stringValue());
+            if(QueryBundleUtils.DEBUG)
+            {
+                QueryBundleUtils.log.debug("end of loop body for nextProvider={}", nextProvider.getKey().stringValue());
+            }
         } // end for(Provider nextProvider : QueryTypeProviders)
+        
+        // if the results were empty and we know that we ignored a blacklisted endpoint, then we
+        // need to do something to highlight this
+        if(results.isEmpty() && ignoredBlacklistedEndpoint)
+        {
+            throw new ProvidersBlacklistedException("All providers for this query type were not available");
+        }
         
         return results;
     }

@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -84,9 +85,9 @@ public class NamespaceProvidersServlet extends HttpServlet
         
         final Collection<String> namespaceUseWithoutDefinitions = new ArrayList<String>();
         
-        int overallQueryTypeProviders = 0;
-        int overallNamespaceProviders = 0;
-        int overallQueryTypeByNamespaceProviders = 0;
+        final AtomicInteger overallQueryTypeProviders = new AtomicInteger(0);
+        final AtomicInteger overallNamespaceProviders = new AtomicInteger(0);
+        final AtomicInteger overallQueryTypeByNamespaceProviders = new AtomicInteger(0);
         
         for(final URI nextKey : allProviders.keySet())
         {
@@ -97,11 +98,11 @@ public class NamespaceProvidersServlet extends HttpServlet
                 if(!providersByQueryKey.containsKey(nextQueryKey))
                 {
                     final Map<URI, Provider> queryProviders =
-                            ProviderUtils.getProvidersForQueryType(allProviders, nextQueryKey);
+                            ProviderUtils.getProvidersSupportingQueryType(allProviders, nextQueryKey);
                     
                     providersByQueryKey.put(nextQueryKey, queryProviders.values());
                     
-                    overallQueryTypeProviders += queryProviders.size();
+                    overallQueryTypeProviders.addAndGet(queryProviders.size());
                 }
             }
             
@@ -122,7 +123,7 @@ public class NamespaceProvidersServlet extends HttpServlet
                     
                     providersByNamespace.put(nextNamespace, namespaceProviders.values());
                     
-                    overallNamespaceProviders += namespaceProviders.size();
+                    overallNamespaceProviders.addAndGet(namespaceProviders.size());
                     
                     for(final Provider nextNamespaceProvider : namespaceProviders.values())
                     {
@@ -154,7 +155,7 @@ public class NamespaceProvidersServlet extends HttpServlet
                                         nextQueryKey.stringValue() + " " + nextNamespace.stringValue(),
                                         queryTypesByNamespace.values());
                                 
-                                overallQueryTypeByNamespaceProviders += queryTypesByNamespace.size();
+                                overallQueryTypeByNamespaceProviders.addAndGet(queryTypesByNamespace.size());
                             }
                         }
                     }
@@ -191,12 +192,12 @@ public class NamespaceProvidersServlet extends HttpServlet
         out.write("<br />Number of rdf normalisation rule tests = " + allRdfRuleTests.size() + "<br />\n");
         out.write("<br />Number of profiles = " + allProfiles.size() + "<br />\n");
         
-        out.write("<br />Number of namespace provider options = " + overallNamespaceProviders + "<br />\n");
-        out.write("<br />Number of query title provider options = " + overallQueryTypeProviders + "<br />\n");
+        out.write("<br />Number of namespace provider options = " + overallNamespaceProviders.toString() + "<br />\n");
+        out.write("<br />Number of query title provider options = " + overallQueryTypeProviders.toString() + "<br />\n");
         out.write("<br />Number of query title and namespace combinations = " + allQueryTypesByNamespace.size()
                 + "<br />\n");
         out.write("<br />Number of query title and namespace combination provider options = "
-                + overallQueryTypeByNamespaceProviders + "<br /><br />\n");
+                + overallQueryTypeByNamespaceProviders.toString() + "<br /><br />\n");
         
         if(namespaceUseWithoutDefinitions.size() > 0)
         {
@@ -206,7 +207,9 @@ public class NamespaceProvidersServlet extends HttpServlet
         
         for(final String nextDebugString : namespaceUseWithoutDefinitions)
         {
-            out.write("<li>" + nextDebugString + "</li>");
+            out.write("<li>");
+            out.write(nextDebugString);
+            out.write("</li>");
         }
         
         if(namespaceUseWithoutDefinitions.size() > 0)
@@ -218,7 +221,8 @@ public class NamespaceProvidersServlet extends HttpServlet
         
         for(final URI nextUniqueNamespace : providersByNamespace.keySet())
         {
-            out.write(nextUniqueNamespace.stringValue() + ",");
+            out.write(nextUniqueNamespace.stringValue());
+            out.write(",");
         }
         
         for(final URI nextUniqueNamespace : providersByNamespace.keySet())
@@ -228,7 +232,9 @@ public class NamespaceProvidersServlet extends HttpServlet
                 continue;
             }
             
-            out.write("<h3><span class='debug'>Namespace=" + nextUniqueNamespace.stringValue() + "</span></h3>\n");
+            out.write("<h3><span class='debug'>Namespace=");
+            out.write(nextUniqueNamespace.stringValue());
+            out.write("</span></h3>\n");
             
             final Collection<Provider> providersForNextNamespace = providersByNamespace.get(nextUniqueNamespace);
             
@@ -253,7 +259,9 @@ public class NamespaceProvidersServlet extends HttpServlet
                     }
                 }
                 
-                out.write("Queries for this namespace (" + implementedQueriesForNextNamespace.size() + ")");
+                out.write("Queries for this namespace (");
+                out.write(implementedQueriesForNextNamespace.size());
+                out.write(")");
                 
                 if(implementedQueriesForNextNamespace.size() > 0)
                 {
@@ -262,7 +270,9 @@ public class NamespaceProvidersServlet extends HttpServlet
                 
                 for(final URI nextImplementedQuery : implementedQueriesForNextNamespace)
                 {
-                    out.write("<li>" + nextImplementedQuery.stringValue() + "</li>");
+                    out.write("<li>");
+                    out.write(nextImplementedQuery.stringValue());
+                    out.write("</li>");
                 }
                 
                 if(implementedQueriesForNextNamespace.size() > 0)
@@ -279,7 +289,9 @@ public class NamespaceProvidersServlet extends HttpServlet
                 continue;
             }
             
-            out.write("<h3><span class='debug'>Query=" + nextUniqueQuery.stringValue() + "</span></h3>\n");
+            out.write("<h3><span class='debug'>Query=");
+            out.write(nextUniqueQuery.stringValue());
+            out.write("</span></h3>\n");
             
             final Collection<Provider> providersForNextQuery = providersByQueryKey.get(nextUniqueQuery);
             
@@ -296,7 +308,9 @@ public class NamespaceProvidersServlet extends HttpServlet
                 }
             }
             
-            out.write("Namespaces for this query (" + implementedNamespacesForNextQuery.size() + ")");
+            out.write("Namespaces for this query (");
+            out.write(implementedNamespacesForNextQuery.size());
+            out.write(")");
             
             if(implementedNamespacesForNextQuery.size() > 0)
             {
@@ -305,7 +319,9 @@ public class NamespaceProvidersServlet extends HttpServlet
             
             for(final URI nextImplementedNamespace : implementedNamespacesForNextQuery)
             {
-                out.write("<li>" + nextImplementedNamespace.stringValue() + "</li>");
+                out.write("<li>");
+                out.write(nextImplementedNamespace.stringValue());
+                out.write("</li>");
             }
             
             if(implementedNamespacesForNextQuery.size() > 0)
@@ -314,7 +330,7 @@ public class NamespaceProvidersServlet extends HttpServlet
             }
         }
         
-        if(NamespaceProvidersServlet.LOG.isDebugEnabled())
+        if(NamespaceProvidersServlet.LOG.isTraceEnabled())
         {
             out.write("<h2>Consistency analysis:</h2>");
             for(final URI nextUniqueNamespace : providersByNamespace.keySet())
@@ -325,17 +341,17 @@ public class NamespaceProvidersServlet extends HttpServlet
                     // localSettings.getAllQueryTypes().get(nextUniqueQueryTitle);
                     
                     final Map<URI, Provider> queryTypesForNamespace =
-                            ProviderUtils.getProvidersForQueryType(allProviders, nextUniqueQueryTitle);
+                            ProviderUtils.getProvidersSupportingQueryType(allProviders, nextUniqueQueryTitle);
                     
                     if(queryTypesForNamespace.size() > 0)
                     {
-                        if(NamespaceProvidersServlet.LOG.isDebugEnabled())
+                        if(NamespaceProvidersServlet.LOG.isTraceEnabled())
                         {
-                            out.write("<span class='info'>Provider found for namespace and query : nextUniqueQueryTitle="
-                                    + nextUniqueQueryTitle
-                                    + " nextUniqueNamespace="
-                                    + nextUniqueNamespace
-                                    + "</span><br />\n");
+                            out.write("<span class='info'>Provider found for namespace and query : nextUniqueQueryTitle=");
+                            out.write(nextUniqueQueryTitle.stringValue());
+                            out.write(" nextUniqueNamespace=");
+                            out.write(nextUniqueNamespace.stringValue());
+                            out.write("</span><br />\n");
                             // log.debug("Provider found for namespace and query : nextUniqueQueryTitle="+nextUniqueQueryTitle+" nextUniqueNamespace="+nextUniqueNamespace);
                         }
                         
@@ -348,10 +364,12 @@ public class NamespaceProvidersServlet extends HttpServlet
                                 {
                                     for(final String nextEndpointUrl : nextHttpProvider.getEndpointUrls())
                                     {
-                                        if(NamespaceProvidersServlet.LOG.isDebugEnabled())
+                                        if(NamespaceProvidersServlet.LOG.isTraceEnabled())
                                         {
-                                            out.write("<li><span class='debug'><a href='" + nextEndpointUrl + "'>"
-                                                    + nextEndpointUrl);
+                                            out.write("<li><span class='debug'><a href='");
+                                            out.write(nextEndpointUrl);
+                                            out.write("'>");
+                                            out.write(nextEndpointUrl);
                                             
                                             if(nextQueryNamespaceProvider instanceof SparqlProvider)
                                             {
@@ -359,7 +377,8 @@ public class NamespaceProvidersServlet extends HttpServlet
                                                         (SparqlProvider)nextQueryNamespaceProvider;
                                                 if(nextSparqlProvider.getUseSparqlGraph())
                                                 {
-                                                    out.write(" graph=" + nextSparqlProvider.getSparqlGraphUri());
+                                                    out.write(" graph=");
+                                                    out.write(nextSparqlProvider.getSparqlGraphUri());
                                                 }
                                             }
                                             
@@ -371,14 +390,14 @@ public class NamespaceProvidersServlet extends HttpServlet
                             else if(nextQueryNamespaceProvider.getEndpointMethod().equals(
                                     ProviderSchema.getProviderNoCommunication()))
                             {
-                                if(NamespaceProvidersServlet.LOG.isDebugEnabled())
+                                if(NamespaceProvidersServlet.LOG.isTraceEnabled())
                                 {
                                     out.write("<li><span class='debug'>No communication required</span></li><br />\n");
                                 }
                             }
                             else
                             {
-                                if(NamespaceProvidersServlet.LOG.isDebugEnabled())
+                                if(NamespaceProvidersServlet.LOG.isTraceEnabled())
                                 {
                                     out.write("<li><span class='debug'>No endpoint URL's found for a particular provider</span></li><br />\n");
                                 }

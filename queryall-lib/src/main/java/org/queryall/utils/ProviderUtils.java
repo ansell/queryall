@@ -75,12 +75,24 @@ public final class ProviderUtils
     }
     
     /**
+     * Finds all of the providers in the given list that could be applicable to the given
+     * namespaces.
      * 
+     * Default providers are not returned by this method if they do not also contain matching
+     * namespaces.
      * 
      * @param allProviders
+     *            A map of providers based on their URIs to iterate over to find matching providers.
+     *            Typically this will be a list of providers that are known to support a particular
+     *            query type.
      * @param namespaceUris
+     *            A map of the input tag names to namespace URIs that may match with the value of
+     *            the tag name.
      * @param namespaceMatchMethod
-     * @return
+     *            The match method defined in the NamespaceMatch enum that will be used for this
+     *            method. This was defined in the query type that is being used above this method.
+     * @return A map of URIs to Providers that matched the given namespace tag and URI combinations
+     *         using the given NamespaceMatch method.
      */
     public static Map<URI, Provider> getProvidersForNamespaceUris(final Map<URI, Provider> allProviders,
             final Map<String, Collection<URI>> namespaceUris, final NamespaceMatch namespaceMatchMethod)
@@ -97,6 +109,11 @@ public final class ProviderUtils
             // Assume nothing found for anyFound so we can switch it if anything is found
             boolean anyFound = false;
             // Assume everything found for allFound so we can switch it if anything is not found
+            // FIXME: We assume that we will always go through the for loop below at least once, per
+            // the check on namespaceUris.size() above, but we do not take into account the continue
+            // instruction
+            // In some rare cases nextNamespaceUriList will always be null, and the loop will always
+            // short-circuit.
             boolean allFound = true;
             
             for(final String nextInputParameter : namespaceUris.keySet())
@@ -216,8 +233,8 @@ public final class ProviderUtils
     
     /**
      * 
-     * 
-     * NOTE: this method relies on the regular expression matching behaviour of QueryType
+     * This method calls nextQueryType.matchesForQueryParameters to determine the tags and their
+     * relevant values for the given query type.
      * 
      * @param allProviders
      * @param sortedIncludedProfiles
@@ -317,7 +334,7 @@ public final class ProviderUtils
         // if we aren't specific to namespace we simply find all providers for this type of custom
         // query
         final Map<URI, Provider> relevantProviders =
-                ProviderUtils.getProvidersForQueryType(allProviders, nextQueryType.getKey());
+                ProviderUtils.getProvidersSupportingQueryType(allProviders, nextQueryType.getKey());
         
         final Collection<Provider> results = new ArrayList<Provider>(relevantProviders.size());
         
@@ -348,45 +365,19 @@ public final class ProviderUtils
     }
     
     /**
+     * Fetches the results of ProviderUtils.getProvidersForNamespaceUris and pushes them through
+     * ProviderUtils.getProvidersSupportingQueryType to find a list of providers that support both
+     * the namespaces and the given query type.
      * 
-     * @param allProviders
-     * @param nextQueryType
-     * @return
-     */
-    public static Map<URI, Provider> getProvidersForQueryType(final Map<URI, Provider> allProviders,
-            final URI nextQueryType)
-    {
-        final Map<URI, Provider> results = new HashMap<URI, Provider>();
-        
-        for(final Provider nextProvider : allProviders.values())
-        {
-            if(nextProvider.containsQueryTypeUri(nextQueryType))
-            {
-                results.put(nextProvider.getKey(), nextProvider);
-            }
-        }
-        
-        if(ProviderUtils.DEBUG)
-        {
-            ProviderUtils.log.debug("getProvidersForQueryType: Found " + results.size() + " providers for querytype="
-                    + nextQueryType.stringValue());
-            
-            if(ProviderUtils.TRACE)
-            {
-                for(final Provider nextResult : results.values())
-                {
-                    ProviderUtils.log.trace("getProvidersForQueryType: nextResult=" + nextResult.toString());
-                }
-            }
-        }
-        return results;
-    }
-    
-    /**
+     * NOTE: namespaceMatchMethod may be derived from the queryType, or it may be substituted with
+     * an alternate value to evaluate different scenarios.
      * 
+     * This implementation assumes that the namespaces will be available on less providers than the
+     * query types, so it matches namespaces first before matching query types.
      * 
      * @param allProviders
      * @param queryType
+     *            The query type to search for in the given providers.
      * @param namespaceUris
      *            A Map of collections of URIs, where the inner collections all matched to a single
      *            input parameter which is given as the String key for the map, so that the
@@ -405,7 +396,45 @@ public final class ProviderUtils
                 ProviderUtils.getProvidersForNamespaceUris(allProviders, namespaceUris, namespaceMatchMethod);
         
         final Map<URI, Provider> results =
-                ProviderUtils.getProvidersForQueryType(namespaceProviders, queryType.getKey());
+                ProviderUtils.getProvidersSupportingQueryType(namespaceProviders, queryType.getKey());
+        
+        return results;
+    }
+    
+    /**
+     * Finds all providers in the given map that support the query type based on its key URI.
+     * 
+     * @param allProviders
+     *            All of the providers that we are searching against.
+     * @param nextQueryType
+     *            The URI of the query type to search against the given providers.
+     * @return A map based on the given providers that support the given query type.
+     */
+    public static Map<URI, Provider> getProvidersSupportingQueryType(final Map<URI, Provider> allProviders,
+            final URI nextQueryType)
+    {
+        final Map<URI, Provider> results = new HashMap<URI, Provider>();
+        
+        for(final Provider nextProvider : allProviders.values())
+        {
+            if(nextProvider.containsQueryTypeUri(nextQueryType))
+            {
+                results.put(nextProvider.getKey(), nextProvider);
+            }
+        }
+        
+        if(ProviderUtils.DEBUG)
+        {
+            ProviderUtils.log.debug("Found {} providers for querytype={}", results.size(), nextQueryType.stringValue());
+            
+            if(ProviderUtils.TRACE)
+            {
+                for(final Provider nextResult : results.values())
+                {
+                    ProviderUtils.log.trace("nextResult={}", nextResult.toString());
+                }
+            }
+        }
         
         return results;
     }

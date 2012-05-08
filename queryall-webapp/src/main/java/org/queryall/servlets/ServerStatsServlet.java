@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -89,14 +90,15 @@ public class ServerStatsServlet extends HttpServlet
                 {
                     out.write("Endpoint=" + nextKey + "<br />\n");
                     
-                    final Map<Integer, Integer> errorCodeList =
+                    final Map<Integer, AtomicInteger> errorCodeList =
                             localBlacklistController.getAllHttpErrorResponseCodesByServer().get(nextKey);
                     
                     out.write("<ul>\n");
                     
                     for(final int nextErrorCode : errorCodeList.keySet())
                     {
-                        out.write("<li>" + nextErrorCode + " : " + errorCodeList.get(nextErrorCode) + "</li>\n");
+                        out.write("<li>" + nextErrorCode + " : " + errorCodeList.get(nextErrorCode).toString()
+                                + "</li>\n");
                     }
                     
                     out.write("</ul>\n");

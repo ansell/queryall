@@ -219,6 +219,10 @@ public enum WebappConfig
     
     N3_URL_SUFFIX("n3UrlSuffix", ""),
     
+    NO_ACCESSIBLE_PROVIDERS_HTTP_RESPONSE_CODE("noAccessibleProvidersHttpResponseCode", 503),
+    
+    NO_ACCESSIBLE_PROVIDERS_STATIC_ADDITIONS("noAccessibleProvidersStaticAdditions", Collections.emptyList()),
+    
     NQUADS_URL_PREFIX("nquadsUrlPrefix", "nquads/"),
     
     NQUADS_URL_SUFFIX("nquadsUrlSuffix", ""),
@@ -282,6 +286,14 @@ public enum WebappConfig
      * NOTE: This may also be set to 301, 302, or 307 for similar redirect behaviour.
      */
     REDIRECT_TO_EXPLICIT_FORMAT_HTTP_CODE("redirectToExplicitFormatHttpCode", 303),
+    
+    RESULTS_PAGE_SCRIPTS("resultsPageScripts", Collections.emptyList()),
+    
+    RESULTS_PAGE_SCRIPTS_LOCAL("resultsPageScriptsLocal", Collections.emptyList()),
+    
+    RESULTS_PAGE_STYLESHEETS("resultsPageStylesheets", Collections.emptyList()),
+    
+    RESULTS_PAGE_STYLESHEETS_LOCAL("resultsPageStylesheetsLocal", Collections.emptyList()),
     
     RESULTS_TEMPLATE("resultsTemplate", "page.vm"),
     

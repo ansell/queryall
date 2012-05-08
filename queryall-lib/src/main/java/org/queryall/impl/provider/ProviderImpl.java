@@ -40,11 +40,11 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
     @SuppressWarnings("unused")
     private static final boolean INFO = ProviderImpl.log.isInfoEnabled();
     
-    private Collection<URI> namespaces = new ArrayList<URI>();
+    private Collection<URI> namespaces = new HashSet<URI>();
     
-    private Collection<URI> includedInQueryTypes = new ArrayList<URI>();
+    private Collection<URI> includedInQueryTypes = new HashSet<URI>();
     
-    private Collection<URI> normalisationUris = new ArrayList<URI>();
+    private Collection<URI> normalisationUris = new HashSet<URI>();
     
     private URI redirectOrProxy = ProviderSchema.getProviderRedirect();
     
@@ -214,9 +214,9 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
     @Override
     public boolean containsQueryTypeUri(final URI queryKey)
     {
-        if(this.getIncludedInQueryTypes() != null && queryKey != null)
+        if(this.includedInQueryTypes != null && queryKey != null)
         {
-            return this.getIncludedInQueryTypes().contains(queryKey);
+            return this.includedInQueryTypes.contains(queryKey);
         }
         
         if(queryKey != null)

@@ -55,10 +55,10 @@ public class GeneralServlet extends HttpServlet
 	 */
     private static final long serialVersionUID = 997653377781136004L;
     
-    public static final Logger log = LoggerFactory.getLogger(GeneralServlet.class);
-    public static final boolean TRACE = GeneralServlet.log.isTraceEnabled();
-    public static final boolean DEBUG = GeneralServlet.log.isDebugEnabled();
-    public static final boolean INFO = GeneralServlet.log.isInfoEnabled();
+    private static final Logger log = LoggerFactory.getLogger(GeneralServlet.class);
+    private static final boolean TRACE = GeneralServlet.log.isTraceEnabled();
+    private static final boolean DEBUG = GeneralServlet.log.isDebugEnabled();
+    private static final boolean INFO = GeneralServlet.log.isInfoEnabled();
     
     public static void doGetRequest(final HttpServletRequest request, final HttpServletResponse response,
             final QueryAllConfiguration localSettings, final BlacklistController localBlacklistController,
@@ -181,6 +181,18 @@ public class GeneralServlet extends HttpServlet
             
             final Collection<QueryBundle> multiProviderQueryBundles = fetchController.getQueryBundles();
             
+            // if all of the query types were specified as dummy query types, then ignore them for
+            // the purposes of the query type blacklisted check
+            boolean nonDummyQueryTypeFound = false;
+            
+            for(final QueryBundle nextQueryBundle : multiProviderQueryBundles)
+            {
+                if(!nextQueryBundle.getQueryType().getIsDummyQueryType())
+                {
+                    nonDummyQueryTypeFound = true;
+                }
+            }
+            
             final Collection<String> debugStrings = new ArrayList<String>(multiProviderQueryBundles.size() + 5);
             
             // We do not use the default catalina writer as it may not be UTF-8 compliant depending
@@ -203,6 +215,51 @@ public class GeneralServlet extends HttpServlet
                 
                 ServletUtils.doQueryPretend(queryString, responseCode, pageOffset, requestedContentType,
                         multiProviderQueryBundles, myRepository, localSettings.getSeparator());
+            }
+            else if((multiProviderQueryBundles.isEmpty() || !nonDummyQueryTypeFound)
+                    && fetchController.getQueryTypeWasBlacklisted())
+            {
+                // Likely case for this is that all providers are temporarily blacklisted, so in
+                // order to avoid sending a 4XX code, we send a 5XX code here before we get to the
+                // 4XX code section
+                // NOTE: In cases where there were non-blacklisted providers available for at least
+                // one query type, we return results instead of 5XX code. 5XX is reserved for cases
+                // where there would be absolutely no results due to our blacklisting strategy
+                
+                if(GeneralServlet.DEBUG)
+                {
+                    GeneralServlet.log
+                            .debug("GeneralServlet: starting no providers and fetchController.getQueryTypeWasBlacklisted() section");
+                }
+                
+                // Defaults to 503 when there was a blacklisted provider and we have no planned
+                // query bundles
+                responseCode = localSettings.getIntProperty(WebappConfig.NO_ACCESSIBLE_PROVIDERS_HTTP_RESPONSE_CODE);
+                
+                ServletUtils.sendBasicHeaders(response, responseCode, requestedContentType);
+                
+                // estimate the Retry-After header based on the known blacklist reset period
+                final int blacklistResetPeriod =
+                        localSettings.getIntProperty(WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS);
+                
+                if(blacklistResetPeriod > 0)
+                {
+                    final int blacklistResetSeconds = (int)Math.ceil(blacklistResetPeriod / 1000);
+                    
+                    if(blacklistResetSeconds > 0)
+                    {
+                        response.addHeader("Retry-After", String.valueOf(blacklistResetSeconds));
+                    }
+                }
+                
+                ServletUtils.doQueryUnknown(localSettings, realHostName, queryParameters, pageOffset,
+                        requestedContentType, includedProfiles, false, false, true, debugStrings, myRepository);
+                
+                if(GeneralServlet.TRACE)
+                {
+                    GeneralServlet.log
+                            .trace("GeneralServlet: ending no providers and fetchController.getQueryTypeWasBlacklisted() section");
+                }
             }
             else if(!fetchController.queryKnown())
             {
@@ -230,7 +287,13 @@ public class GeneralServlet extends HttpServlet
                 ServletUtils.sendBasicHeaders(response, responseCode, requestedContentType);
                 
                 ServletUtils.doQueryUnknown(localSettings, realHostName, queryParameters, pageOffset,
-                        requestedContentType, includedProfiles, fetchController, debugStrings, myRepository);
+                        requestedContentType, includedProfiles, fetchController.anyNamespaceNotRecognised(),
+                        !fetchController.anyNamespaceNotRecognised(), false, debugStrings, myRepository);
+                
+                if(GeneralServlet.TRACE)
+                {
+                    GeneralServlet.log.trace("GeneralServlet: ending !fetchController.queryKnown() section");
+                }
             }
             else
             {
@@ -274,6 +337,17 @@ public class GeneralServlet extends HttpServlet
                 
                 ServletUtils.doQueryNotPretend(localSettings, queryString, requestedContentType, includedProfiles,
                         fetchController, multiProviderQueryBundles, debugStrings, myRepository);
+
+                if(GeneralServlet.TRACE)
+                {
+                    GeneralServlet.log.trace("GeneralServlet: ending fetchController.queryKnown() and not pretend query section");
+                }
+            }
+            
+            if(GeneralServlet.DEBUG)
+            {
+                GeneralServlet.log
+                        .debug("GeneralServlet: about to normalise pool data");
             }
             
             // Normalisation Stage : after results to pool
@@ -294,9 +368,19 @@ public class GeneralServlet extends HttpServlet
                 GeneralServlet.log.error("Found throwable while performing pool normalisation", th);
             }
             
+            if(GeneralServlet.TRACE)
+            {
+                GeneralServlet.log.trace("GeneralServlet: finished normalising pool data");
+            }
+            
             ServletUtils.resultsToWriter(localVelocityEngine, out, localSettings, writerFormat, realHostName,
                     queryString, pageOffset, requestedContentType, fetchController, debugStrings, convertedPool,
                     contextPath);
+            
+            if(GeneralServlet.TRACE)
+            {
+                GeneralServlet.log.trace("GeneralServlet: about to flush output");
+            }
             
             out.flush();
             

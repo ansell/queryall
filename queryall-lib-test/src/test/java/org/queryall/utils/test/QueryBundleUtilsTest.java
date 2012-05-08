@@ -16,18 +16,26 @@ import org.junit.Test;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
 import org.queryall.api.profile.Profile;
+import org.queryall.api.provider.HttpProvider;
+import org.queryall.api.provider.HttpProviderSchema;
 import org.queryall.api.provider.Provider;
+import org.queryall.api.provider.ProviderSchema;
 import org.queryall.api.querytype.InputQueryType;
+import org.queryall.api.test.DummyHttpProvider;
 import org.queryall.api.test.DummyProfile;
 import org.queryall.api.test.DummyProvider;
 import org.queryall.api.test.DummyQueryType;
 import org.queryall.api.utils.ProfileIncludeExclude;
 import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
+import org.queryall.blacklist.test.DummyAllBlacklistedController;
+import org.queryall.exception.ProvidersBlacklistedException;
 import org.queryall.exception.QueryAllException;
 import org.queryall.query.QueryBundle;
 import org.queryall.utils.QueryBundleUtils;
 import org.queryall.utils.Settings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -35,6 +43,8 @@ import org.queryall.utils.Settings;
  */
 public class QueryBundleUtilsTest
 {
+    private static final Logger LOG = LoggerFactory.getLogger(QueryBundleUtilsTest.class);
+    
     private QueryAllConfiguration testSettingsEmpty;
     private BlacklistController testBlacklistControllerEmpty;
     
@@ -52,6 +62,10 @@ public class QueryBundleUtilsTest
     private String testHostName;
     private boolean testUseAllEndpointsTrue;
     private int testPageOffset1;
+    private BlacklistController testBlacklistControllerAll;
+    private InputQueryType testQueryTypeSingleProvider;
+    private HttpProvider testProviderSingleBlacklisted;
+    private List<Provider> testChosenProvidersSingleBlacklisted;
     
     /**
      * @throws java.lang.Exception
@@ -62,14 +76,21 @@ public class QueryBundleUtilsTest
         this.testSettingsEmpty = new Settings();
         this.testBlacklistControllerEmpty = new BlacklistController(this.testSettingsEmpty);
         
+        this.testBlacklistControllerAll = new DummyAllBlacklistedController(this.testSettingsEmpty);
+        
         this.testQueryTypeEmpty = new DummyQueryType();
         this.testQueryTypeEmpty.setKey("http://test.example.org/querybundleutilstest/querytype/empty");
+        
+        this.testQueryTypeSingleProvider = new DummyQueryType();
+        this.testQueryTypeSingleProvider.setKey("http://test.example.org/querybundleutilstest/querytype/single");
+        this.testQueryTypeSingleProvider.setIncludeDefaults(true);
+        
         this.testChosenProvidersEmpty = new ArrayList<Provider>(0);
         this.testChosenProvidersSingleTrivial = new ArrayList<Provider>(1);
         // add an instance of DummyProvider which only implements the Provider interface, so should
         // not be recognised as HttpProvider or NoCommunicationProvider, among any others
         this.testProviderTrivial1 = new DummyProvider();
-        this.testProviderTrivial1.setKey("http://test.example.org/querybundleutilstest/trivial/1");
+        this.testProviderTrivial1.setKey("http://test.example.org/querybundleutilstest/provider/trivial/1");
         this.testChosenProvidersSingleTrivial.add(this.testProviderTrivial1);
         
         this.testSortedIncludedProfilesEmpty = new ArrayList<Profile>(0);
@@ -81,6 +102,17 @@ public class QueryBundleUtilsTest
         this.testProfileSingleAllInclude
                 .setDefaultProfileIncludeExcludeOrder(ProfileIncludeExclude.EXCLUDE_THEN_INCLUDE);
         this.testSortedIncludedProfilesSingleAllInclude.add(this.testProfileSingleAllInclude);
+        
+        this.testProviderSingleBlacklisted = new DummyHttpProvider();
+        this.testProviderSingleBlacklisted
+                .setKey("http://test.example.org/querybundleutilstest/provider/singlequerytype/1");
+        this.testProviderSingleBlacklisted.addIncludedInQueryType(this.testQueryTypeSingleProvider.getKey());
+        this.testProviderSingleBlacklisted.setIsDefaultSource(true);
+        this.testProviderSingleBlacklisted.addEndpointUrl("http://bad.example.org/anything/something");
+        this.testProviderSingleBlacklisted.setEndpointMethod(HttpProviderSchema.getProviderHttpGetUrl());
+        this.testProviderSingleBlacklisted.setRedirectOrProxy(ProviderSchema.getProviderProxy());
+        this.testChosenProvidersSingleBlacklisted = new ArrayList<Provider>(1);
+        this.testChosenProvidersSingleBlacklisted.add(this.testProviderSingleBlacklisted);
         
         this.testQueryParametersEmpty = new HashMap<String, String>();
         this.testNamespaceInputVariablesEmpty = new HashMap<String, Collection<NamespaceEntry>>();
@@ -181,6 +213,51 @@ public class QueryBundleUtilsTest
         
         Assert.assertNotNull(result.getAlternativeEndpointsAndQueries());
         Assert.assertEquals(0, result.getAlternativeEndpointsAndQueries().size());
+    }
+    
+    /**
+     * Tests the generateQueryBundlesForQueryTypeAndProviders method with all items in their empty
+     * or freshly initialised state
+     * 
+     * @throws QueryAllException
+     * 
+     */
+    @Test
+    public final void testGenerateQueryBundlesAllEmptyWithBlacklist() throws QueryAllException
+    {
+        try
+        {
+            final Collection<QueryBundle> collection =
+                    QueryBundleUtils
+                            .generateQueryBundlesForQueryTypeAndProviders(
+                                    this.testQueryTypeSingleProvider,
+                                    this.testChosenProvidersSingleBlacklisted,
+                                    this.testQueryParametersEmpty,
+                                    this.testNamespaceInputVariablesEmpty,
+                                    this.testSortedIncludedProfilesEmpty,
+                                    this.testSettingsEmpty.getAllQueryTypes(),
+                                    this.testSettingsEmpty,
+                                    this.testBlacklistControllerAll,
+                                    this.testHostName,
+                                    this.testUseAllEndpointsTrue,
+                                    this.testPageOffset1,
+                                    this.testSettingsEmpty
+                                            .getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
+                                    this.testSettingsEmpty
+                                            .getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                                    this.testSettingsEmpty
+                                            .getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
+            
+            QueryBundleUtilsTest.LOG.error(collection.toString());
+            
+            // FIXME: collection is coming back as size 1 for some reason
+            Assert.assertEquals(0, collection.size());
+            Assert.fail("Did not receive expected ProvidersBlacklistedException");
+        }
+        catch(final ProvidersBlacklistedException pbe)
+        {
+            Assert.assertTrue(pbe.getMessage().contains(""));
+        }
     }
     
     /**

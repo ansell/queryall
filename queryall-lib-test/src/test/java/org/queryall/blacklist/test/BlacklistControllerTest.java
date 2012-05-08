@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -96,7 +97,7 @@ public class BlacklistControllerTest
         
         Assert.assertNotNull(blacklistEntry);
         
-        Assert.assertEquals(1, blacklistEntry.numberOfFailures);
+        Assert.assertEquals(1, blacklistEntry.numberOfFailures.get());
         
         Assert.assertEquals("http://test.example.org/endpoint/bad/1", blacklistEntry.endpointUrl);
     }
@@ -118,7 +119,7 @@ public class BlacklistControllerTest
         Assert.assertTrue(this.testBlacklistController.getAllHttpErrorResponseCodesByServer().containsKey(
                 "http://example.org/test/endpoint/bad/2"));
         
-        final Map<Integer, Integer> map =
+        final Map<Integer, AtomicInteger> map =
                 this.testBlacklistController.getAllHttpErrorResponseCodesByServer().get(
                         "http://example.org/test/endpoint/bad/2");
         
@@ -128,7 +129,7 @@ public class BlacklistControllerTest
         
         Assert.assertTrue(map.containsKey(new Integer(403)));
         
-        Assert.assertEquals(new Integer(1), map.get(new Integer(403)));
+        Assert.assertEquals(1, map.get(new Integer(403)).get());
     }
     
     /**
@@ -217,9 +218,9 @@ public class BlacklistControllerTest
                 "http://example.org/test/query/total/endpoint/1"));
         
         Assert.assertEquals(
-                new Integer(1),
-                this.testBlacklistController.getAllServerQueryTotals().get(
-                        "http://example.org/test/query/total/endpoint/1"));
+                1,
+                this.testBlacklistController.getAllServerQueryTotals()
+                        .get("http://example.org/test/query/total/endpoint/1").get());
         
         this.testBlacklistController.accumulateQueryTotal("http://example.org/test/query/total/endpoint/1");
         
@@ -232,9 +233,9 @@ public class BlacklistControllerTest
                 "http://example.org/test/query/total/endpoint/1"));
         
         Assert.assertEquals(
-                new Integer(2),
-                this.testBlacklistController.getAllServerQueryTotals().get(
-                        "http://example.org/test/query/total/endpoint/1"));
+                2,
+                this.testBlacklistController.getAllServerQueryTotals()
+                        .get("http://example.org/test/query/total/endpoint/1").get());
         
     }
     
@@ -572,7 +573,7 @@ public class BlacklistControllerTest
         
         Assert.assertNotNull(blacklistEntry);
         
-        Assert.assertEquals(1, blacklistEntry.numberOfFailures);
+        Assert.assertEquals(1, blacklistEntry.numberOfFailures.get());
         
         Assert.assertEquals("http://test.example.org/endpoint/bad/1", blacklistEntry.endpointUrl);
         
@@ -618,7 +619,7 @@ public class BlacklistControllerTest
         
         Assert.assertNotNull(blacklistEntry);
         
-        Assert.assertEquals(1, blacklistEntry.numberOfFailures);
+        Assert.assertEquals(1, blacklistEntry.numberOfFailures.get());
         
         Assert.assertEquals("http://test.example.org/endpoint/bad/1", blacklistEntry.endpointUrl);
         
@@ -742,7 +743,7 @@ public class BlacklistControllerTest
         
         Assert.assertNotNull(blacklistEntry);
         
-        Assert.assertEquals(1, blacklistEntry.numberOfFailures);
+        Assert.assertEquals(1, blacklistEntry.numberOfFailures.get());
         
         Assert.assertEquals("http://test.example.org/endpoint/bad/1", blacklistEntry.endpointUrl);
         
@@ -793,7 +794,7 @@ public class BlacklistControllerTest
         
         Assert.assertNotNull(blacklistEntry);
         
-        Assert.assertEquals(1, blacklistEntry.numberOfFailures);
+        Assert.assertEquals(1, blacklistEntry.numberOfFailures.get());
         
         Assert.assertEquals("http://test.example.org/endpoint/bad/1", blacklistEntry.endpointUrl);
         
@@ -1022,7 +1023,7 @@ public class BlacklistControllerTest
         
         Assert.assertNotNull(blacklistEntry);
         
-        Assert.assertEquals(4, blacklistEntry.numberOfFailures);
+        Assert.assertEquals(4, blacklistEntry.numberOfFailures.get());
         
         Assert.assertEquals("http://test.example.org/endpoint/bad/1", blacklistEntry.endpointUrl);
         
@@ -1079,7 +1080,7 @@ public class BlacklistControllerTest
         
         Assert.assertNotNull(blacklistEntry);
         
-        Assert.assertEquals(10, blacklistEntry.numberOfFailures);
+        Assert.assertEquals(10, blacklistEntry.numberOfFailures.get());
         
         Assert.assertEquals("http://test.example.org/endpoint/bad/1", blacklistEntry.endpointUrl);
         
@@ -1135,7 +1136,7 @@ public class BlacklistControllerTest
         
         Assert.assertNotNull(blacklistEntry);
         
-        Assert.assertEquals(1, blacklistEntry.numberOfFailures);
+        Assert.assertEquals(1, blacklistEntry.numberOfFailures.get());
         
         Assert.assertEquals("http://test.example.org/endpoint/bad/1", blacklistEntry.endpointUrl);
         
@@ -1196,7 +1197,7 @@ public class BlacklistControllerTest
         
         Assert.assertNotNull(blacklistEntry);
         
-        Assert.assertEquals(1, blacklistEntry.numberOfFailures);
+        Assert.assertEquals(1, blacklistEntry.numberOfFailures.get());
         
         Assert.assertEquals("http://test.example.org/endpoint/bad/1", blacklistEntry.endpointUrl);
         
@@ -1257,7 +1258,7 @@ public class BlacklistControllerTest
         
         Assert.assertNotNull(blacklistEntry);
         
-        Assert.assertEquals(1, blacklistEntry.numberOfFailures);
+        Assert.assertEquals(1, blacklistEntry.numberOfFailures.get());
         
         Assert.assertEquals("http://test.example.org", blacklistEntry.endpointUrl);
         
@@ -1328,7 +1329,7 @@ public class BlacklistControllerTest
         
         Assert.assertNotNull(blacklistEntry);
         
-        Assert.assertEquals(1, blacklistEntry.numberOfFailures);
+        Assert.assertEquals(1, blacklistEntry.numberOfFailures.get());
         
         Assert.assertEquals("http://test.example.org/endpoint/bad/1", blacklistEntry.endpointUrl);
         

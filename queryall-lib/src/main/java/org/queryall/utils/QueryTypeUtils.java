@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.openrdf.model.URI;
 import org.queryall.api.namespace.NamespaceEntry;
+import org.queryall.api.namespace.ValidatingNamespaceEntry;
 import org.queryall.api.profile.Profile;
 import org.queryall.api.querytype.InputQueryType;
 import org.queryall.api.querytype.QueryType;
@@ -26,7 +27,6 @@ public final class QueryTypeUtils
     private static final Logger log = LoggerFactory.getLogger(QueryTypeUtils.class);
     private static final boolean TRACE = QueryTypeUtils.log.isTraceEnabled();
     private static final boolean DEBUG = QueryTypeUtils.log.isDebugEnabled();
-    @SuppressWarnings("unused")
     private static final boolean INFO = QueryTypeUtils.log.isInfoEnabled();
     
     public static Map<QueryType, Map<String, Collection<NamespaceEntry>>> getQueryTypesMatchingQuery(
@@ -79,8 +79,6 @@ public final class QueryTypeUtils
                                 + nextQuery.getKey().stringValue() + " queryParameters=" + queryParameters);
                     }
                     
-                    Map<String, Collection<NamespaceEntry>> actualNamespaceEntries;
-                    
                     // Only try to populate actualNamespaceEntries if the query is namespace
                     // specific
                     if(nextQuery.getIsNamespaceSpecific())
@@ -89,7 +87,7 @@ public final class QueryTypeUtils
                                 QueryTypeUtils.namespacesMatchesForQueryParameters(nextInputQuery, queryParameters,
                                         namespacePrefixesToUris);
                         
-                        actualNamespaceEntries =
+                        final Map<String, Collection<NamespaceEntry>> actualNamespaceEntries =
                                 new HashMap<String, Collection<NamespaceEntry>>(namespaceMatches.size() * 2);
                         
                         for(final String nextParameter : namespaceMatches.keySet())
@@ -99,10 +97,30 @@ public final class QueryTypeUtils
                             
                             for(final URI nextNamespaceUri : namespaceMatches.get(nextParameter))
                             {
-                                namespaceParameterMatches.add(allNamespaceEntries.get(nextNamespaceUri));
+                                final NamespaceEntry nextNamespaceEntry = allNamespaceEntries.get(nextNamespaceUri);
+                                
+                                if(nextNamespaceEntry instanceof ValidatingNamespaceEntry)
+                                {
+                                    // TODO: implement validation code here on the queryParameter
+                                    // that is identified as the "identifier" for this namespace in
+                                    // the context of this query
+                                }
+                                
+                                namespaceParameterMatches.add(nextNamespaceEntry);
                             }
                             
                             actualNamespaceEntries.put(nextParameter, namespaceParameterMatches);
+                        }
+                        
+                        if(actualNamespaceEntries.size() > 0)
+                        {
+                            results.put(nextQuery, actualNamespaceEntries);
+                        }
+                        else if(QueryTypeUtils.INFO)
+                        {
+                            QueryTypeUtils.log
+                                    .info("No namespace parameters matched for a namespace specific query, so not including this query type nextQuery={}",
+                                            nextQuery.getKey().stringValue());
                         }
                     }
                     else
@@ -110,13 +128,14 @@ public final class QueryTypeUtils
                         if(QueryTypeUtils.DEBUG)
                         {
                             QueryTypeUtils.log
-                                    .debug("query type is not namespace specific, creating an empty namespace parameter map");
+                                    .debug("Query type is not namespace specific, creating an empty namespace parameter map");
                         }
                         // In other cases use an unmodifiable empty map
-                        actualNamespaceEntries = Collections.emptyMap();
+                        final Map<String, Collection<NamespaceEntry>> emptyMap = Collections.emptyMap();
+                        
+                        results.put(nextQuery, emptyMap);
                     }
                     
-                    results.put(nextQuery, actualNamespaceEntries);
                 }
                 else if(QueryTypeUtils.TRACE)
                 {
