@@ -11,7 +11,7 @@
 
 	<groupId>com.github.queryall</groupId>
 	<artifactId>queryall-parent</artifactId>
-	<version>1.3.1-SNAPSHOT</version>
+	<version>1.3.1</version>
 	<packaging>pom</packaging>
 	<modules>
 		<module>queryall-api</module>
@@ -64,7 +64,7 @@
 		<junit.version>4.10</junit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<queryall.version>1.3.1-SNAPSHOT</queryall.version>
+		<queryall.version>1.3.1</queryall.version>
 		<sesame.version>2.6.5</sesame.version>
 		<sesametools.version>1.6</sesametools.version>
 		<slf4j.version>1.6.4</slf4j.version>
