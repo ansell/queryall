@@ -155,7 +155,7 @@ public class SpinUtils
             }
         }
         
-        Graph createGraph = SesameJena.createGraph(outputRepository.getValueFactory(), inputModel);
+        final Graph createGraph = SesameJena.createGraph(outputRepository.getValueFactory(), inputModel);
         
         RepositoryConnection connection = null;
         
