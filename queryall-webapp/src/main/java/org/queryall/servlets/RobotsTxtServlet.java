@@ -192,6 +192,8 @@ public class RobotsTxtServlet extends HttpServlet
         out.write("Disallow: /nquads/countlinks/\n");
         out.write("Disallow: /nquads/countlinksns/\n\n");
         
+        out.write("Crawl-Delay: 10");
+        
         out.flush();
     }
     
