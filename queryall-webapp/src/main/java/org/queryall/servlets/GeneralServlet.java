@@ -337,17 +337,17 @@ public class GeneralServlet extends HttpServlet
                 
                 ServletUtils.doQueryNotPretend(localSettings, queryString, requestedContentType, includedProfiles,
                         fetchController, multiProviderQueryBundles, debugStrings, myRepository);
-
+                
                 if(GeneralServlet.TRACE)
                 {
-                    GeneralServlet.log.trace("GeneralServlet: ending fetchController.queryKnown() and not pretend query section");
+                    GeneralServlet.log
+                            .trace("GeneralServlet: ending fetchController.queryKnown() and not pretend query section");
                 }
             }
             
             if(GeneralServlet.DEBUG)
             {
-                GeneralServlet.log
-                        .debug("GeneralServlet: about to normalise pool data");
+                GeneralServlet.log.debug("GeneralServlet: about to normalise pool data");
             }
             
             // Normalisation Stage : after results to pool

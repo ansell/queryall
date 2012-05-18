@@ -116,10 +116,10 @@ public final class QueryTypeUtils
                         {
                             results.put(nextQuery, actualNamespaceEntries);
                         }
-                        else if(QueryTypeUtils.INFO)
+                        else if(QueryTypeUtils.DEBUG)
                         {
                             QueryTypeUtils.log
-                                    .info("No namespace parameters matched for a namespace specific query, so not including this query type nextQuery={}",
+                                    .warn("No namespace parameters matched for a namespace specific query, so not including this query type nextQuery={}",
                                             nextQuery.getKey().stringValue());
                         }
                     }
@@ -175,8 +175,12 @@ public final class QueryTypeUtils
                         
                         results.put(nextNamespaceParameter, namespacePrefixMap.get(nextNamespaceParameterMatch));
                     }
-                    else
+                    else if(QueryTypeUtils.DEBUG)
                     {
+                        // NOTE: This represents an error, but it may flood the logs if people
+                        // request things with namespaces that do not exist in the configuration
+                        // During debugging it will show up as an ERROR, but will be silently
+                        // ignored in production
                         QueryTypeUtils.log.error("Could not find a matching namespace for nextNamespaceParameter="
                                 + nextNamespaceParameter + " nextNamespaceParameterMatch="
                                 + nextNamespaceParameterMatch);

@@ -54,6 +54,7 @@ public class RdfFetcherSparqlQueryRunnableImpl extends RdfFetcherQueryRunnableIm
             
             this.setQueryStartTime(new Date());
             
+            // FIXME: If this throws an exception, then the alternates are not going to be used
             String tempRawResult =
                     fetcher.submitSparqlQuery(this.getOriginalEndpointUrl(), "", this.getOriginalQuery(), "",
                             this.maxRowsParameter, this.getAcceptHeader());
@@ -66,15 +67,23 @@ public class RdfFetcherSparqlQueryRunnableImpl extends RdfFetcherQueryRunnableIm
                 final Map<String, String> alternateEndpointsAndQueries =
                         this.getOriginalQueryBundle().getAlternativeEndpointsAndQueries();
                 
-                RdfFetcherSparqlQueryRunnableImpl.log.error("There are " + (alternateEndpointsAndQueries.size() - 1)
-                        + " alternative endpoints to choose from");
+                if(RdfFetcherSparqlQueryRunnableImpl.DEBUG)
+                {
+                    // hide this in production, but show up as ERROR in testing
+                    RdfFetcherSparqlQueryRunnableImpl.log.error("There are "
+                            + (alternateEndpointsAndQueries.size() - 1) + " alternative endpoints to choose from");
+                }
                 
                 for(final String alternateEndpoint : alternateEndpointsAndQueries.keySet())
                 {
                     if(!alternateEndpoint.equals(this.getOriginalEndpointUrl()))
                     {
-                        RdfFetcherSparqlQueryRunnableImpl.log.error("Trying to fetch from alternate endpoint="
-                                + alternateEndpoint + " originalEndpoint=" + this.getOriginalEndpointUrl());
+                        if(RdfFetcherSparqlQueryRunnableImpl.DEBUG)
+                        {
+                            // hide this in production, but show up as ERROR in testing
+                            RdfFetcherSparqlQueryRunnableImpl.log.error("Trying to fetch from alternate endpoint="
+                                    + alternateEndpoint + " originalEndpoint=" + this.getOriginalEndpointUrl());
+                        }
                         
                         final String alternateQuery = alternateEndpointsAndQueries.get(alternateEndpoint);
                         
@@ -89,8 +98,12 @@ public class RdfFetcherSparqlQueryRunnableImpl extends RdfFetcherQueryRunnableIm
                         
                         if(!fetcher.getLastWasError())
                         {
-                            RdfFetcherSparqlQueryRunnableImpl.log.error("Found a success with alternateEndpoint="
-                                    + alternateEndpoint + " alternateQuery=" + alternateQuery);
+                            if(RdfFetcherSparqlQueryRunnableImpl.DEBUG)
+                            {
+                                RdfFetcherSparqlQueryRunnableImpl.log.error("Found a success with alternateEndpoint="
+                                        + alternateEndpoint + " alternateQuery=" + alternateQuery);
+                            }
+                            
                             // break on the first alternate that wasn't an error
                             this.setActualEndpointUrl(alternateEndpoint);
                             this.setActualQuery(alternateQuery);
