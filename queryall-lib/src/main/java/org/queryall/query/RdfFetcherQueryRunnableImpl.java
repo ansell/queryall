@@ -555,7 +555,7 @@ public abstract class RdfFetcherQueryRunnableImpl extends Thread implements RdfF
     @Override
     public String toString()
     {
-        return "originalendpointUrl=" + this.getOriginalEndpointUrl() + "actualendpointurl="
+        return "originalendpointUrl=" + this.getOriginalEndpointUrl() + " actualendpointurl="
                 + this.getActualEndpointUrl() + " query=" + this.getOriginalQuery();
     }
     
