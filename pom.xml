@@ -20,10 +20,12 @@
 		<module>queryall-ext-querytype-regex</module>
 		<module>queryall-ext-provider-http</module>
 		<module>queryall-ext-provider-rdf</module>
+		<module>queryall-ext-rule-owl</module>
 		<module>queryall-ext-rule-xslt</module>
 		<module>queryall-ext-rule-sparql</module>
 		<module>queryall-ext-rule-regex</module>
 		<module>queryall-ext-rule-prefixmap</module>
+		<module>queryall-ext-rule-spin</module>
 		<module>queryall-lib-test</module>
 		<module>queryall-content-negotiation</module>
 		<module>queryall-webapp</module>
