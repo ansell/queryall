@@ -11,7 +11,7 @@
 
 	<groupId>com.github.queryall</groupId>
 	<artifactId>queryall-parent</artifactId>
-	<version>1.3.1</version>
+	<version>1.3.2</version>
 	<packaging>pom</packaging>
 	<modules>
 		<module>queryall-api</module>
@@ -20,10 +20,12 @@
 		<module>queryall-ext-querytype-regex</module>
 		<module>queryall-ext-provider-http</module>
 		<module>queryall-ext-provider-rdf</module>
+		<module>queryall-ext-rule-owl</module>
 		<module>queryall-ext-rule-xslt</module>
 		<module>queryall-ext-rule-sparql</module>
 		<module>queryall-ext-rule-regex</module>
 		<module>queryall-ext-rule-prefixmap</module>
+		<module>queryall-ext-rule-spin</module>
 		<module>queryall-lib-test</module>
 		<module>queryall-content-negotiation</module>
 		<module>queryall-webapp</module>
@@ -64,10 +66,9 @@
 		<junit.version>4.10</junit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<queryall.version>1.3.1</queryall.version>
-		<sesame.version>2.6.5</sesame.version>
+		<sesame.version>2.6.7</sesame.version>
 		<sesametools.version>1.6</sesametools.version>
-		<slf4j.version>1.6.4</slf4j.version>
+		<slf4j.version>1.6.6</slf4j.version>
 	</properties>
 	<prerequisites>
 		<maven>2.2.1</maven>
@@ -326,7 +327,7 @@
 						<execution>
 							<id>attach-test-sources</id>
 							<goals>
-								<goal>test-jar-no-fork</goal>
+								<goal>test-jar</goal>
 							</goals>
 						</execution>
 					</executions>

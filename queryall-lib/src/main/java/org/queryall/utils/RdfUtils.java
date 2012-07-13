@@ -2993,8 +2993,10 @@ public final class RdfUtils
                 }
                 myRepositoryConnection.commit();
             }
-            else
+            else if(RdfUtils.DEBUG)
             {
+                // Hiding this message in production, in debugging it will show up as WARN in error
+                // logs
                 RdfUtils.log
                         .warn("Not adding anything for next result as the result was empty or the format was not understood");
             }

@@ -1,7 +1,6 @@
 package org.queryall.servlets.html;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -53,9 +52,9 @@ public class HtmlPageRenderer
             final String queryString, final String resolvedUri, String realHostName, String contextPath,
             int pageoffset, final Collection<String> debugStrings) throws OpenRDFException
     {
-        if(DEBUG)
+        if(HtmlPageRenderer.DEBUG)
         {
-            log.debug("Entering renderHtml");
+            HtmlPageRenderer.log.debug("Entering renderHtml");
         }
         boolean nextpagelinkuseful = false;
         boolean previouspagelinkuseful = false;
@@ -168,9 +167,9 @@ public class HtmlPageRenderer
         
         velocityContext.put("provider_endpoints", endpointsList);
         
-        if(DEBUG)
+        if(HtmlPageRenderer.DEBUG)
         {
-            log.debug("About to get query bundles from fetch controller");
+            HtmlPageRenderer.log.debug("About to get query bundles from fetch controller");
         }
         
         if(fetchController != null)
@@ -178,9 +177,9 @@ public class HtmlPageRenderer
             velocityContext.put("query_bundles", fetchController.getQueryBundles());
         }
         
-        if(DEBUG)
+        if(HtmlPageRenderer.DEBUG)
         {
-            log.debug("Finished getting query bundles from fetch controller");
+            HtmlPageRenderer.log.debug("Finished getting query bundles from fetch controller");
         }
         
         // Collection<Value> titles = new HashSet<Value>();
@@ -197,14 +196,14 @@ public class HtmlPageRenderer
                 ListUtils.randomiseCollectionLayout(RdfUtils.getValuesFromRepositoryByPredicateUris(nextRepository,
                         localSettings.getURIProperties(WebappConfig.IMAGE_PROPERTIES)));
         
-        if(DEBUG)
+        if(HtmlPageRenderer.DEBUG)
         {
-            log.debug("Finished getting titles comments and images from repository");
+            HtmlPageRenderer.log.debug("Finished getting titles comments and images from repository");
         }
         
         String chosenTitle = "";
         
-        for(Value nextTitle : titles)
+        for(final Value nextTitle : titles)
         {
             chosenTitle = RdfUtils.getUTF8StringValueFromSesameValue(nextTitle);
             
@@ -243,9 +242,9 @@ public class HtmlPageRenderer
         // localSettings.getProvidersForQueryTypeForNamespaceUris(String customService,
         // Collection<Collection<String>> namespaceUris, NamespaceEntry.)
         
-        if(DEBUG)
+        if(HtmlPageRenderer.DEBUG)
         {
-            log.debug("About to get all statements from repository");
+            HtmlPageRenderer.log.debug("About to get all statements from repository");
         }
         
         final Collection<Statement> allStatements =
