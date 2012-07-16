@@ -20,12 +20,12 @@
 		<module>queryall-ext-querytype-regex</module>
 		<module>queryall-ext-provider-http</module>
 		<module>queryall-ext-provider-rdf</module>
-		<module>queryall-ext-rule-owl</module>
+<!--		<module>queryall-ext-rule-owl</module> This requires a copy of owlapi from https://github.com/ansell/owlapi and a copy of pellet from https://github.com/ansell/pellet -->
+<!--		<module>queryall-ext-rule-spin</module> This requires a copy of spin-api from https://github.com/ansell/spin -->
 		<module>queryall-ext-rule-xslt</module>
 		<module>queryall-ext-rule-sparql</module>
 		<module>queryall-ext-rule-regex</module>
 		<module>queryall-ext-rule-prefixmap</module>
-		<module>queryall-ext-rule-spin</module>
 		<module>queryall-lib-test</module>
 		<module>queryall-content-negotiation</module>
 		<module>queryall-webapp</module>
