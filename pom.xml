@@ -66,7 +66,7 @@
 		<junit.version>4.10</junit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<sesame.version>2.7-SNAPSHOT</sesame.version>
+		<sesame.version>2.6.9</sesame.version>
 		<sesametools.version>1.7-SNAPSHOT</sesametools.version>
 		<slf4j.version>1.7.1</slf4j.version>
 	</properties>
@@ -151,11 +151,6 @@
 				<artifactId>sesame-rio-n3</artifactId>
 				<version>${sesame.version}</version>
 			</dependency>
-            <dependency>
-                <groupId>org.openrdf.sesame</groupId>
-                <artifactId>sesame-rio-nquads</artifactId>
-                <version>${sesame.version}</version>
-            </dependency>
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
 				<artifactId>sesame-rio-ntriples</artifactId>
