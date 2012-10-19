@@ -112,11 +112,12 @@ public class SesameConstructQueryBug
         Assert.assertEquals("Repository did not contain the expected number of statements", 3,
                 this.testRepositoryConnection.size());
         
-        for(final Statement nextResutStatement : this.testRepositoryConnection.getStatements(null, null, null, false)
-                .asList())
-        {
-            System.out.println(nextResutStatement.toString());
-        }
+        // for(final Statement nextResutStatement :
+        // this.testRepositoryConnection.getStatements(null, null, null, false)
+        // .asList())
+        // {
+        // System.out.println(nextResutStatement.toString());
+        // }
         
         Assert.assertTrue("Repository did not include test input statement",
                 this.testRepositoryConnection.hasStatement(testInputStatement, false));
