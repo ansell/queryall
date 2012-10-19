@@ -66,9 +66,9 @@
 		<junit.version>4.10</junit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<sesame.version>2.6.9</sesame.version>
-		<sesametools.version>1.6</sesametools.version>
-		<slf4j.version>1.6.6</slf4j.version>
+		<sesame.version>2.7-SNAPSHOT</sesame.version>
+		<sesametools.version>1.7-SNAPSHOT</sesametools.version>
+		<slf4j.version>1.7.1</slf4j.version>
 	</properties>
 	<prerequisites>
 		<maven>2.2.1</maven>
@@ -151,6 +151,11 @@
 				<artifactId>sesame-rio-n3</artifactId>
 				<version>${sesame.version}</version>
 			</dependency>
+            <dependency>
+                <groupId>org.openrdf.sesame</groupId>
+                <artifactId>sesame-rio-nquads</artifactId>
+                <version>${sesame.version}</version>
+            </dependency>
 			<dependency>
 				<groupId>org.openrdf.sesame</groupId>
 				<artifactId>sesame-rio-ntriples</artifactId>
@@ -169,11 +174,6 @@
 			<dependency>
 				<groupId>net.fortytwo.sesametools</groupId>
 				<artifactId>rdfjson</artifactId>
-				<version>${sesametools.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>net.fortytwo.sesametools</groupId>
-				<artifactId>nquads</artifactId>
 				<version>${sesametools.version}</version>
 			</dependency>
 			<dependency>
