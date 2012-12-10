@@ -155,7 +155,7 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
             }
             else if(nextStatement.getPredicate().equals(ValidatingNamespaceEntrySchema.getValidationPossibleUri()))
             {
-                this.setValidationPossible(true);
+                this.setValidationPossible(RdfUtils.getBooleanFromValue(nextStatement.getObject()));
             }
             else
             {
