@@ -44,6 +44,7 @@ import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.api.utils.Schema;
 import org.queryall.api.utils.WebappConfig;
 import org.queryall.exception.QueryAllRuntimeException;
+import org.queryall.exception.SettingAlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,9 +72,10 @@ public class SettingsFactory
      * 
      * @param serverConfigurationRdf
      * @param nextSettings
+     * @throws SettingAlreadyExistsException
      */
     public static void addNamespaceEntries(final Repository serverConfigurationRdf,
-            final QueryAllConfiguration nextSettings)
+            final QueryAllConfiguration nextSettings) throws SettingAlreadyExistsException
     {
         final Map<URI, NamespaceEntry> results = RdfUtils.getNamespaceEntries(serverConfigurationRdf);
         
@@ -96,9 +98,10 @@ public class SettingsFactory
      * 
      * @param serverConfigurationRdf
      * @param nextSettings
+     * @throws SettingAlreadyExistsException
      */
     public static void addNormalisationRules(final Repository serverConfigurationRdf,
-            final QueryAllConfiguration nextSettings)
+            final QueryAllConfiguration nextSettings) throws SettingAlreadyExistsException
     {
         final Map<URI, NormalisationRule> results = RdfUtils.getNormalisationRules(serverConfigurationRdf);
         
@@ -121,8 +124,10 @@ public class SettingsFactory
      * 
      * @param serverConfigurationRdf
      * @param nextSettings
+     * @throws SettingAlreadyExistsException
      */
     public static void addProfiles(final Repository serverConfigurationRdf, final QueryAllConfiguration nextSettings)
+        throws SettingAlreadyExistsException
     {
         final Map<URI, Profile> results = RdfUtils.getProfiles(serverConfigurationRdf);
         
@@ -145,8 +150,10 @@ public class SettingsFactory
      * 
      * @param serverConfigurationRdf
      * @param nextSettings
+     * @throws SettingAlreadyExistsException
      */
     public static void addProviders(final Repository serverConfigurationRdf, final QueryAllConfiguration nextSettings)
+        throws SettingAlreadyExistsException
     {
         final Map<URI, Provider> results = RdfUtils.getProviders(serverConfigurationRdf);
         
@@ -169,8 +176,10 @@ public class SettingsFactory
      * 
      * @param serverConfigurationRdf
      * @param nextSettings
+     * @throws SettingAlreadyExistsException
      */
     public static void addQueryTypes(final Repository serverConfigurationRdf, final QueryAllConfiguration nextSettings)
+        throws SettingAlreadyExistsException
     {
         final Map<URI, QueryType> results = RdfUtils.getQueryTypes(serverConfigurationRdf);
         
@@ -193,8 +202,10 @@ public class SettingsFactory
      * 
      * @param serverConfigurationRdf
      * @param nextSettings
+     * @throws SettingAlreadyExistsException
      */
     public static void addRuleTests(final Repository serverConfigurationRdf, final QueryAllConfiguration nextSettings)
+        throws SettingAlreadyExistsException
     {
         final Map<URI, RuleTest> results = RdfUtils.getRuleTests(serverConfigurationRdf);
         
@@ -1199,7 +1210,14 @@ public class SettingsFactory
             }
             
             nextSettings.resetNamespaceEntries();
-            SettingsFactory.addNamespaceEntries(serverConfigurationRdf, nextSettings);
+            try
+            {
+                SettingsFactory.addNamespaceEntries(serverConfigurationRdf, nextSettings);
+            }
+            catch(final SettingAlreadyExistsException saee)
+            {
+                SettingsFactory.log.error("Duplicate namespace entry", saee);
+            }
             
             if(SettingsFactory.INFO)
             {
@@ -1207,7 +1225,14 @@ public class SettingsFactory
             }
             
             nextSettings.resetQueryTypes();
-            SettingsFactory.addQueryTypes(serverConfigurationRdf, nextSettings);
+            try
+            {
+                SettingsFactory.addQueryTypes(serverConfigurationRdf, nextSettings);
+            }
+            catch(final SettingAlreadyExistsException saee)
+            {
+                SettingsFactory.log.error("Duplicate query type", saee);
+            }
             
             if(SettingsFactory.INFO)
             {
@@ -1215,7 +1240,14 @@ public class SettingsFactory
             }
             
             nextSettings.resetProviders();
-            SettingsFactory.addProviders(serverConfigurationRdf, nextSettings);
+            try
+            {
+                SettingsFactory.addProviders(serverConfigurationRdf, nextSettings);
+            }
+            catch(final SettingAlreadyExistsException saee)
+            {
+                SettingsFactory.log.error("Duplicate provider", saee);
+            }
             
             if(SettingsFactory.INFO)
             {
@@ -1223,7 +1255,14 @@ public class SettingsFactory
             }
             
             nextSettings.resetNormalisationRules();
-            SettingsFactory.addNormalisationRules(serverConfigurationRdf, nextSettings);
+            try
+            {
+                SettingsFactory.addNormalisationRules(serverConfigurationRdf, nextSettings);
+            }
+            catch(final SettingAlreadyExistsException saee)
+            {
+                SettingsFactory.log.error("Duplicate normalisation rule", saee);
+            }
             
             if(SettingsFactory.INFO)
             {
@@ -1231,7 +1270,14 @@ public class SettingsFactory
             }
             
             nextSettings.resetProfiles();
-            SettingsFactory.addProfiles(serverConfigurationRdf, nextSettings);
+            try
+            {
+                SettingsFactory.addProfiles(serverConfigurationRdf, nextSettings);
+            }
+            catch(final SettingAlreadyExistsException saee)
+            {
+                SettingsFactory.log.error("Duplicate profile", saee);
+            }
             
             if(SettingsFactory.INFO)
             {
@@ -1239,7 +1285,14 @@ public class SettingsFactory
             }
             
             nextSettings.resetRuleTests();
-            SettingsFactory.addRuleTests(serverConfigurationRdf, nextSettings);
+            try
+            {
+                SettingsFactory.addRuleTests(serverConfigurationRdf, nextSettings);
+            }
+            catch(final SettingAlreadyExistsException saee)
+            {
+                SettingsFactory.log.error("Duplicate rule test", saee);
+            }
         }
         catch(final InterruptedException e)
         {
