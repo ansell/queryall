@@ -35,9 +35,6 @@ import org.slf4j.LoggerFactory;
 public abstract class BaseQueryAllImpl implements BaseQueryAllInterface
 {
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
-    protected final boolean TRACE = log.isTraceEnabled();
-    protected final boolean DEBUG = log.isDebugEnabled();
-    protected final boolean INFO = log.isInfoEnabled();
     
     private Collection<Statement> unrecognisedStatements = new ArrayList<Statement>(20);
     private URI key = null;
@@ -269,9 +266,9 @@ public abstract class BaseQueryAllImpl implements BaseQueryAllInterface
         
         try
         {
-            if(TRACE)
+            if(this.log.isTraceEnabled())
             {
-                log.trace("toRdf: contextKey=" + contextKey);
+                this.log.trace("toRdf: contextKey=" + contextKey);
             }
             
             final URI keyUri = this.getKey();
@@ -323,7 +320,7 @@ public abstract class BaseQueryAllImpl implements BaseQueryAllInterface
             // Something went wrong during the transaction, so we roll it back
             con.rollback();
             
-            log.error("RepositoryException: " + re.getMessage());
+            this.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

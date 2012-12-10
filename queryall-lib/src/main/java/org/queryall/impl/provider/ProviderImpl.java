@@ -26,20 +26,12 @@ import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider, HtmlExport
 {
-    private static final Logger log = LoggerFactory.getLogger(ProviderImpl.class);
-    private static final boolean TRACE = ProviderImpl.log.isTraceEnabled();
-    private static final boolean DEBUG = ProviderImpl.log.isDebugEnabled();
-    @SuppressWarnings("unused")
-    private static final boolean INFO = ProviderImpl.log.isInfoEnabled();
-    
     private Collection<URI> namespaces = new HashSet<URI>();
     
     private Collection<URI> includedInQueryTypes = new HashSet<URI>();
@@ -72,17 +64,17 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(ProviderImpl.TRACE)
+            if(this.log.isTraceEnabled())
             {
-                ProviderImpl.log.trace("Provider: nextStatement: " + nextStatement.toString());
+                this.log.trace("Provider: nextStatement: " + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(ProviderSchema.getProviderTypeUri()))
             {
-                if(ProviderImpl.TRACE)
+                if(this.log.isTraceEnabled())
                 {
-                    ProviderImpl.log.trace("Provider: found valid type predicate for URI: " + keyToUse);
+                    this.log.trace("Provider: found valid type predicate for URI: " + keyToUse);
                 }
                 
                 // resultIsValid = true;
@@ -126,9 +118,9 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
             }
         }
         
-        if(ProviderImpl.TRACE)
+        if(this.log.isTraceEnabled())
         {
-            ProviderImpl.log.trace("Provider.fromRdf: would have returned... keyToUse=" + keyToUse + " result="
+            this.log.trace("Provider.fromRdf: would have returned... keyToUse=" + keyToUse + " result="
                     + this.toString());
         }
     }
@@ -221,9 +213,8 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
         
         if(queryKey != null)
         {
-            ProviderImpl.log
-                    .warn("ProviderImpl.containsQueryTypeUri: provider did not have any included query types! this.getKey()="
-                            + this.getKey());
+            this.log.warn("ProviderImpl.containsQueryTypeUri: provider did not have any included query types! this.getKey()="
+                    + this.getKey());
         }
         
         return false;
@@ -424,7 +415,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
         }
         catch(final UnsupportedOperationException uoe)
         {
-            ProviderImpl.log.debug("Could not clear collection");
+            this.log.debug("Could not clear collection");
         }
         
         this.includedInQueryTypes = new HashSet<URI>();
@@ -443,7 +434,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
         }
         catch(final UnsupportedOperationException uoe)
         {
-            ProviderImpl.log.debug("Could not clear collection");
+            this.log.debug("Could not clear collection");
         }
         
         this.namespaces = new HashSet<URI>();
@@ -462,7 +453,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
         }
         catch(final UnsupportedOperationException uoe)
         {
-            ProviderImpl.log.debug("Could not clear collection");
+            this.log.debug("Could not clear collection");
         }
         
         this.normalisationUris = new HashSet<URI>();
@@ -599,9 +590,9 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
         
         try
         {
-            if(ProviderImpl.TRACE)
+            if(this.log.isTraceEnabled())
             {
-                ProviderImpl.log.trace("Provider.toRdf: keyToUse=" + contextKey);
+                this.log.trace("Provider.toRdf: keyToUse=" + contextKey);
             }
             
             // create some resources and literals to make statements out of
@@ -682,11 +673,11 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
             // Something went wrong during the transaction, so we roll it back
             con.rollback();
             
-            ProviderImpl.log.error("RepositoryException: " + re.getMessage());
+            this.log.error("RepositoryException: " + re.getMessage());
         }
         catch(final Exception ex)
         {
-            ProviderImpl.log.error("Provider: Exception.. keyToUse=" + contextKey, ex);
+            this.log.error("Provider: Exception.. keyToUse=" + contextKey, ex);
         }
         finally
         {

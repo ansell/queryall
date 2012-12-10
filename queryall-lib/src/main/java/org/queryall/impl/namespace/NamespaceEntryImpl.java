@@ -27,8 +27,6 @@ import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -36,12 +34,6 @@ import org.slf4j.LoggerFactory;
 public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEntry, RegexValidatingNamespaceEntry,
         HtmlExport
 {
-    private static final Logger log = LoggerFactory.getLogger(NamespaceEntryImpl.class);
-    private static final boolean TRACE = NamespaceEntryImpl.log.isTraceEnabled();
-    private static final boolean DEBUG = NamespaceEntryImpl.log.isDebugEnabled();
-    @SuppressWarnings("unused")
-    private static final boolean INFO = NamespaceEntryImpl.log.isInfoEnabled();
-    
     private static final Set<URI> NAMESPACE_ENTRY_IMPL_TYPES = new HashSet<URI>();
     
     public static Set<URI> myTypes()
@@ -94,9 +86,9 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(NamespaceEntryImpl.TRACE)
+            if(this.log.isTraceEnabled())
             {
-                NamespaceEntryImpl.log.trace("NamespaceEntry: nextStatement: " + nextStatement.toString());
+                this.log.trace("NamespaceEntry: nextStatement: " + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
@@ -106,9 +98,9 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
                             .getObject().equals(
                                     RegexValidatingNamespaceEntrySchema.getRegexValidatingNamespaceTypeUri())))
             {
-                if(NamespaceEntryImpl.TRACE)
+                if(this.log.isTraceEnabled())
                 {
-                    NamespaceEntryImpl.log.trace("NamespaceEntry: found valid type predicate for URI: " + keyToUse);
+                    this.log.trace("NamespaceEntry: found valid type predicate for URI: " + keyToUse);
                 }
                 
                 this.setKey(keyToUse);
@@ -126,8 +118,8 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
                 }
                 else
                 {
-                    NamespaceEntryImpl.log.error("NamespaceEntry.fromRdf: found two preferred prefixes keyToUse="
-                            + keyToUse + " .... chosen=" + this.getPreferredPrefix() + " other="
+                    this.log.error("NamespaceEntry.fromRdf: found two preferred prefixes keyToUse=" + keyToUse
+                            + " .... chosen=" + this.getPreferredPrefix() + " other="
                             + nextStatement.getObject().stringValue());
                 }
             }
@@ -163,9 +155,9 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
             }
         }
         
-        if(NamespaceEntryImpl.TRACE)
+        if(this.log.isTraceEnabled())
         {
-            NamespaceEntryImpl.log.trace("NamespaceEntry.fromRdf: would have returned... result=" + this.toString());
+            this.log.trace("NamespaceEntry.fromRdf: would have returned... result=" + this.toString());
         }
     }
     
@@ -565,7 +557,7 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
                 con.rollback();
             }
             
-            NamespaceEntryImpl.log.error("RepositoryException: " + re.getMessage());
+            this.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {
@@ -602,9 +594,8 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
         // invalid
         else if(this.identifierRegexPattern == null)
         {
-            NamespaceEntryImpl.log
-                    .warn("Validation was possible, but no regular expression was found for the namespace key="
-                            + this.getKey().stringValue() + " identifier=" + identifier);
+            this.log.warn("Validation was possible, but no regular expression was found for the namespace key="
+                    + this.getKey().stringValue() + " identifier=" + identifier);
             
             return false;
         }
