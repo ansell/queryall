@@ -29,8 +29,6 @@ import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.exception.InvalidStageException;
 import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.RdfUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -38,11 +36,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class BaseRuleImpl extends BaseQueryAllImpl implements NormalisationRule
 {
-    private static final Logger log = LoggerFactory.getLogger(BaseRuleImpl.class);
-    private static final boolean TRACE = BaseRuleImpl.log.isTraceEnabled();
-    private static final boolean DEBUG = BaseRuleImpl.log.isDebugEnabled();
-    private static final boolean INFO = BaseRuleImpl.log.isInfoEnabled();
-    
     private ProfileIncludeExclude profileIncludeExcludeOrder = ProfileIncludeExclude.UNDEFINED;
     
     private Collection<URI> relatedNamespaces = new ArrayList<URI>(10);
@@ -82,9 +75,9 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(NormalisationRuleSchema.getNormalisationRuleTypeUri()))
             {
-                if(BaseRuleImpl.TRACE)
+                if(this.log.isTraceEnabled())
                 {
-                    BaseRuleImpl.log.trace("BaseRuleImpl: found valid type predicate for URI: " + keyToUse);
+                    this.log.trace("BaseRuleImpl: found valid type predicate for URI: " + keyToUse);
                 }
                 
                 this.setKey(keyToUse);
@@ -105,13 +98,13 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
                 }
                 catch(final InvalidStageException ise)
                 {
-                    BaseRuleImpl.log
-                            .error("Stage not applicable for this type of normalisation rule nextStatement.getObject()="
-                                    + nextStatement.getObject().stringValue()
-                                    + " validStages="
-                                    + this.getValidStages().toString()
-                                    + " this.getElementTypes()="
-                                    + this.getElementTypes() + " keyToUse=" + keyToUse.stringValue());
+                    this.log.error("Stage not applicable for this type of normalisation rule nextStatement.getObject()="
+                            + nextStatement.getObject().stringValue()
+                            + " validStages="
+                            + this.getValidStages().toString()
+                            + " this.getElementTypes()="
+                            + this.getElementTypes()
+                            + " keyToUse=" + keyToUse.stringValue());
                 }
             }
             else if(nextStatement.getPredicate().equals(ProfileSchema.getProfileIncludeExcludeOrderUri()))
@@ -375,7 +368,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
         }
         catch(final UnsupportedOperationException uoe)
         {
-            BaseRuleImpl.log.debug("Could not clear collection");
+            this.log.debug("Could not clear collection");
         }
         
         this.relatedNamespaces = new HashSet<URI>();
@@ -399,7 +392,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
         }
         catch(final UnsupportedOperationException uoe)
         {
-            BaseRuleImpl.log.debug("Could not clear collection");
+            this.log.debug("Could not clear collection");
         }
         
         this.stages = new HashSet<URI>();
@@ -444,9 +437,9 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
         
         try
         {
-            if(BaseRuleImpl.TRACE)
+            if(this.log.isTraceEnabled())
             {
-                BaseRuleImpl.log.trace("BaseRuleImpl.toRdf: keyToUse=" + contextKey);
+                this.log.trace("BaseRuleImpl.toRdf: keyToUse=" + contextKey);
             }
             
             final URI keyUri = this.getKey();
@@ -513,7 +506,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
             // Something went wrong during the transaction, so we roll it back
             con.rollback();
             
-            BaseRuleImpl.log.error("RepositoryException: " + re.getMessage());
+            this.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

@@ -35,8 +35,6 @@ import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.RdfUtils;
 import org.queryall.utils.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -44,12 +42,6 @@ import org.slf4j.LoggerFactory;
 public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryType, InputQueryType, ProcessorQueryType,
         RdfOutputQueryType, HtmlExport
 {
-    private static final Logger log = LoggerFactory.getLogger(QueryTypeImpl.class);
-    private static final boolean TRACE = QueryTypeImpl.log.isTraceEnabled();
-    private static final boolean DEBUG = QueryTypeImpl.log.isDebugEnabled();
-    @SuppressWarnings("unused")
-    private static final boolean INFO = QueryTypeImpl.log.isInfoEnabled();
-    
     private boolean handleAllNamespaces = true;
     
     /**
@@ -154,17 +146,17 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(QueryTypeImpl.TRACE)
+            if(this.log.isTraceEnabled())
             {
-                QueryTypeImpl.log.trace("QueryType: nextStatement: " + nextStatement.toString());
+                this.log.trace("QueryType: nextStatement: " + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(QueryTypeSchema.getQueryTypeUri()))
             {
-                if(QueryTypeImpl.TRACE)
+                if(this.log.isTraceEnabled())
                 {
-                    QueryTypeImpl.log.trace("QueryType: found valid type predicate for URI: " + keyToUse);
+                    this.log.trace("QueryType: found valid type predicate for URI: " + keyToUse);
                 }
                 
                 this.setKey(keyToUse);
@@ -207,7 +199,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
                 }
                 else
                 {
-                    QueryTypeImpl.log.error("Found an unrecognised NamespaceMatch method value="
+                    this.log.error("Found an unrecognised NamespaceMatch method value="
                             + nextStatement.getObject().stringValue());
                 }
             }
@@ -272,9 +264,9 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         
         // this.setSemanticallyLinkedQueryTypes(tempsemanticallyLinkedCustomQueries);
         
-        if(QueryTypeImpl.TRACE)
+        if(this.log.isTraceEnabled())
         {
-            QueryTypeImpl.log.trace("QueryType.fromRdf: would have returned... keyToUse=" + keyToUse + " result="
+            this.log.trace("QueryType.fromRdf: would have returned... keyToUse=" + keyToUse + " result="
                     + this.toString());
         }
     }
@@ -815,7 +807,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         }
         catch(final UnsupportedOperationException uoe)
         {
-            QueryTypeImpl.log.debug("Could not clear collection");
+            this.log.debug("Could not clear collection");
         }
         
         this.expectedInputParameters = new HashSet<String>();
@@ -834,7 +826,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         }
         catch(final UnsupportedOperationException uoe)
         {
-            QueryTypeImpl.log.debug("Could not clear collection");
+            this.log.debug("Could not clear collection");
         }
         
         this.semanticallyLinkedCustomQueries = new HashSet<URI>();
@@ -853,7 +845,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         }
         catch(final UnsupportedOperationException uoe)
         {
-            QueryTypeImpl.log.debug("Could not clear collection");
+            this.log.debug("Could not clear collection");
         }
         
         this.namespaceInputTags = new HashSet<String>();
@@ -872,7 +864,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         }
         catch(final UnsupportedOperationException uoe)
         {
-            QueryTypeImpl.log.debug("Could not clear collection");
+            this.log.debug("Could not clear collection");
         }
         
         this.namespacesToHandle = new HashSet<URI>();
@@ -896,7 +888,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
         }
         catch(final UnsupportedOperationException uoe)
         {
-            QueryTypeImpl.log.debug("Could not clear collection");
+            this.log.debug("Could not clear collection");
         }
         
         this.publicIdentifierTags = new HashSet<String>();
@@ -1173,8 +1165,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
                 }
                 else
                 {
-                    QueryTypeImpl.log
-                            .info("Unable to supply RDF Output string to this user as they requested an old version of the api, and the template was not in application/rdf+xml format");
+                    this.log.info("Unable to supply RDF Output string to this user as they requested an old version of the api, and the template was not in application/rdf+xml format");
                 }
             }
             else
@@ -1230,11 +1221,10 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
                             }
                             catch(final NumberFormatException nfe)
                             {
-                                QueryTypeImpl.log
-                                        .info("Could not convert input_NN tag backwards to previous index version due to an issue with the tag nextPublicIdentifierTag="
-                                                + nextPublicIdentifierTag
-                                                + " querytype.getKey()="
-                                                + this.getKey().stringValue());
+                                this.log.info("Could not convert input_NN tag backwards to previous index version due to an issue with the tag nextPublicIdentifierTag="
+                                        + nextPublicIdentifierTag
+                                        + " querytype.getKey()="
+                                        + this.getKey().stringValue());
                             }
                         }
                     }
@@ -1265,11 +1255,8 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
                             }
                             catch(final NumberFormatException nfe)
                             {
-                                QueryTypeImpl.log
-                                        .info("Could not convert input_NN tag backwards to previous index version due to an issue with the tag nextNamespaceInputTag="
-                                                + nextNamespaceInputTag
-                                                + " querytype.getKey()="
-                                                + this.getKey().stringValue());
+                                this.log.info("Could not convert input_NN tag backwards to previous index version due to an issue with the tag nextNamespaceInputTag="
+                                        + nextNamespaceInputTag + " querytype.getKey()=" + this.getKey().stringValue());
                             }
                         }
                     }
@@ -1310,7 +1297,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
                 con.rollback();
             }
             
-            QueryTypeImpl.log.error("RepositoryException: " + re.getMessage());
+            this.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

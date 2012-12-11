@@ -85,7 +85,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testAddNamespaceEntry()
+    public void testAddNamespaceEntry() throws Exception
     {
         final NamespaceEntry nextNamespaceEntry = this.getNewNamespaceEntry();
         nextNamespaceEntry.setKey("http://example.org/test/queryallconfiguration/namespaceentry/add/1");
@@ -105,7 +105,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testAddNormalisationRule()
+    public void testAddNormalisationRule() throws Exception
     {
         final NormalisationRule nextNormalisationRule = this.getNewNormalisationRule();
         nextNormalisationRule.setKey("http://example.org/test/queryallconfiguration/NormalisationRule/add/1");
@@ -125,7 +125,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testAddProfile()
+    public void testAddProfile() throws Exception
     {
         final Profile nextProfile = this.getNewProfile();
         nextProfile.setKey("http://example.org/test/queryallconfiguration/Profile/add/1");
@@ -145,7 +145,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testAddProvider()
+    public void testAddProvider() throws Exception
     {
         final Provider nextProvider = this.getNewProvider();
         nextProvider.setKey("http://example.org/test/queryallconfiguration/Provider/add/1");
@@ -165,7 +165,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testAddQueryType()
+    public void testAddQueryType() throws Exception
     {
         final QueryType nextQueryType = this.getNewQueryType();
         nextQueryType.setKey("http://example.org/test/queryallconfiguration/QueryType/add/1");
@@ -185,7 +185,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testAddRuleTest()
+    public void testAddRuleTest() throws Exception
     {
         final RuleTest nextRuleTest = this.getNewRuleTest();
         nextRuleTest.setKey("http://example.org/test/queryallconfiguration/RuleTest/add/1");
@@ -205,7 +205,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetAllNamespaceEntries()
+    public void testGetAllNamespaceEntries() throws Exception
     {
         for(int i = 0; i < 1000; i++)
         {
@@ -228,7 +228,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetAllNormalisationRules()
+    public void testGetAllNormalisationRules() throws Exception
     {
         for(int i = 0; i < 1000; i++)
         {
@@ -252,7 +252,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetAllProfiles()
+    public void testGetAllProfiles() throws Exception
     {
         for(int i = 0; i < 1000; i++)
         {
@@ -275,7 +275,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetAllProviders()
+    public void testGetAllProviders() throws Exception
     {
         for(int i = 0; i < 1000; i++)
         {
@@ -298,7 +298,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetAllQueryTypes()
+    public void testGetAllQueryTypes() throws Exception
     {
         for(int i = 0; i < 1000; i++)
         {
@@ -321,7 +321,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetAllRuleTests()
+    public void testGetAllRuleTests() throws Exception
     {
         for(int i = 0; i < 1000; i++)
         {
@@ -344,7 +344,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetBooleanProperty()
+    public void testGetBooleanProperty() throws Exception
     {
         // check both the explicit and implicit default versions using both true and false
         this.testConfiguration.setProperty(WebappConfig._TEST_BOOLEAN_PROPERTY, true);
@@ -371,13 +371,13 @@ public abstract class AbstractQueryAllConfigurationTest
      * By default it tests for http://bio2rdf.org/ but this can be overridden in subtests if needed.
      */
     @Test
-    public void testGetDefaultHostAddress()
+    public void testGetDefaultHostAddress() throws Exception
     {
         Assert.assertEquals(this.getExpectedDefaultHostAddress(), this.testConfiguration.getDefaultHostAddress());
     }
     
     @Test
-    public void testGetFloatProperty()
+    public void testGetFloatProperty() throws Exception
     {
         this.testConfiguration.setProperty(WebappConfig._TEST_FLOAT_PROPERTY, -1.5f);
         
@@ -400,7 +400,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetIntProperty()
+    public void testGetIntProperty() throws Exception
     {
         this.testConfiguration.setProperty(WebappConfig._TEST_INT_PROPERTY, -2);
         
@@ -416,7 +416,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetLongProperty()
+    public void testGetLongProperty() throws Exception
     {
         this.testConfiguration.setProperty(WebappConfig._TEST_LONG_PROPERTY, 6543L);
         
@@ -433,7 +433,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetNamespaceEntry()
+    public void testGetNamespaceEntry() throws Exception
     {
         for(int i = 0; i < 1000; i++)
         {
@@ -456,7 +456,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetNamespacePrefixesToUrisPreferredAndAlternateOverlapping()
+    public void testGetNamespacePrefixesToUrisPreferredAndAlternateOverlapping() throws Exception
     {
         final List<String> testPrefixes = new ArrayList<String>(5);
         testPrefixes.add(0, "testoverlappingprefix-0");
@@ -526,7 +526,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetNamespacePrefixesToUrisPreferredOnlyOverlapping()
+    public void testGetNamespacePrefixesToUrisPreferredOnlyOverlapping() throws Exception
     {
         final List<String> testPrefixes = new ArrayList<String>(5);
         testPrefixes.add(0, "testoverlappingprefix-0");
@@ -580,7 +580,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetNamespacePrefixesToUrisPreferredOnlyUnique()
+    public void testGetNamespacePrefixesToUrisPreferredOnlyUnique() throws Exception
     {
         for(int i = 0; i < 1000; i++)
         {
@@ -607,7 +607,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetNormalisationRule()
+    public void testGetNormalisationRule() throws Exception
     {
         for(int i = 0; i < 1000; i++)
         {
@@ -653,7 +653,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetPlainNamespacePattern()
+    public void testGetPlainNamespacePattern() throws Exception
     {
         Assert.assertNotNull(this.testConfiguration.getPlainNamespacePattern());
         
@@ -665,7 +665,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetProfile()
+    public void testGetProfile() throws Exception
     {
         for(int i = 0; i < 1000; i++)
         {
@@ -688,7 +688,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetProvider()
+    public void testGetProvider() throws Exception
     {
         for(int i = 0; i < 1000; i++)
         {
@@ -711,7 +711,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetQueryType()
+    public void testGetQueryType() throws Exception
     {
         for(int i = 0; i < 1000; i++)
         {
@@ -734,7 +734,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetRuleTest()
+    public void testGetRuleTest() throws Exception
     {
         for(int i = 0; i < 1000; i++)
         {
@@ -757,7 +757,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetSeparator()
+    public void testGetSeparator() throws Exception
     {
         Assert.assertEquals(this.getExpectedSeparator(), this.testConfiguration.getSeparator());
     }
@@ -803,7 +803,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testGetStringPropertiesSingleItem()
+    public void testGetStringPropertiesSingleItem() throws Exception
     {
         this.testConfiguration.setStringCollectionProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY,
                 Arrays.asList("my test string"));
@@ -963,7 +963,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testResetNamespaceEntries()
+    public void testResetNamespaceEntries() throws Exception
     {
         Assert.assertNotNull(this.testConfiguration.getAllNamespaceEntries());
         Assert.assertEquals(0, this.testConfiguration.getAllNamespaceEntries().size());
@@ -986,7 +986,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testResetNormalisationRules()
+    public void testResetNormalisationRules() throws Exception
     {
         Assert.assertNotNull(this.testConfiguration.getAllNormalisationRules());
         Assert.assertEquals(0, this.testConfiguration.getAllNormalisationRules().size());
@@ -1009,7 +1009,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testResetProfiles()
+    public void testResetProfiles() throws Exception
     {
         Assert.assertNotNull(this.testConfiguration.getAllProfiles());
         Assert.assertEquals(0, this.testConfiguration.getAllProfiles().size());
@@ -1032,7 +1032,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testResetProperties()
+    public void testResetProperties() throws Exception
     {
         final Collection<URI> testUris = new ArrayList<URI>(3);
         
@@ -1058,7 +1058,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testResetProviders()
+    public void testResetProviders() throws Exception
     {
         Assert.assertNotNull(this.testConfiguration.getAllProviders());
         Assert.assertEquals(0, this.testConfiguration.getAllProviders().size());
@@ -1081,7 +1081,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testResetQueryTypes()
+    public void testResetQueryTypes() throws Exception
     {
         Assert.assertNotNull(this.testConfiguration.getAllQueryTypes());
         Assert.assertEquals(0, this.testConfiguration.getAllQueryTypes().size());
@@ -1104,7 +1104,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testResetRuleTests()
+    public void testResetRuleTests() throws Exception
     {
         Assert.assertNotNull(this.testConfiguration.getAllRuleTests());
         Assert.assertEquals(0, this.testConfiguration.getAllRuleTests().size());
@@ -1127,7 +1127,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testSetPropertyStringBoolean()
+    public void testSetPropertyStringBoolean() throws Exception
     {
         // check both the explicit and implicit default versions using both true and false
         this.testConfiguration.setProperty(WebappConfig._TEST_BOOLEAN_PROPERTY, true);
@@ -1148,7 +1148,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testSetPropertyStringFloat()
+    public void testSetPropertyStringFloat() throws Exception
     {
         this.testConfiguration.setProperty(WebappConfig._TEST_FLOAT_PROPERTY, -1.5f);
         
@@ -1171,7 +1171,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testSetPropertyStringInt()
+    public void testSetPropertyStringInt() throws Exception
     {
         this.testConfiguration.setProperty(WebappConfig._TEST_INT_PROPERTY, -2);
         
@@ -1187,7 +1187,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testSetPropertyStringLong()
+    public void testSetPropertyStringLong() throws Exception
     {
         this.testConfiguration.setProperty(WebappConfig._TEST_LONG_PROPERTY, 6543L);
         
@@ -1204,7 +1204,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testSetPropertyStringString()
+    public void testSetPropertyStringString() throws Exception
     {
         this.testConfiguration.setProperty(WebappConfig._TEST_STRING_PROPERTY, "my non-default string");
         
@@ -1218,7 +1218,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testSetPropertyStringStringCollection()
+    public void testSetPropertyStringStringCollection() throws Exception
     {
         final Collection<String> testEmptyProperty =
                 this.testConfiguration.getStringProperties(WebappConfig._TEST_STRING_COLLECTION_PROPERTY);
@@ -1256,7 +1256,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testSetPropertyStringURI()
+    public void testSetPropertyStringURI() throws Exception
     {
         this.testConfiguration.setProperty(WebappConfig._TEST_URI_PROPERTY,
                 this.testValueFactory.createURI("http://example.org/test/setproperty/string/uri/1"));
@@ -1277,7 +1277,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testSetPropertyStringURICollection()
+    public void testSetPropertyStringURICollection() throws Exception
     {
         final Collection<URI> testEmptyProperty =
                 this.testConfiguration.getURIProperties(WebappConfig._TEST_URI_COLLECTION_PROPERTY);
@@ -1316,7 +1316,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testSetPropertyStringValueBoolean()
+    public void testSetPropertyStringValueBoolean() throws Exception
     {
         this.testConfiguration.setProperty(WebappConfig._TEST_BOOLEAN_PROPERTY,
                 this.testValueFactory.createLiteral(false));
@@ -1341,7 +1341,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testSetPropertyStringValueFloat()
+    public void testSetPropertyStringValueFloat() throws Exception
     {
         this.testConfiguration
                 .setProperty(WebappConfig._TEST_FLOAT_PROPERTY, this.testValueFactory.createLiteral(0.5f));
@@ -1362,7 +1362,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testSetPropertyStringValueInt()
+    public void testSetPropertyStringValueInt() throws Exception
     {
         this.testConfiguration.setProperty(WebappConfig._TEST_INT_PROPERTY, this.testValueFactory.createLiteral(1));
         
@@ -1375,7 +1375,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testSetPropertyStringValueLong()
+    public void testSetPropertyStringValueLong() throws Exception
     {
         this.testConfiguration
                 .setProperty(WebappConfig._TEST_LONG_PROPERTY, this.testValueFactory.createLiteral(4321L));
@@ -1390,7 +1390,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testSetPropertyStringValueString()
+    public void testSetPropertyStringValueString() throws Exception
     {
         // NOTE: These should be cast to Value to enable testing of the
         // setProperty(WebappConfig,Value) method as opposed to the setProperty(WebappConfig,URI)
@@ -1415,7 +1415,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testSetPropertyStringValueStringCollection()
+    public void testSetPropertyStringValueStringCollection() throws Exception
     {
         // NOTE: These should be cast to Value to enable testing of the
         // setProperty(WebappConfig,Value) method as opposed to the setProperty(WebappConfig,URI)
@@ -1459,7 +1459,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testSetPropertyStringValueURI()
+    public void testSetPropertyStringValueURI() throws Exception
     {
         // NOTE: These should be cast to Value to enable testing of the
         // setProperty(WebappConfig,Value) method as opposed to the setProperty(WebappConfig,URI)
@@ -1482,7 +1482,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testSetPropertyStringValueURICollection()
+    public void testSetPropertyStringValueURICollection() throws Exception
     {
         // NOTE: These should be cast to Value to enable testing of the
         // setProperty(WebappConfig,Value) method as opposed to the setProperty(WebappConfig,URI)
@@ -1525,7 +1525,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testSetStringCollectionProperty()
+    public void testSetStringCollectionProperty() throws Exception
     {
         this.testConfiguration.setStringCollectionProperty(WebappConfig._TEST_STRING_COLLECTION_PROPERTY,
                 Arrays.asList("my test string", "other different string"));
@@ -1548,7 +1548,7 @@ public abstract class AbstractQueryAllConfigurationTest
     }
     
     @Test
-    public void testSetURICollectionProperty()
+    public void testSetURICollectionProperty() throws Exception
     {
         final Collection<URI> testUris = new ArrayList<URI>(3);
         

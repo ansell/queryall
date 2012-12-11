@@ -3,12 +3,11 @@
  */
 package org.queryall.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
 
 import org.openrdf.model.BNode;
@@ -25,6 +24,7 @@ import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.WebappConfig;
 import org.queryall.exception.QueryAllRuntimeException;
+import org.queryall.exception.SettingAlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,36 +65,52 @@ public class Settings implements QueryAllConfiguration
     }
     
     @Override
-    public void addNamespaceEntry(final NamespaceEntry nextNamespaceEntry)
+    public void addNamespaceEntry(final NamespaceEntry nextNamespaceEntry) throws SettingAlreadyExistsException
     {
-        this.namespaceEntries.put(nextNamespaceEntry.getKey(), nextNamespaceEntry);
+        final NamespaceEntry putIfAbsent =
+                this.namespaceEntries.putIfAbsent(nextNamespaceEntry.getKey(), nextNamespaceEntry);
         
-        final Collection<URI> ifPreferredAbsent =
-                this.namespacePrefixesToUris.putIfAbsent(nextNamespaceEntry.getPreferredPrefix(),
-                        Arrays.asList(nextNamespaceEntry.getKey()));
-        
-        if(ifPreferredAbsent != null)
+        if(putIfAbsent != null)
         {
-            final Collection<URI> nextPreferredList = new ArrayList<URI>();
-            nextPreferredList.add(nextNamespaceEntry.getKey());
-            
-            nextPreferredList.addAll(ifPreferredAbsent);
-            this.namespacePrefixesToUris.put(nextNamespaceEntry.getPreferredPrefix(), nextPreferredList);
+            throw new SettingAlreadyExistsException("Already had a setting for this object key.", nextNamespaceEntry);
         }
+        
+        Collection<URI> ifPreferredAbsent = this.namespacePrefixesToUris.get(nextNamespaceEntry.getPreferredPrefix());
+        
+        if(ifPreferredAbsent == null)
+        {
+            ifPreferredAbsent = new CopyOnWriteArrayList<URI>();
+            
+            final Collection<URI> ifAbsent =
+                    this.namespacePrefixesToUris
+                            .putIfAbsent(nextNamespaceEntry.getPreferredPrefix(), ifPreferredAbsent);
+            
+            if(ifAbsent != null)
+            {
+                ifPreferredAbsent = ifAbsent;
+            }
+        }
+        
+        ifPreferredAbsent.add(nextNamespaceEntry.getKey());
         
         for(final String nextAlternate : nextNamespaceEntry.getAlternativePrefixes())
         {
-            final Collection<URI> ifAlternateAbsent =
-                    this.namespacePrefixesToUris.putIfAbsent(nextAlternate, Arrays.asList(nextNamespaceEntry.getKey()));
+            Collection<URI> ifAlternateAbsent = this.namespacePrefixesToUris.get(nextAlternate);
             
-            if(ifAlternateAbsent != null)
+            if(ifAlternateAbsent == null)
             {
-                final Collection<URI> nextAlternateList = new ArrayList<URI>();
-                nextAlternateList.add(nextNamespaceEntry.getKey());
+                ifAlternateAbsent = new CopyOnWriteArrayList<URI>();
                 
-                nextAlternateList.addAll(ifAlternateAbsent);
-                this.namespacePrefixesToUris.put(nextAlternate, nextAlternateList);
+                final Collection<URI> ifAbsent =
+                        this.namespacePrefixesToUris.putIfAbsent(nextAlternate, ifAlternateAbsent);
+                
+                if(ifAbsent != null)
+                {
+                    ifAlternateAbsent = ifAbsent;
+                }
             }
+            
+            ifAlternateAbsent.add(nextNamespaceEntry.getKey());
         }
     }
     
@@ -105,8 +121,15 @@ public class Settings implements QueryAllConfiguration
      */
     @Override
     public void addNormalisationRule(final NormalisationRule nextNormalisationRule)
+        throws SettingAlreadyExistsException
     {
-        this.normalisationRules.put(nextNormalisationRule.getKey(), nextNormalisationRule);
+        final NormalisationRule putIfAbsent =
+                this.normalisationRules.putIfAbsent(nextNormalisationRule.getKey(), nextNormalisationRule);
+        
+        if(putIfAbsent != null)
+        {
+            throw new SettingAlreadyExistsException("Already had a setting for this object key.", nextNormalisationRule);
+        }
     }
     
     /**
@@ -115,9 +138,14 @@ public class Settings implements QueryAllConfiguration
      * @see org.queryall.api.base.QueryAllConfiguration#addProfile(org.queryall.api.profile.Profile)
      */
     @Override
-    public void addProfile(final Profile nextProfile)
+    public void addProfile(final Profile nextProfile) throws SettingAlreadyExistsException
     {
-        this.profiles.put(nextProfile.getKey(), nextProfile);
+        final Profile putIfAbsent = this.profiles.putIfAbsent(nextProfile.getKey(), nextProfile);
+        
+        if(putIfAbsent != null)
+        {
+            throw new SettingAlreadyExistsException("Already had a setting for this object key.", nextProfile);
+        }
     }
     
     /**
@@ -126,9 +154,14 @@ public class Settings implements QueryAllConfiguration
      * @see org.queryall.api.base.QueryAllConfiguration#addProvider(org.queryall.api.provider.Provider)
      */
     @Override
-    public void addProvider(final Provider nextProvider)
+    public void addProvider(final Provider nextProvider) throws SettingAlreadyExistsException
     {
-        this.providers.put(nextProvider.getKey(), nextProvider);
+        final Provider putIfAbsent = this.providers.putIfAbsent(nextProvider.getKey(), nextProvider);
+        
+        if(putIfAbsent != null)
+        {
+            throw new SettingAlreadyExistsException("Already had a setting for this object key.", nextProvider);
+        }
     }
     
     /**
@@ -138,9 +171,14 @@ public class Settings implements QueryAllConfiguration
      *      )
      */
     @Override
-    public void addQueryType(final QueryType nextQueryType)
+    public void addQueryType(final QueryType nextQueryType) throws SettingAlreadyExistsException
     {
-        this.queryTypes.put(nextQueryType.getKey(), nextQueryType);
+        final QueryType putIfAbsent = this.queryTypes.putIfAbsent(nextQueryType.getKey(), nextQueryType);
+        
+        if(putIfAbsent != null)
+        {
+            throw new SettingAlreadyExistsException("Already had a setting for this object key.", nextQueryType);
+        }
     }
     
     /**
@@ -149,9 +187,14 @@ public class Settings implements QueryAllConfiguration
      * @see org.queryall.api.base.QueryAllConfiguration#addRuleTest(org.queryall.api.ruletest.RuleTest)
      */
     @Override
-    public void addRuleTest(final RuleTest nextRuleTest)
+    public void addRuleTest(final RuleTest nextRuleTest) throws SettingAlreadyExistsException
     {
-        this.ruleTests.put(nextRuleTest.getKey(), nextRuleTest);
+        final RuleTest putIfAbsent = this.ruleTests.putIfAbsent(nextRuleTest.getKey(), nextRuleTest);
+        
+        if(putIfAbsent != null)
+        {
+            throw new SettingAlreadyExistsException("Already had a setting for this object key.", nextRuleTest);
+        }
     }
     
     @Override
@@ -510,7 +553,7 @@ public class Settings implements QueryAllConfiguration
         {
             final Collection<Object> nextProperties = this.properties.get(propertyKey);
             
-            final Collection<String> results = new ArrayList<String>(nextProperties.size());
+            final Collection<String> results = new CopyOnWriteArrayList<String>();
             
             for(final Object nextProperty : nextProperties)
             {
@@ -603,7 +646,7 @@ public class Settings implements QueryAllConfiguration
         {
             final Collection<Object> nextProperties = this.properties.get(propertyKey);
             
-            final Collection<URI> results = new ArrayList<URI>(nextProperties.size());
+            final Collection<URI> results = new CopyOnWriteArrayList<URI>();
             
             for(final Object nextProperty : nextProperties)
             {
@@ -783,7 +826,7 @@ public class Settings implements QueryAllConfiguration
             {
                 // do this to make sure that it is writeable, they could have sent us a collection
                 // that was not modifiable
-                final Collection<Object> nextList = new ArrayList<Object>(propertyValue);
+                final Collection<Object> nextList = new CopyOnWriteArrayList<Object>(propertyValue);
                 
                 if(!overwrite)
                 {
@@ -821,7 +864,7 @@ public class Settings implements QueryAllConfiguration
                     + propertyValue.toString());
         }
         
-        final Collection<Object> nextList = new ArrayList<Object>(5);
+        final Collection<Object> nextList = new CopyOnWriteArrayList<Object>();
         nextList.add(propertyValue);
         
         final Collection<Object> ifAbsent = this.properties.putIfAbsent(propertyKey, nextList);
@@ -1180,7 +1223,7 @@ public class Settings implements QueryAllConfiguration
                     + propertyValues.toString());
         }
         
-        final Collection<Object> newPropertyValues = new ArrayList<Object>(propertyValues);
+        final Collection<Object> newPropertyValues = new CopyOnWriteArrayList<Object>(propertyValues);
         
         this.setObjectCollectionPropertyHelper(propertyKey, newPropertyValues, true);
     }
@@ -1200,7 +1243,7 @@ public class Settings implements QueryAllConfiguration
                     + propertyValues.toString());
         }
         
-        final Collection<Object> newPropertyValues = new ArrayList<Object>(propertyValues);
+        final Collection<Object> newPropertyValues = new CopyOnWriteArrayList<Object>(propertyValues);
         
         this.setObjectCollectionPropertyHelper(propertyKey, newPropertyValues, true);
     }

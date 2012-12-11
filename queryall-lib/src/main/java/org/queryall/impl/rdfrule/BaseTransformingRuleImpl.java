@@ -14,8 +14,6 @@ import org.queryall.api.rdfrule.TransformingRule;
 import org.queryall.api.rdfrule.TransformingRuleSchema;
 import org.queryall.exception.InvalidStageException;
 import org.queryall.exception.QueryAllException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -23,12 +21,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class BaseTransformingRuleImpl extends BaseRuleImpl implements TransformingRule
 {
-    private static final Logger log = LoggerFactory.getLogger(BaseTransformingRuleImpl.class);
-    private static final boolean TRACE = BaseTransformingRuleImpl.log.isTraceEnabled();
-    private static final boolean DEBUG = BaseTransformingRuleImpl.log.isDebugEnabled();
-    @SuppressWarnings("unused")
-    private static final boolean INFO = BaseTransformingRuleImpl.log.isInfoEnabled();
-    
     /**
      * 
      */
@@ -55,9 +47,9 @@ public abstract class BaseTransformingRuleImpl extends BaseRuleImpl implements T
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(TransformingRuleSchema.getTransformingRuleTypeUri()))
             {
-                if(BaseTransformingRuleImpl.TRACE)
+                if(this.log.isTraceEnabled())
                 {
-                    BaseTransformingRuleImpl.log.trace("Found transforming rule schema type URI");
+                    this.log.trace("Found transforming rule schema type URI");
                 }
                 
                 this.setKey(keyToUse);
@@ -81,11 +73,10 @@ public abstract class BaseTransformingRuleImpl extends BaseRuleImpl implements T
     {
         if(!this.validInStage(stage))
         {
-            if(BaseTransformingRuleImpl.TRACE)
+            if(this.log.isTraceEnabled())
             {
-                BaseTransformingRuleImpl.log
-                        .trace("NormalisationRuleImpl.normaliseByStage : found an invalid stage for this type of rule (this may not be an error) stage="
-                                + stage);
+                this.log.trace("NormalisationRuleImpl.normaliseByStage : found an invalid stage for this type of rule (this may not be an error) stage="
+                        + stage);
             }
             
             throw new InvalidStageException("Attempted to use this rule on an invalid stage", this, stage);
@@ -93,11 +84,10 @@ public abstract class BaseTransformingRuleImpl extends BaseRuleImpl implements T
         
         if(!this.usedInStage(stage))
         {
-            if(BaseTransformingRuleImpl.DEBUG)
+            if(this.log.isDebugEnabled())
             {
-                BaseTransformingRuleImpl.log
-                        .debug("NormalisationRuleImpl.normaliseByStage : found an inapplicable stage for this type of rule key="
-                                + this.getKey().stringValue() + " stage=" + stage);
+                this.log.debug("NormalisationRuleImpl.normaliseByStage : found an inapplicable stage for this type of rule key="
+                        + this.getKey().stringValue() + " stage=" + stage);
             }
             
             // Don't failover just because they attempted to normalise this rule when it was a valid
