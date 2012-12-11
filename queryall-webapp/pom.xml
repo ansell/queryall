@@ -36,15 +36,6 @@
 			<artifactId>velocity</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-repository-sail</artifactId>
 		</dependency>
@@ -68,6 +59,18 @@
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-sail-memory</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- Test dependencies -->
 		<dependency>
 			<groupId>net.sourceforge.htmlunit</groupId>
 			<artifactId>htmlunit</artifactId>
@@ -95,10 +98,11 @@
 			<artifactId>jcl-over-slf4j</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 	<build>
 		<resources>
