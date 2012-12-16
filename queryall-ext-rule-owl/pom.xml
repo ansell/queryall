@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>queryall-parent</artifactId>
 		<groupId>com.github.queryall</groupId>
-		<version>1.3.2</version>
+		<version>1.3.3-SNAPSHOT</version>
 	</parent>
 	<artifactId>queryall-ext-rule-owl</artifactId>
 	<name>queryall-ext-rule-owl</name>
@@ -16,8 +16,13 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>com.github.ansell.owlapi</groupId>
+            <artifactId>owlapi-api</artifactId>
+            <version>3.5-SNAPSHOT</version>
+        </dependency>
 		<dependency>
-			<groupId>com.clarkparsia</groupId>
+			<groupId>com.github.ansell.pellet</groupId>
 			<artifactId>pellet-owlapiv3</artifactId>
 			<version>2.3.1-SNAPSHOT</version>
 		</dependency>

@@ -14,8 +14,6 @@ import org.queryall.api.rdfrule.ValidatingRule;
 import org.queryall.api.rdfrule.ValidatingRuleSchema;
 import org.queryall.exception.InvalidStageException;
 import org.queryall.exception.ValidationFailedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
@@ -23,12 +21,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class BaseValidatingRuleImpl extends BaseRuleImpl implements ValidatingRule
 {
-    private static final Logger log = LoggerFactory.getLogger(BaseValidatingRuleImpl.class);
-    private static final boolean TRACE = BaseValidatingRuleImpl.log.isTraceEnabled();
-    private static final boolean DEBUG = BaseValidatingRuleImpl.log.isDebugEnabled();
-    @SuppressWarnings("unused")
-    private static final boolean INFO = BaseValidatingRuleImpl.log.isInfoEnabled();
-    
     /**
      * 
      */
@@ -55,9 +47,9 @@ public abstract class BaseValidatingRuleImpl extends BaseRuleImpl implements Val
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(ValidatingRuleSchema.getValidatingRuleTypeUri()))
             {
-                if(BaseValidatingRuleImpl.DEBUG)
+                if(this.log.isDebugEnabled())
                 {
-                    BaseValidatingRuleImpl.log.debug("Found validating rule schema type URI");
+                    this.log.debug("Found validating rule schema type URI");
                 }
                 
                 this.setKey(keyToUse);
@@ -82,11 +74,10 @@ public abstract class BaseValidatingRuleImpl extends BaseRuleImpl implements Val
     {
         if(!this.validInStage(stage))
         {
-            if(BaseValidatingRuleImpl.TRACE)
+            if(this.log.isTraceEnabled())
             {
-                BaseValidatingRuleImpl.log
-                        .trace("NormalisationRuleImpl.normaliseByStage : found an invalid stage for this type of rule (this may not be an error) stage="
-                                + stage);
+                this.log.trace("NormalisationRuleImpl.normaliseByStage : found an invalid stage for this type of rule (this may not be an error) stage="
+                        + stage);
             }
             
             throw new InvalidStageException("Attempted to use this rule on an invalid stage", this, stage);
@@ -94,11 +85,10 @@ public abstract class BaseValidatingRuleImpl extends BaseRuleImpl implements Val
         
         if(!this.usedInStage(stage))
         {
-            if(BaseValidatingRuleImpl.DEBUG)
+            if(this.log.isDebugEnabled())
             {
-                BaseValidatingRuleImpl.log
-                        .debug("NormalisationRuleImpl.normaliseByStage : found an inapplicable stage for this type of rule key="
-                                + this.getKey().stringValue() + " stage=" + stage);
+                this.log.debug("NormalisationRuleImpl.normaliseByStage : found an inapplicable stage for this type of rule key="
+                        + this.getKey().stringValue() + " stage=" + stage);
             }
             
             // Don't failover just because they attempted to normalise this rule when it was a valid

@@ -23,20 +23,12 @@ import org.queryall.api.utils.ProfileIncludeExclude;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.RdfUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable<Profile>, HtmlExport
 {
-    private static final Logger log = LoggerFactory.getLogger(ProfileImpl.class);
-    private static final boolean TRACE = ProfileImpl.log.isTraceEnabled();
-    private static final boolean DEBUG = ProfileImpl.log.isDebugEnabled();
-    @SuppressWarnings("unused")
-    private static final boolean INFO = ProfileImpl.log.isInfoEnabled();
-    
     private static final Set<URI> PROFILE_IMPL_TYPES;
     
     static
@@ -88,17 +80,17 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(ProfileImpl.TRACE)
+            if(this.log.isTraceEnabled())
             {
-                ProfileImpl.log.trace("Profile.fromRdf: nextStatement: " + nextStatement.toString());
+                this.log.trace("Profile.fromRdf: nextStatement: " + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(ProfileSchema.getProfileTypeUri()))
             {
-                if(ProfileImpl.TRACE)
+                if(this.log.isTraceEnabled())
                 {
-                    ProfileImpl.log.trace("Profile.fromRdf: found valid type predicate for URI: " + keyToUse);
+                    this.log.trace("Profile.fromRdf: found valid type predicate for URI: " + keyToUse);
                 }
                 
                 // resultIsValid = true;
@@ -170,14 +162,13 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         
         if(defaultProfileIncludeExcludeOrderValidationFailed)
         {
-            ProfileImpl.log
-                    .warn("The default profile include exclude order for a profile was not valid. This may cause errors if any profilable objects do not explicitly define their order. profile.getKey()="
-                            + this.getKey() + " " + this.getDefaultProfileIncludeExcludeOrder().getUri().stringValue());
+            this.log.warn("The default profile include exclude order for a profile was not valid. This may cause errors if any profilable objects do not explicitly define their order. profile.getKey()="
+                    + this.getKey() + " " + this.getDefaultProfileIncludeExcludeOrder().getUri().stringValue());
         }
         
-        if(ProfileImpl.TRACE)
+        if(this.log.isTraceEnabled())
         {
-            ProfileImpl.log.trace("Profile.fromRdf: would have returned... result=" + this.toString());
+            this.log.trace("Profile.fromRdf: would have returned... result=" + this.toString());
         }
     }
     
@@ -518,7 +509,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         }
         catch(final UnsupportedOperationException uoe)
         {
-            ProfileImpl.log.debug("Could not clear collection");
+            this.log.debug("Could not clear collection");
         }
         
         this.excludeProviders = new ArrayList<URI>();
@@ -537,7 +528,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         }
         catch(final UnsupportedOperationException uoe)
         {
-            ProfileImpl.log.debug("Could not clear collection");
+            this.log.debug("Could not clear collection");
         }
         
         this.excludeQueries = new ArrayList<URI>();
@@ -556,7 +547,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         }
         catch(final UnsupportedOperationException uoe)
         {
-            ProfileImpl.log.debug("Could not clear collection");
+            this.log.debug("Could not clear collection");
         }
         
         this.excludeRdfRules = new ArrayList<URI>();
@@ -575,7 +566,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         }
         catch(final UnsupportedOperationException uoe)
         {
-            ProfileImpl.log.debug("Could not clear collection");
+            this.log.debug("Could not clear collection");
         }
         
         this.includeProviders = new ArrayList<URI>();
@@ -594,7 +585,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         }
         catch(final UnsupportedOperationException uoe)
         {
-            ProfileImpl.log.debug("Could not clear collection");
+            this.log.debug("Could not clear collection");
         }
         
         this.includeQueries = new ArrayList<URI>();
@@ -613,7 +604,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         }
         catch(final UnsupportedOperationException uoe)
         {
-            ProfileImpl.log.debug("Could not clear collection");
+            this.log.debug("Could not clear collection");
         }
         
         this.includeRdfRules = new ArrayList<URI>();
@@ -632,7 +623,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
         }
         catch(final UnsupportedOperationException uoe)
         {
-            ProfileImpl.log.debug("Could not clear collection");
+            this.log.debug("Could not clear collection");
         }
         
         this.profileAdministrators = new ArrayList<URI>();
@@ -795,9 +786,9 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
                 
                 for(final URI nextIncludeQuery : this.includeQueries)
                 {
-                    if(ProfileImpl.TRACE)
+                    if(this.log.isTraceEnabled())
                     {
-                        ProfileImpl.log.trace("Profile.toRdf: nextIncludeQuery=" + nextIncludeQuery);
+                        this.log.trace("Profile.toRdf: nextIncludeQuery=" + nextIncludeQuery);
                     }
                     
                     con.add(profileInstanceUri, ProfileSchema.getProfileIncludeQueryInProfile(), nextIncludeQuery,
@@ -810,9 +801,9 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
                 
                 for(final URI nextExcludeQuery : this.excludeQueries)
                 {
-                    if(ProfileImpl.TRACE)
+                    if(this.log.isTraceEnabled())
                     {
-                        ProfileImpl.log.trace("Profile.toRdf: nextExcludeQuery=" + nextExcludeQuery);
+                        this.log.trace("Profile.toRdf: nextExcludeQuery=" + nextExcludeQuery);
                     }
                     
                     con.add(profileInstanceUri, ProfileSchema.getProfileExcludeQueryFromProfile(), nextExcludeQuery,
@@ -850,7 +841,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
             // Something went wrong during the transaction, so we roll it back
             con.rollback();
             
-            ProfileImpl.log.error("RepositoryException: " + re.getMessage());
+            this.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

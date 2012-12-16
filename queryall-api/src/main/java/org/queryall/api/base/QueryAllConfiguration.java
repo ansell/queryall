@@ -13,6 +13,7 @@ import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
 import org.queryall.api.utils.WebappConfig;
+import org.queryall.exception.SettingAlreadyExistsException;
 
 /**
  * The QueryAllConfiguration object provides access to all of the properties and objects that are
@@ -22,17 +23,17 @@ import org.queryall.api.utils.WebappConfig;
  */
 public interface QueryAllConfiguration
 {
-    void addNamespaceEntry(NamespaceEntry nextNamespaceEntry);
+    void addNamespaceEntry(NamespaceEntry nextNamespaceEntry) throws SettingAlreadyExistsException;
     
-    void addNormalisationRule(NormalisationRule nextNormalisationRule);
+    void addNormalisationRule(NormalisationRule nextNormalisationRule) throws SettingAlreadyExistsException;
     
-    void addProfile(Profile nextProfile);
+    void addProfile(Profile nextProfile) throws SettingAlreadyExistsException;
     
-    void addProvider(Provider nextProvider);
+    void addProvider(Provider nextProvider) throws SettingAlreadyExistsException;
     
-    void addQueryType(QueryType nextQueryType);
+    void addQueryType(QueryType nextQueryType) throws SettingAlreadyExistsException;
     
-    void addRuleTest(RuleTest nextRuleTest);
+    void addRuleTest(RuleTest nextRuleTest) throws SettingAlreadyExistsException;
     
     Collection<Object> clearProperty(WebappConfig propertyKey);
     

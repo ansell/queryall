@@ -20,20 +20,12 @@ import org.queryall.api.ruletest.RuleTestSchema;
 import org.queryall.api.ruletest.StringRuleTest;
 import org.queryall.api.ruletest.StringRuleTestSchema;
 import org.queryall.api.utils.Constants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
 {
-    private static final Logger log = LoggerFactory.getLogger(StringRuleTestImpl.class);
-    private static final boolean TRACE = StringRuleTestImpl.log.isTraceEnabled();
-    private static final boolean DEBUG = StringRuleTestImpl.log.isDebugEnabled();
-    @SuppressWarnings("unused")
-    private static final boolean INFO = StringRuleTestImpl.log.isInfoEnabled();
-    
     private static final Set<URI> STRING_RULE_TEST_IMPL_TYPES = new HashSet<URI>();
     
     static
@@ -65,17 +57,17 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(StringRuleTestImpl.TRACE)
+            if(this.log.isTraceEnabled())
             {
-                StringRuleTestImpl.log.trace("StringRuleTestImpl: nextStatement: " + nextStatement.toString());
+                this.log.trace("StringRuleTestImpl: nextStatement: " + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(StringRuleTestSchema.getStringRuleTestTypeUri()))
             {
-                if(StringRuleTestImpl.TRACE)
+                if(this.log.isTraceEnabled())
                 {
-                    StringRuleTestImpl.log.trace("StringRuleTestImpl: found valid type predicate for URI: " + keyToUse);
+                    this.log.trace("StringRuleTestImpl: found valid type predicate for URI: " + keyToUse);
                 }
                 
                 this.setKey(keyToUse);
@@ -90,19 +82,18 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
             }
             else
             {
-                if(StringRuleTestImpl.DEBUG)
+                if(this.log.isDebugEnabled())
                 {
-                    StringRuleTestImpl.log.debug("StringRuleTestImpl: found unexpected Statement nextStatement: "
+                    this.log.debug("StringRuleTestImpl: found unexpected Statement nextStatement: "
                             + nextStatement.toString());
                 }
                 this.addUnrecognisedStatement(nextStatement);
             }
         }
         
-        if(StringRuleTestImpl.TRACE)
+        if(this.log.isTraceEnabled())
         {
-            StringRuleTestImpl.log
-                    .trace("StringRuleTestImpl.fromRdf: would have returned... result=" + this.toString());
+            this.log.trace("StringRuleTestImpl.fromRdf: would have returned... result=" + this.toString());
         }
     }
     
@@ -182,7 +173,7 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
             // Something went wrong during the transaction, so we roll it back
             con.rollback();
             
-            StringRuleTestImpl.log.error("RepositoryException: " + re.getMessage());
+            this.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

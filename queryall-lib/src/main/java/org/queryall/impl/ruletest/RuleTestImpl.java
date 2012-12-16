@@ -17,8 +17,6 @@ import org.queryall.api.ruletest.RuleTestSchema;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.base.BaseQueryAllImpl;
 import org.queryall.utils.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * An implementation of the RuleTest class
@@ -27,12 +25,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest, HtmlExport
 {
-    private static final Logger log = LoggerFactory.getLogger(RuleTestImpl.class);
-    private static final boolean TRACE = RuleTestImpl.log.isTraceEnabled();
-    private static final boolean DEBUG = RuleTestImpl.log.isDebugEnabled();
-    @SuppressWarnings("unused")
-    private static final boolean INFO = RuleTestImpl.log.isInfoEnabled();
-    
     private Collection<URI> rdfRuleUris = new ArrayList<URI>();
     
     private Collection<URI> stages = new ArrayList<URI>();
@@ -51,17 +43,17 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(RuleTestImpl.TRACE)
+            if(this.log.isTraceEnabled())
             {
-                RuleTestImpl.log.trace("RuleTest: nextStatement: " + nextStatement.toString());
+                this.log.trace("RuleTest: nextStatement: " + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(RuleTestSchema.getRuletestTypeUri()))
             {
-                if(RuleTestImpl.TRACE)
+                if(this.log.isTraceEnabled())
                 {
-                    RuleTestImpl.log.trace("RuleTest: found valid type predicate for URI: " + keyToUse);
+                    this.log.trace("RuleTest: found valid type predicate for URI: " + keyToUse);
                 }
                 
                 this.setKey(keyToUse);
@@ -84,9 +76,9 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
             }
         }
         
-        if(RuleTestImpl.TRACE)
+        if(this.log.isTraceEnabled())
         {
-            RuleTestImpl.log.trace("RuleTest.fromRdf: would have returned... result=" + this.toString());
+            this.log.trace("RuleTest.fromRdf: would have returned... result=" + this.toString());
         }
     }
     
@@ -231,7 +223,7 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
         }
         catch(final UnsupportedOperationException uoe)
         {
-            RuleTestImpl.log.debug("Could not clear collection");
+            this.log.debug("Could not clear collection");
         }
         
         this.rdfRuleUris = new ArrayList<URI>();
@@ -255,7 +247,7 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
         }
         catch(final UnsupportedOperationException uoe)
         {
-            RuleTestImpl.log.debug("Could not clear collection");
+            this.log.debug("Could not clear collection");
         }
         
         this.stages = new ArrayList<URI>();
@@ -326,7 +318,7 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
             // Something went wrong during the transaction, so we roll it back
             con.rollback();
             
-            RuleTestImpl.log.error("RepositoryException: " + re.getMessage());
+            this.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

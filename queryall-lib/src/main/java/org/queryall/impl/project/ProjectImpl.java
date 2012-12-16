@@ -19,20 +19,12 @@ import org.queryall.api.project.ProjectSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.impl.base.BaseQueryAllImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
 {
-    private static final Logger log = LoggerFactory.getLogger(ProjectImpl.class);
-    private static final boolean TRACE = ProjectImpl.log.isTraceEnabled();
-    private static final boolean DEBUG = ProjectImpl.log.isDebugEnabled();
-    @SuppressWarnings("unused")
-    private static final boolean INFO = ProjectImpl.log.isInfoEnabled();
-    
     public static Set<URI> myTypes()
     {
         return Collections.singleton(ProjectSchema.getProjectTypeUri());
@@ -49,17 +41,17 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(ProjectImpl.DEBUG)
+            if(this.log.isDebugEnabled())
             {
-                ProjectImpl.log.debug("Project: nextStatement: " + nextStatement.toString());
+                this.log.debug("Project: nextStatement: " + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(ProjectSchema.getProjectTypeUri()))
             {
-                if(ProjectImpl.TRACE)
+                if(this.log.isTraceEnabled())
                 {
-                    ProjectImpl.log.trace("Project: found valid type predicate for URI: " + keyToUse);
+                    this.log.trace("Project: found valid type predicate for URI: " + keyToUse);
                 }
                 
                 this.setKey(keyToUse);
@@ -207,9 +199,9 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
         {
             final URI projectInstanceUri = this.getKey();
             
-            if(ProjectImpl.DEBUG)
+            if(this.log.isDebugEnabled())
             {
-                ProjectImpl.log.debug("Project.toRdf: keyToUse=" + contextKey);
+                this.log.debug("Project.toRdf: keyToUse=" + contextKey);
             }
             
             Literal titleLiteral;
@@ -232,9 +224,9 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
             
             final Literal descriptionLiteral = f.createLiteral(this.getDescription());
             
-            if(ProjectImpl.TRACE)
+            if(this.log.isTraceEnabled())
             {
-                ProjectImpl.log.trace("Project.toRdf: about to add URI's to connection");
+                this.log.trace("Project.toRdf: about to add URI's to connection");
             }
             
             con.setAutoCommit(false);
@@ -269,7 +261,7 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
                 con.rollback();
             }
             
-            ProjectImpl.log.error("RepositoryException: " + re.getMessage());
+            this.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {

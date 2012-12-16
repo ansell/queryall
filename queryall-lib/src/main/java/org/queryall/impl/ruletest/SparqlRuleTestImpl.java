@@ -21,20 +21,12 @@ import org.queryall.api.ruletest.SparqlRuleTest;
 import org.queryall.api.ruletest.SparqlRuleTestSchema;
 import org.queryall.api.utils.Constants;
 import org.queryall.utils.RdfUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Peter Ansell p_ansell@yahoo.com
  */
 public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
 {
-    private static final Logger log = LoggerFactory.getLogger(SparqlRuleTestImpl.class);
-    private static final boolean TRACE = SparqlRuleTestImpl.log.isTraceEnabled();
-    private static final boolean DEBUG = SparqlRuleTestImpl.log.isDebugEnabled();
-    @SuppressWarnings("unused")
-    private static final boolean INFO = SparqlRuleTestImpl.log.isInfoEnabled();
-    
     private static final Set<URI> SPARQL_RULE_TEST_IMPL_TYPES = new HashSet<URI>();
     
     static
@@ -68,17 +60,17 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
         
         for(final Statement nextStatement : currentUnrecognisedStatements)
         {
-            if(SparqlRuleTestImpl.DEBUG)
+            if(this.log.isDebugEnabled())
             {
-                SparqlRuleTestImpl.log.debug("SparqlRuleTestImpl: nextStatement: " + nextStatement.toString());
+                this.log.debug("SparqlRuleTestImpl: nextStatement: " + nextStatement.toString());
             }
             
             if(nextStatement.getPredicate().equals(RDF.TYPE)
                     && nextStatement.getObject().equals(SparqlRuleTestSchema.getSparqlRuleTestTypeUri()))
             {
-                if(SparqlRuleTestImpl.TRACE)
+                if(this.log.isTraceEnabled())
                 {
-                    SparqlRuleTestImpl.log.trace("SparqlRuleTestImpl: found valid type predicate for URI: " + keyToUse);
+                    this.log.trace("SparqlRuleTestImpl: found valid type predicate for URI: " + keyToUse);
                 }
                 
                 this.setKey(keyToUse);
@@ -101,19 +93,18 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
             }
             else
             {
-                if(SparqlRuleTestImpl.DEBUG)
+                if(this.log.isDebugEnabled())
                 {
-                    SparqlRuleTestImpl.log.debug("SparqlRuleTestImpl: found unexpected Statement nextStatement: "
+                    this.log.debug("SparqlRuleTestImpl: found unexpected Statement nextStatement: "
                             + nextStatement.toString());
                 }
                 this.addUnrecognisedStatement(nextStatement);
             }
         }
         
-        if(SparqlRuleTestImpl.TRACE)
+        if(this.log.isTraceEnabled())
         {
-            SparqlRuleTestImpl.log
-                    .trace("StringRuleTestImpl.fromRdf: would have returned... result=" + this.toString());
+            this.log.trace("StringRuleTestImpl.fromRdf: would have returned... result=" + this.toString());
         }
     }
     
@@ -208,7 +199,7 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
             // Something went wrong during the transaction, so we roll it back
             con.rollback();
             
-            SparqlRuleTestImpl.log.error("RepositoryException: " + re.getMessage());
+            this.log.error("RepositoryException: " + re.getMessage());
         }
         finally
         {
