@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>queryall-parent</artifactId>
 		<groupId>com.github.queryall</groupId>
-		<version>1.3.3-SNAPSHOT</version>
+		<version>1.3.3</version>
 	</parent>
 	<artifactId>queryall-ext-querytype-regex</artifactId>
 	<name>queryall-ext-querytype-regex</name>
