@@ -11,7 +11,7 @@
 
     <groupId>com.github.queryall</groupId>
     <artifactId>queryall-parent</artifactId>
-    <version>1.3.3-SNAPSHOT</version>
+    <version>1.3.3</version>
     <packaging>pom</packaging>
     <modules>
         <module>queryall-api</module>
