@@ -4,9 +4,10 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
+		<groupId>com.github.ansell.queryall</groupId>
 		<artifactId>queryall-parent</artifactId>
-		<groupId>com.github.queryall</groupId>
-		<version>1.3.3</version>
+		<version>1.4-SNAPSHOT</version>
+		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>queryall-ext-rule-xslt</artifactId>
 	<name>queryall-ext-rule-xslt</name>
@@ -31,21 +32,21 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.github.queryall</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>queryall-api</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.github.queryall</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>queryall-lib</artifactId>
 			<version>${project.version}</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.github.queryall</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>queryall-api</artifactId>
 			<version>${project.version}</version>
 			<type>test-jar</type>

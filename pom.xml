@@ -9,9 +9,9 @@
         <version>7</version>
     </parent>
 
-    <groupId>com.github.queryall</groupId>
+    <groupId>com.github.ansell.queryall</groupId>
     <artifactId>queryall-parent</artifactId>
-    <version>1.3.3</version>
+    <version>1.4-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
         <module>queryall-api</module>
