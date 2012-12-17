@@ -38,9 +38,9 @@
     <url>http://sourceforge.net/apps/mediawiki/bio2rdf/</url>
     <inceptionYear>2007</inceptionYear>
     <scm>
-        <connection>scm:git:git@github.com:bio2rdf/queryall.git</connection>
-        <developerConnection>scm:git:git@github.com:bio2rdf/queryall.git</developerConnection>
-        <url>git@github.com:bio2rdf/queryall.git</url>
+        <connection>scm:git:git://github.com/ansell/queryall.git</connection>
+        <developerConnection>scm:git:git@github.com:ansell/queryall.git</developerConnection>
+        <url>https://github.com/ansell/queryall</url>
     </scm>
     <developers>
         <developer>
