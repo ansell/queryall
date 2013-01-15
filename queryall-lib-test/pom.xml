@@ -153,11 +153,11 @@
 			<artifactId>sesame-rio-n3</artifactId>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>org.openrdf.sesame</groupId>
-            <artifactId>sesame-rio-nquads</artifactId>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.openrdf.sesame</groupId>
+			<artifactId>sesame-rio-nquads</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-rio-trix</artifactId>
@@ -168,11 +168,11 @@
 			<artifactId>sesame-rio-trig</artifactId>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>com.github.ansell.sesame-rio-extensions</groupId>
-            <artifactId>sesame-rio-extensions-rdfjson</artifactId>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>com.github.ansell.sesame-rio-extensions</groupId>
+			<artifactId>sesame-rio-extensions-rdfjson</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-queryparser-sparql</artifactId>
