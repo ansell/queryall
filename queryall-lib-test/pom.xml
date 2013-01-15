@@ -168,11 +168,11 @@
 			<artifactId>sesame-rio-trig</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>net.fortytwo.sesametools</groupId>
-			<artifactId>rdfjson</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>com.github.ansell.sesame-rio-extensions</groupId>
+            <artifactId>sesame-rio-extensions-rdfjson</artifactId>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.openrdf.sesame</groupId>
 			<artifactId>sesame-queryparser-sparql</artifactId>
