@@ -69,7 +69,7 @@
         <junit.version>4.11</junit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <sesame.version>2.7.0-beta1</sesame.version>
+        <sesame.version>2.7.0-beta2-SNAPSHOT</sesame.version>
         <sesamerioextensions.version>0.2</sesamerioextensions.version>
         <slf4j.version>1.7.2</slf4j.version>
     </properties>
