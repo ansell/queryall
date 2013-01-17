@@ -1,5 +1,7 @@
 package org.queryall.utils;
 
+import info.aduna.iteration.Iterations;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
@@ -217,8 +219,6 @@ public final class RdfUtils
                 addConnection = resultRepository.getConnection();
             }
             
-            addConnection.setAutoCommit(false);
-            
             try
             {
                 for(final String nextConstructQuery : sparqlConstructQueries)
@@ -230,6 +230,8 @@ public final class RdfUtils
                     
                     try
                     {
+                        addConnection.begin();
+                        
                         final GraphQueryResult graphResult =
                                 selectConnection.prepareGraphQuery(QueryLanguage.SPARQL, nextConstructQuery).evaluate();
                         
@@ -884,7 +886,7 @@ public final class RdfUtils
             
             con = nextRepository.getConnection();
             
-            con.getStatements((Resource)null, (URI)null, (Value)null, true, contexts).addTo(resultsSet);
+            Iterations.addAll(con.getStatements((Resource)null, (URI)null, (Value)null, true, contexts), resultsSet);
             
             final List<Statement> results = new ArrayList<Statement>(resultsSet);
             
@@ -941,7 +943,7 @@ public final class RdfUtils
         {
             con = nextRepository.getConnection();
             
-            con.getStatements((Resource)null, (URI)null, (Value)null, true, contexts).addTo(results);
+            Iterations.addAll(con.getStatements((Resource)null, (URI)null, (Value)null, true, contexts), results);
             
             Collections.sort(results, new StatementComparator());
         }
@@ -1502,8 +1504,8 @@ public final class RdfUtils
                         results.put(
                                 nextSubjectUri,
                                 ServiceUtils.createNamespaceEntryParser(nextNamespaceEntryEnum).createObject(
-                                        con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, configApiVersion));
+                                        Iterations.asList(con.getStatements(nextSubjectUri, (URI)null, (Value)null,
+                                                true)), nextSubjectUri, configApiVersion));
                     }
                     catch(final UnsupportedNamespaceEntryException e)
                     {
@@ -1650,8 +1652,8 @@ public final class RdfUtils
                         results.put(
                                 nextSubjectUri,
                                 ServiceUtils.createNormalisationRuleParser(nextNormalisationRuleEnum).createObject(
-                                        con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, configApiVersion));
+                                        Iterations.asList(con.getStatements(nextSubjectUri, (URI)null, (Value)null,
+                                                true)), nextSubjectUri, configApiVersion));
                     }
                     catch(final UnsupportedNormalisationRuleException e)
                     {
@@ -1891,8 +1893,8 @@ public final class RdfUtils
                         results.put(
                                 nextSubjectUri,
                                 ServiceUtils.createProfileParser(nextProfileEnum).createObject(
-                                        con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, configApiVersion));
+                                        Iterations.asList(con.getStatements(nextSubjectUri, (URI)null, (Value)null,
+                                                true)), nextSubjectUri, configApiVersion));
                     }
                     catch(final UnsupportedProfileException e)
                     {
@@ -2037,8 +2039,8 @@ public final class RdfUtils
                         results.put(
                                 nextSubjectUri,
                                 ServiceUtils.createProjectParser(nextProjectEnum).createObject(
-                                        con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, configApiVersion));
+                                        Iterations.asList(con.getStatements(nextSubjectUri, (URI)null, (Value)null,
+                                                true)), nextSubjectUri, configApiVersion));
                     }
                     catch(final UnsupportedProjectException e)
                     {
@@ -2192,8 +2194,8 @@ public final class RdfUtils
                         results.put(
                                 nextSubjectUri,
                                 ServiceUtils.createProviderParser(nextProviderEnum).createObject(
-                                        con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, configApiVersion));
+                                        Iterations.asList(con.getStatements(nextSubjectUri, (URI)null, (Value)null,
+                                                true)), nextSubjectUri, configApiVersion));
                     }
                     catch(final UnsupportedProviderException e)
                     {
@@ -2337,8 +2339,8 @@ public final class RdfUtils
                         results.put(
                                 nextSubjectUri,
                                 ServiceUtils.createQueryTypeParser(nextQueryTypeEnum).createObject(
-                                        con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, configApiVersion));
+                                        Iterations.asList(con.getStatements(nextSubjectUri, (URI)null, (Value)null,
+                                                true)), nextSubjectUri, configApiVersion));
                     }
                     catch(final UnsupportedQueryTypeException e)
                     {
@@ -2493,8 +2495,8 @@ public final class RdfUtils
                         results.put(
                                 nextSubjectUri,
                                 ServiceUtils.createRuleTestParser(nextRuleTestEnum).createObject(
-                                        con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                        nextSubjectUri, configApiVersion));
+                                        Iterations.asList(con.getStatements(nextSubjectUri, (URI)null, (Value)null,
+                                                true)), nextSubjectUri, configApiVersion));
                     }
                     catch(final UnsupportedRuleTestException e)
                     {
@@ -2639,7 +2641,7 @@ public final class RdfUtils
             {
                 try
                 {
-                    con.getStatements((URI)null, nextInputPredicateUri, (Value)null, true).addTo(results);
+                    Iterations.addAll(con.getStatements((URI)null, nextInputPredicateUri, (Value)null, true), results);
                 }
                 catch(final OpenRDFException ordfe)
                 {
@@ -2686,7 +2688,7 @@ public final class RdfUtils
             {
                 try
                 {
-                    con.getStatements(subjectUri, nextInputPredicateUri, (Value)null, true).addTo(results);
+                    Iterations.addAll(con.getStatements(subjectUri, nextInputPredicateUri, (Value)null, true), results);
                 }
                 catch(final OpenRDFException ordfe)
                 {

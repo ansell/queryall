@@ -293,7 +293,7 @@ public abstract class RuleTestImpl extends BaseQueryAllImpl implements RuleTest,
         {
             final URI keyUri = this.getKey();
             
-            con.setAutoCommit(false);
+            con.begin();
             
             for(final URI nextElementType : this.getElementTypes())
             {

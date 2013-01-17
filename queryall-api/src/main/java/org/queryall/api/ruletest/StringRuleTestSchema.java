@@ -133,7 +133,7 @@ public class StringRuleTestSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(StringRuleTestSchema.getStringRuleTestTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             con.add(StringRuleTestSchema.getStringRuleTestTypeUri(), RDFS.LABEL,

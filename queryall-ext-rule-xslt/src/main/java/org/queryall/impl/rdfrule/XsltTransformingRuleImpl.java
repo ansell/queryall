@@ -378,10 +378,9 @@ public class XsltTransformingRuleImpl extends BaseTransformingRuleImpl implement
             final URI keyUri = this.getKey();
             final Literal xsltStylesheetLiteral = f.createLiteral(this.getXsltStylesheet());
             
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(keyUri, RDF.TYPE, XsltNormalisationRuleSchema.getXsltRuleTypeUri(), keyToUse);
-            
             con.add(keyUri, XsltNormalisationRuleSchema.getXsltRuleStylesheetUri(), xsltStylesheetLiteral, keyToUse);
             
             // If everything went as planned, we can commit the result

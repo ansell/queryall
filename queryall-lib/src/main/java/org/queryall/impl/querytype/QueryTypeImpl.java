@@ -1130,7 +1130,7 @@ public abstract class QueryTypeImpl extends BaseQueryAllImpl implements QueryTyp
             
             // log.info("after literals created");
             
-            con.setAutoCommit(false);
+            con.begin();
             
             for(final URI nextElementType : this.getElementTypes())
             {

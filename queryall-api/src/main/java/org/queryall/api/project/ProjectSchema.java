@@ -235,7 +235,7 @@ public class ProjectSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(ProjectSchema.getProjectTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             

@@ -605,7 +605,7 @@ public abstract class ProviderImpl extends BaseQueryAllImpl implements Provider,
             
             final URI profileIncludeExcludeOrderLiteral = this.getProfileIncludeExcludeOrder().getUri();
             
-            con.setAutoCommit(false);
+            con.begin();
             
             for(final URI nextElementType : this.getElementTypes())
             {

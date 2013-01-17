@@ -502,7 +502,7 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
             final Literal uriTemplateLiteral = f.createLiteral(this.getUriTemplate());
             final Literal separatorLiteral = f.createLiteral(this.getSeparator());
             
-            con.setAutoCommit(false);
+            con.begin();
             
             for(final URI nextElementType : this.getElementTypes())
             {

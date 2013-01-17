@@ -92,7 +92,7 @@ public class NoInputQueryTypeSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(NoInputQueryTypeSchema.getNoInputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             con.add(NoInputQueryTypeSchema.getNoInputQueryTypeUri(), RDFS.SUBCLASSOF,

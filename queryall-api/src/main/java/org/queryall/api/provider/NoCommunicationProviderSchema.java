@@ -92,7 +92,7 @@ public class NoCommunicationProviderSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(NoCommunicationProviderSchema.getProviderNoCommunicationTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(NoCommunicationProviderSchema.getProviderNoCommunicationTypeUri(), RDFS.LABEL,

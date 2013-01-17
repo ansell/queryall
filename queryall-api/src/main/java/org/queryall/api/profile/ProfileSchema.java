@@ -437,7 +437,7 @@ public class ProfileSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(ProfileSchema.getProfileTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             

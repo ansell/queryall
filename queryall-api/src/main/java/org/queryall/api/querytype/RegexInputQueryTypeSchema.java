@@ -105,7 +105,7 @@ public class RegexInputQueryTypeSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             // TODO: add label for this type
             con.add(RegexInputQueryTypeSchema.getRegexInputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contexts);

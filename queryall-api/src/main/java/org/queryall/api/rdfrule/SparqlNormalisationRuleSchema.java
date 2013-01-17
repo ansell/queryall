@@ -120,7 +120,7 @@ public class SparqlNormalisationRuleSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(SparqlNormalisationRuleSchema.getSparqlRuleTypeUri(), RDFS.LABEL,

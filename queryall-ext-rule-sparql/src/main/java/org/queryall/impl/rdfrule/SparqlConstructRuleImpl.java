@@ -422,7 +422,7 @@ public class SparqlConstructRuleImpl extends BaseTransformingRuleImpl implements
             final Literal sparqlPrefixesLiteral = f.createLiteral(this.getSparqlPrefixes());
             final URI modeUri = this.getMode();
             
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(keyUri, RDF.TYPE, SparqlNormalisationRuleSchema.getSparqlRuleTypeUri(), keyToUse);
             

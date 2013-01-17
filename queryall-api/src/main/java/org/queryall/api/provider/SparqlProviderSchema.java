@@ -172,7 +172,7 @@ public class SparqlProviderSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(SparqlProviderSchema.getProviderSparqlTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(SparqlProviderSchema.getProviderSparqlTypeUri(), RDFS.LABEL,

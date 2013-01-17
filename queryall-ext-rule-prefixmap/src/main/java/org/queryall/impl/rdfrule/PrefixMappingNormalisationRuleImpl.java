@@ -386,7 +386,7 @@ public class PrefixMappingNormalisationRuleImpl extends BaseTransformingRuleImpl
             final Literal inputUriPrefixLiteral = f.createLiteral(this.getInputUriPrefix());
             final Literal outputUriPrefixLiteral = f.createLiteral(this.getOutputUriPrefix());
             
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(keyUri, RDF.TYPE, PrefixMappingNormalisationRuleSchema.getSimplePrefixMappingTypeUri(), keyToUse);
             con.add(keyUri, PrefixMappingNormalisationRuleSchema.getInputPrefixUri(), inputUriPrefixLiteral, keyToUse);

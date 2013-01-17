@@ -360,7 +360,7 @@ public class RdfInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implemen
             
             final Literal sparqlInputSelectLiteral = f.createLiteral(this.getSparqlInputSelect());
             
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(queryInstanceUri, RdfInputQueryTypeSchema.getQuerySparqlInputSelect(), sparqlInputSelectLiteral,
                     keyToUse);

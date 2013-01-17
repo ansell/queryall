@@ -171,7 +171,7 @@ public class SparqlRuleTestSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             con.add(SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), RDFS.LABEL,

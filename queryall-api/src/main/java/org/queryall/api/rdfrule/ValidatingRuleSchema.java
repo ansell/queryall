@@ -95,7 +95,7 @@ public class ValidatingRuleSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(ValidatingRuleSchema.getValidatingRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(ValidatingRuleSchema.getValidatingRuleTypeUri(), RDFS.SUBCLASSOF,

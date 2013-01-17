@@ -134,7 +134,7 @@ public class SpinNormalisationRuleSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(SpinNormalisationRuleSchema.getSpinNormalisationRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(SpinNormalisationRuleSchema.getSpinNormalisationRuleTypeUri(), RDFS.LABEL,

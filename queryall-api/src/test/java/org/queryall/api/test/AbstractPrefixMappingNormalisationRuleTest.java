@@ -3,6 +3,8 @@
  */
 package org.queryall.api.test;
 
+import info.aduna.iteration.Iterations;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -305,8 +307,8 @@ public abstract class AbstractPrefixMappingNormalisationRuleTest extends Abstrac
         
         mappingRule.normaliseByStage(NormalisationRuleSchema.getRdfruleStageAfterResultsImport(), this.testRepository);
         
-        for(final Statement nextOutputStatement : this.testRepositoryConnection.getStatements(null, null, null, false)
-                .asList())
+        for(final Statement nextOutputStatement : Iterations.asList(this.testRepositoryConnection.getStatements(null,
+                null, null, false)))
         {
             AbstractPrefixMappingNormalisationRuleTest.LOG.info(nextOutputStatement.toString());
         }

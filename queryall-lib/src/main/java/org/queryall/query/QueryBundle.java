@@ -95,7 +95,7 @@ public class QueryBundle
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(QueryBundle.queryBundleTypeUri, RDF.TYPE, OWL.CLASS, contextUri);
             
@@ -411,7 +411,7 @@ public class QueryBundle
             
             // make sure we can commit them all as far as this query bundle itself is concerned
             // before we actually put statements in
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(queryBundleInstanceUri, RDF.TYPE, QueryBundle.queryBundleTypeUri, keyToUse);
             // con.add(queryBundleInstanceUri, QueryBundle.queryLiteralUri, queryLiteral, keyToUse);

@@ -717,7 +717,7 @@ public class ProfileImpl extends BaseQueryAllImpl implements Profile, Comparable
             
             // log.info("About to add to the repository");
             
-            con.setAutoCommit(false);
+            con.begin();
             
             for(final URI nextElementType : this.getElementTypes())
             {

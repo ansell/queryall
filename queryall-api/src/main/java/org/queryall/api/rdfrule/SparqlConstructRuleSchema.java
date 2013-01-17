@@ -230,7 +230,7 @@ public class SparqlConstructRuleSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(SparqlConstructRuleSchema.getSparqlConstructRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(SparqlConstructRuleSchema.getSparqlConstructRuleTypeUri(), RDFS.LABEL,

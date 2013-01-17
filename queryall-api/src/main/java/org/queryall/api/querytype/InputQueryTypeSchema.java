@@ -87,7 +87,7 @@ public class InputQueryTypeSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(InputQueryTypeSchema.getQueryExpectedInputParameters(), RDF.TYPE, OWL.DATATYPEPROPERTY, contexts);
             con.add(InputQueryTypeSchema.getQueryExpectedInputParameters(), RDFS.RANGE, RDFS.LITERAL, contexts);

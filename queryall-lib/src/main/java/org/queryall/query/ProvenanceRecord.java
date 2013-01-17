@@ -1,5 +1,7 @@
 package org.queryall.query;
 
+import info.aduna.iteration.Iterations;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -57,7 +59,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(ProvenanceRecord.provenanceTypeUri, RDF.TYPE, OWL.CLASS, contextUri);
             
@@ -282,9 +284,10 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
                 final Statement nextProvider = statements.next();
                 
                 final URI nextSubjectUri = (URI)nextProvider.getSubject();
-                results.put(nextSubjectUri,
-                        new ProvenanceRecord(con.getStatements(nextSubjectUri, (URI)null, (Value)null, true).asList(),
-                                nextSubjectUri, configApiVersion));
+                results.put(
+                        nextSubjectUri,
+                        new ProvenanceRecord(Iterations.asList(con.getStatements(nextSubjectUri, (URI)null,
+                                (Value)null, true)), nextSubjectUri, configApiVersion));
             }
         }
         catch(final OpenRDFException e)
@@ -515,7 +518,7 @@ public class ProvenanceRecord extends BaseQueryAllImpl implements HtmlExport
             final URI hasAuthorOpenIDLiteral = f.createURI(this.hasAuthorOpenID);
             ProvenanceRecord.log.debug("ProvenanceRecord.toRdf: 5");
             
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(provenanceInstanceUri, RDF.TYPE, ProvenanceRecord.provenanceTypeUri, keyToUse);
             con.add(provenanceInstanceUri, ProvenanceRecord.provenanceHasAuthorOpenIDUri, hasAuthorOpenIDLiteral,

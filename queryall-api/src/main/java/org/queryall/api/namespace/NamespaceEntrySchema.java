@@ -250,7 +250,7 @@ public class NamespaceEntrySchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(NamespaceEntrySchema.getNamespaceTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             con.add(NamespaceEntrySchema.getNamespaceTypeUri(), RDFS.SUBCLASSOF,

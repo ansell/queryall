@@ -157,7 +157,7 @@ public class StringRuleTestImpl extends RuleTestImpl implements StringRuleTest
             final Literal testInputStringLiteral = f.createLiteral(this.testInputString);
             final Literal testOutputStringLiteral = f.createLiteral(this.testOutputString);
             
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(keyUri, RDF.TYPE, StringRuleTestSchema.getStringRuleTestTypeUri(), keyToUse);
             con.add(keyUri, StringRuleTestSchema.getRuletestInputTestString(), testInputStringLiteral, keyToUse);

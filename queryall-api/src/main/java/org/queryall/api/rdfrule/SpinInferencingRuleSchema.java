@@ -94,7 +94,7 @@ public class SpinInferencingRuleSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(SpinInferencingRuleSchema.getSpinInferencingRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(SpinInferencingRuleSchema.getSpinInferencingRuleTypeUri(),

@@ -174,7 +174,7 @@ public class RegexNormalisationRuleSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(RegexNormalisationRuleSchema.getRegexRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(RegexNormalisationRuleSchema.getRegexRuleTypeUri(), RDFS.SUBCLASSOF,

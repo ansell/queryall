@@ -164,7 +164,7 @@ public class HttpProviderSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(HttpProviderSchema.getProviderHttpTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(HttpProviderSchema.getProviderHttpTypeUri(), RDFS.LABEL,

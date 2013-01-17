@@ -94,7 +94,7 @@ public class SparqlProcessorQueryTypeSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             con.add(SparqlProcessorQueryTypeSchema.getSparqlProcessorQueryTypeUri(), RDFS.SUBCLASSOF,

@@ -214,7 +214,7 @@ public class RegexInputQueryTypeImpl extends SparqlProcessorQueryTypeImpl implem
             
             final Literal inputRegexLiteral = f.createLiteral(this.inputRegex);
             
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(queryInstanceUri, RegexInputQueryTypeSchema.getQueryInputRegex(), inputRegexLiteral, keyToUse);
             

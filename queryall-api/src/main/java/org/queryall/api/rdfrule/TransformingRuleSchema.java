@@ -95,7 +95,7 @@ public class TransformingRuleSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(TransformingRuleSchema.getTransformingRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(TransformingRuleSchema.getTransformingRuleTypeUri(), RDFS.SUBCLASSOF,

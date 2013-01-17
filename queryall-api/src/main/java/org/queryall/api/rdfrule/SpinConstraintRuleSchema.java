@@ -94,7 +94,7 @@ public class SpinConstraintRuleSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(SpinConstraintRuleSchema.getSpinConstraintRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(SpinConstraintRuleSchema.getSpinConstraintRuleTypeUri(),

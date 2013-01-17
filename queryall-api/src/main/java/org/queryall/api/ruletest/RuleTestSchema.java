@@ -134,7 +134,7 @@ public class RuleTestSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(RuleTestSchema.getRuletestTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             con.add(RuleTestSchema.getRuletestTypeUri(), RDFS.LABEL,

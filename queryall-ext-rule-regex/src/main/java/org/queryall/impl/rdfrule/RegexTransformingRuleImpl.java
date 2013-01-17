@@ -487,7 +487,7 @@ public class RegexTransformingRuleImpl extends BaseTransformingRuleImpl implemen
             final Literal outputMatchRegexLiteral = f.createLiteral(this.getOutputMatchRegex());
             final Literal outputReplaceRegexLiteral = f.createLiteral(this.getOutputReplaceRegex());
             
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(keyUri, RDF.TYPE, RegexNormalisationRuleSchema.getRegexRuleTypeUri(), keyToUse);
             con.add(keyUri, RegexNormalisationRuleSchema.getRegexRuleInputMatchRegex(), inputMatchRegexLiteral,

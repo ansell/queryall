@@ -181,7 +181,7 @@ public class SparqlRuleTestImpl extends RuleTestImpl implements SparqlRuleTest
             final Literal testInputTriplesLiteral = f.createLiteral(this.testInputTriples);
             final Literal testInputMimeTypeLiteral = f.createLiteral(this.testInputMimeType);
             
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(keyUri, RDF.TYPE, SparqlRuleTestSchema.getSparqlRuleTestTypeUri(), keyToUse);
             con.add(keyUri, SparqlRuleTestSchema.getSparqlRuletestSparqlAskPattern(), testAskQueryLiteral, keyToUse);

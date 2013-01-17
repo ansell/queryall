@@ -312,7 +312,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(StatisticsEntry.statisticsTypeUri, RDF.TYPE, OWL.CLASS, contextUri);
             
@@ -1230,11 +1230,11 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
     {
         // String nTriplesInsertString = "";
         
-        RepositoryConnection connection = null;
+        RepositoryConnection con = null;
         
         try
         {
-            connection = myRepository.getConnection();
+            con = myRepository.getConnection();
             
             final ValueFactory f = Constants.VALUE_FACTORY;
             
@@ -1276,32 +1276,29 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
             final Literal requestedContentTypeLiteral = f.createLiteral(this.requestedContentType);
             final Literal acceptHeaderLiteral = f.createLiteral(this.acceptHeader);
             
-            connection.setAutoCommit(false);
+            con.begin();
             
-            connection.add(keyUri, RDF.TYPE, StatisticsEntry.statisticsTypeUri, contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticscurrentdatetimeUri, currentDateLiteral, contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticsconfigVersionUri, configVersionLiteral, contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticsreadtimeoutUri, readtimeoutLiteral, contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticsconnecttimeoutUri, connecttimeoutLiteral, contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticsuserHostAddressUri, userHostAddressLiteral, contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticsuserAgentUri, userAgentLiteral, contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticsrealHostNameUri, realHostNameLiteral, contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticsqueryStringUri, queryStringLiteral, contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticsresponseTimeUri, responseTimeLiteral, contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticssumLatencyUri, sumLatencyLiteral, contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticssumQueriesUri, sumQueriesLiteral, contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticsstdevlatencyUri, stdevlatencyLiteral, contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticssumerrorsUri, sumerrorsLiteral, contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticssumerrorlatencyUri, sumerrorlatencyLiteral, contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticsstdeverrorlatencyUri, stdeverrorlatencyLiteral,
+            con.add(keyUri, RDF.TYPE, StatisticsEntry.statisticsTypeUri, contextUris);
+            con.add(keyUri, StatisticsEntry.statisticscurrentdatetimeUri, currentDateLiteral, contextUris);
+            con.add(keyUri, StatisticsEntry.statisticsconfigVersionUri, configVersionLiteral, contextUris);
+            con.add(keyUri, StatisticsEntry.statisticsreadtimeoutUri, readtimeoutLiteral, contextUris);
+            con.add(keyUri, StatisticsEntry.statisticsconnecttimeoutUri, connecttimeoutLiteral, contextUris);
+            con.add(keyUri, StatisticsEntry.statisticsuserHostAddressUri, userHostAddressLiteral, contextUris);
+            con.add(keyUri, StatisticsEntry.statisticsuserAgentUri, userAgentLiteral, contextUris);
+            con.add(keyUri, StatisticsEntry.statisticsrealHostNameUri, realHostNameLiteral, contextUris);
+            con.add(keyUri, StatisticsEntry.statisticsqueryStringUri, queryStringLiteral, contextUris);
+            con.add(keyUri, StatisticsEntry.statisticsresponseTimeUri, responseTimeLiteral, contextUris);
+            con.add(keyUri, StatisticsEntry.statisticssumLatencyUri, sumLatencyLiteral, contextUris);
+            con.add(keyUri, StatisticsEntry.statisticssumQueriesUri, sumQueriesLiteral, contextUris);
+            con.add(keyUri, StatisticsEntry.statisticsstdevlatencyUri, stdevlatencyLiteral, contextUris);
+            con.add(keyUri, StatisticsEntry.statisticssumerrorsUri, sumerrorsLiteral, contextUris);
+            con.add(keyUri, StatisticsEntry.statisticssumerrorlatencyUri, sumerrorlatencyLiteral, contextUris);
+            con.add(keyUri, StatisticsEntry.statisticsstdeverrorlatencyUri, stdeverrorlatencyLiteral, contextUris);
+            con.add(keyUri, StatisticsEntry.statisticslastServerRestartUri, lastServerRestartLiteral, contextUris);
+            con.add(keyUri, StatisticsEntry.statisticsserverSoftwareVersionUri, serverSoftwareVersionLiteral,
                     contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticslastServerRestartUri, lastServerRestartLiteral,
-                    contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticsserverSoftwareVersionUri, serverSoftwareVersionLiteral,
-                    contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticsacceptHeaderUri, acceptHeaderLiteral, contextUris);
-            connection.add(keyUri, StatisticsEntry.statisticsrequestedContentTypeUri, requestedContentTypeLiteral,
-                    contextUris);
+            con.add(keyUri, StatisticsEntry.statisticsacceptHeaderUri, acceptHeaderLiteral, contextUris);
+            con.add(keyUri, StatisticsEntry.statisticsrequestedContentTypeUri, requestedContentTypeLiteral, contextUris);
             
             if(this.profileUris != null)
             {
@@ -1309,7 +1306,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
                 {
                     if(!nextProfileUri.trim().equals(""))
                     {
-                        connection.add(keyUri, StatisticsEntry.statisticsprofileUrisUri, f.createURI(nextProfileUri),
+                        con.add(keyUri, StatisticsEntry.statisticsprofileUrisUri, f.createURI(nextProfileUri),
                                 contextUris);
                     }
                 }
@@ -1321,7 +1318,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
                 {
                     if(!nextSuccessfulProvidersUri.trim().equals(""))
                     {
-                        connection.add(keyUri, StatisticsEntry.statisticssuccessfulproviderUrisUri,
+                        con.add(keyUri, StatisticsEntry.statisticssuccessfulproviderUrisUri,
                                 f.createLiteral(nextSuccessfulProvidersUri), contextUris);
                     }
                 }
@@ -1333,7 +1330,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
                 {
                     if(!nextErrorProvidersUri.trim().equals(""))
                     {
-                        connection.add(keyUri, StatisticsEntry.statisticserrorproviderUrisUri,
+                        con.add(keyUri, StatisticsEntry.statisticserrorproviderUrisUri,
                                 f.createLiteral(nextErrorProvidersUri), contextUris);
                     }
                 }
@@ -1345,7 +1342,7 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
                 {
                     if(!nextConfigLocation.trim().equals(""))
                     {
-                        connection.add(keyUri, StatisticsEntry.statisticsconfigLocationsUri,
+                        con.add(keyUri, StatisticsEntry.statisticsconfigLocationsUri,
                                 f.createLiteral(nextConfigLocation), contextUris);
                     }
                 }
@@ -1357,8 +1354,8 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
                 {
                     if(!nextQuerytypeUri.trim().equals(""))
                     {
-                        connection.add(keyUri, StatisticsEntry.statisticsquerytypeUrisUri,
-                                f.createURI(nextQuerytypeUri), contextUris);
+                        con.add(keyUri, StatisticsEntry.statisticsquerytypeUrisUri, f.createURI(nextQuerytypeUri),
+                                contextUris);
                     }
                 }
             }
@@ -1369,21 +1366,21 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
                 {
                     if(!nextNamespaceUri.trim().equals(""))
                     {
-                        connection.add(keyUri, StatisticsEntry.statisticsnamespaceUrisUri,
-                                f.createURI(nextNamespaceUri), contextUris);
+                        con.add(keyUri, StatisticsEntry.statisticsnamespaceUrisUri, f.createURI(nextNamespaceUri),
+                                contextUris);
                     }
                 }
             }
             
             // If everything went as planned, we can commit the result
-            connection.commit();
+            con.commit();
         }
         catch(final RepositoryException re)
         {
             // Something went wrong during the transaction, so we roll it back
-            if(connection != null)
+            if(con != null)
             {
-                connection.rollback();
+                con.rollback();
             }
             
             StatisticsEntry.log.error("RepositoryException: " + re.getMessage());
@@ -1392,9 +1389,9 @@ public class StatisticsEntry extends BaseQueryAllImpl implements HtmlExport
         }
         finally
         {
-            if(connection != null)
+            if(con != null)
             {
-                connection.close();
+                con.close();
             }
         }
         

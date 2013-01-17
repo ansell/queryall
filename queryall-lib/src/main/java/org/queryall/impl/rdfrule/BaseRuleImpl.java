@@ -446,7 +446,7 @@ public abstract class BaseRuleImpl extends BaseQueryAllImpl implements Normalisa
             final Literal orderLiteral = f.createLiteral(this.getOrder());
             final URI profileIncludeExcludeOrderLiteral = this.getProfileIncludeExcludeOrder().getUri();
             
-            con.setAutoCommit(false);
+            con.begin();
             
             if(modelVersion <= 2)
             {

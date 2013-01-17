@@ -325,7 +325,7 @@ public class ProviderSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(ProviderSchema.getProviderTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(ProviderSchema.getProviderTypeUri(), RDFS.LABEL, f.createLiteral("The class of data providers."),

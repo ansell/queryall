@@ -163,7 +163,7 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             if(HttpProviderImpl.TRACE)
             {
@@ -179,8 +179,6 @@ public abstract class HttpProviderImpl extends ProviderImpl implements HttpProvi
             {
                 acceptHeaderLiteral = f.createLiteral(this.acceptHeaderString);
             }
-            
-            con.setAutoCommit(false);
             
             con.add(providerInstanceUri, RDF.TYPE, ProviderSchema.getProviderTypeUri(), keyToUse);
             

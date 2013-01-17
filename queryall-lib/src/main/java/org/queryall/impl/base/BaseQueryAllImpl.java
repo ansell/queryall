@@ -297,7 +297,7 @@ public abstract class BaseQueryAllImpl implements BaseQueryAllInterface
                 curationStatusLiteral = this.getCurationStatus();
             }
             
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(keyUri, ProjectSchema.getProjectCurationStatusUri(), curationStatusLiteral, contextKey);
             

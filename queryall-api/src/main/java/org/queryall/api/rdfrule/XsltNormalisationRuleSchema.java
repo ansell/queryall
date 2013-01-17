@@ -115,7 +115,7 @@ public class XsltNormalisationRuleSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(XsltNormalisationRuleSchema.getXsltRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(XsltNormalisationRuleSchema.getXsltRuleTypeUri(), RDFS.LABEL,

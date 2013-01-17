@@ -12,6 +12,7 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.sail.memory.model.MemValueFactory;
 import org.queryall.api.base.QueryAllSchema;
+import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,11 +88,11 @@ public class RdfProviderSchema extends QueryAllSchema
     {
         final RepositoryConnection con = myRepository.getConnection();
         
-        final ValueFactory f = new MemValueFactory();
+        final ValueFactory f = Constants.VALUE_FACTORY;
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(RdfProviderSchema.getProviderRdfTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(RdfProviderSchema.getProviderRdfTypeUri(), RDFS.LABEL,

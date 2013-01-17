@@ -378,7 +378,7 @@ public class NormalisationRuleSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(NormalisationRuleSchema.getNormalisationRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             

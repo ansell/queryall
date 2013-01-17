@@ -94,7 +94,7 @@ public class RdfsNormalisationRuleSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(RdfsNormalisationRuleSchema.getRdfsRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(RdfsNormalisationRuleSchema.getRdfsRuleTypeUri(), RDFS.SUBCLASSOF,

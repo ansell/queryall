@@ -114,7 +114,7 @@ public class RegexValidatingNamespaceEntrySchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(RegexValidatingNamespaceEntrySchema.getRegexValidatingNamespaceTypeUri(), RDF.TYPE, OWL.CLASS,
                     contexts);

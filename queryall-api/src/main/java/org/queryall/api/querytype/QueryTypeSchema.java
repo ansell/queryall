@@ -528,7 +528,7 @@ public class QueryTypeSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(QueryTypeSchema.getQueryTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             

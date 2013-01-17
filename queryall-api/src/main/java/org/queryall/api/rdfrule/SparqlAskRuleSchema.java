@@ -94,7 +94,7 @@ public class SparqlAskRuleSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(SparqlAskRuleSchema.getSparqlAskRuleTypeUri(), RDF.TYPE, OWL.CLASS, contextUri);
             con.add(SparqlAskRuleSchema.getSparqlAskRuleTypeUri(),

@@ -334,7 +334,7 @@ public class SparqlAskRuleImpl extends BaseValidatingRuleImpl implements SparqlA
             final URI keyUri = this.getKey();
             final Literal sparqlPrefixesLiteral = f.createLiteral(this.getSparqlPrefixes());
             
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(keyUri, RDF.TYPE, SparqlNormalisationRuleSchema.getSparqlRuleTypeUri(), keyToUse);
             

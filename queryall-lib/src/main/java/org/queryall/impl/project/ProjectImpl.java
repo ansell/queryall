@@ -229,7 +229,7 @@ public class ProjectImpl extends BaseQueryAllImpl implements Project, HtmlExport
                 this.log.trace("Project.toRdf: about to add URI's to connection");
             }
             
-            con.setAutoCommit(false);
+            con.begin();
             
             for(final URI nextElementType : this.getElementTypes())
             {

@@ -106,7 +106,7 @@ public class RdfInputQueryTypeSchema extends QueryAllSchema
         
         try
         {
-            con.setAutoCommit(false);
+            con.begin();
             
             con.add(RdfInputQueryTypeSchema.getRdfInputQueryTypeUri(), RDF.TYPE, OWL.CLASS, contexts);
             con.add(RdfInputQueryTypeSchema.getRdfInputQueryTypeUri(), RDFS.SUBCLASSOF,
