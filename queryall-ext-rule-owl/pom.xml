@@ -20,7 +20,7 @@
         <dependency>
             <groupId>com.github.ansell.owlapi</groupId>
             <artifactId>owlapi-api</artifactId>
-            <version>3.4.3.1-ansell-SNAPSHOT</version>
+            <version>3.4.3.3-ansell-SNAPSHOT</version>
         </dependency>
 		<dependency>
 			<groupId>com.github.ansell.pellet</groupId>
