@@ -331,12 +331,12 @@ public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements
 		final Map<CommandWrapper, Map<String, RDFNode>> initialTemplateBindings = new HashMap<CommandWrapper, Map<String, RDFNode>>();
 		final Map<Resource, List<CommandWrapper>> cls2Query = SPINQueryFinder
 				.getClass2QueryMap(unionModel, queryModel, SPIN.rule, true,
-						initialTemplateBindings, false);
+						false);
 		// FIXME: Get the patch for the following working again
 		// , allowedRuleSources);
 		final Map<Resource, List<CommandWrapper>> cls2Constructor = SPINQueryFinder
 				.getClass2QueryMap(queryModel, queryModel, SPIN.constructor,
-						true, initialTemplateBindings, false);
+						true, false);
 		// FIXME: Get the patch for the following working again
 		// , allowedRuleSources);
 		final SPINRuleComparator comparator = new DefaultSPINRuleComparator(
@@ -345,8 +345,7 @@ public class SpinInferencingRuleImpl extends BaseTransformingRuleImpl implements
 		// Run all inferences
 		SpinInferencingRuleImpl.log.info("Running SPIN inferences...");
 		SPINInferences.run(queryModel, newTriples, cls2Query, cls2Constructor,
-				initialTemplateBindings, null, null, false, SPIN.rule,
-				comparator, null);
+				null, null, false, SPIN.rule, comparator, null);
 		// FIXME: Get the patch for the following working again
 		// , allowedRuleSources);
 		SpinInferencingRuleImpl.log.info("Inferred triples: "

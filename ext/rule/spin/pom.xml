@@ -9,11 +9,7 @@
 		<version>1.4-SNAPSHOT</version>
 	</parent>
 	<artifactId>queryall-ext-rule-spin</artifactId>
-	<name>queryall-ext-rule-spin</name>
-	<url>http://maven.apache.org</url>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+	<name>QueryAll Extension :: SPIN-API Rules</name>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -23,7 +19,7 @@
 		<dependency>
 			<groupId>org.topbraid</groupId>
 			<artifactId>spin</artifactId>
-			<version>1.3.0</version>
+			<version>1.3.1-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-api</artifactId>
@@ -110,4 +106,23 @@
     </repository>
   </repositories>
 	
+  <dependencyManagement>
+  	<dependencies>
+  		<dependency>
+  			<groupId>org.apache.jena</groupId>
+  			<artifactId>jena-arq</artifactId>
+  			<version>2.9.3</version>
+  		</dependency>
+  		<dependency>
+  			<groupId>org.apache.jena</groupId>
+  			<artifactId>jena-core</artifactId>
+  			<version>2.7.3</version>
+  		</dependency>
+  		<dependency>
+  			<groupId>org.apache.jena</groupId>
+  			<artifactId>jena-iri</artifactId>
+  			<version>0.9.3</version>
+  		</dependency>
+  	</dependencies>
+  </dependencyManagement>
 </project>
