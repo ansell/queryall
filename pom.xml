@@ -69,9 +69,9 @@
         <junit.version>4.11</junit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <sesame.version>2.7.0-beta2</sesame.version>
-        <sesamerioextensions.version>0.3</sesamerioextensions.version>
-        <slf4j.version>1.7.2</slf4j.version>
+        <sesame.version>2.7.0-beta3-SNAPSHOT</sesame.version>
+        <sesamerioextensions.version>0.4-SNAPSHOT</sesamerioextensions.version>
+        <slf4j.version>1.7.4</slf4j.version>
     </properties>
     <prerequisites>
         <maven>2.2.1</maven>
@@ -174,13 +174,13 @@
                 <artifactId>sesame-rio-trig</artifactId>
                 <version>${sesame.version}</version>
             </dependency>
-	        <dependency>
-	            <groupId>com.github.ansell.sesame-rio-extensions</groupId>
-	            <artifactId>sesame-rio-extensions-rdfjson</artifactId>
-	            <version>${sesamerioextensions.version}</version>
-	            <type>jar</type>
-	            <scope>runtime</scope>
-	        </dependency>
+            <dependency>
+                <groupId>com.github.ansell.sesame-rio-extensions</groupId>
+                <artifactId>sesame-rio-extensions-rdfjson</artifactId>
+                <version>${sesamerioextensions.version}</version>
+                <type>jar</type>
+                <scope>runtime</scope>
+            </dependency>
             <dependency>
                 <groupId>org.apache.velocity</groupId>
                 <artifactId>velocity</artifactId>
@@ -350,7 +350,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.13</version>
+                    <version>2.14</version>
                     <!-- Added test excludes for Abstract -->
                     <configuration>
                         <excludes>
@@ -429,24 +429,4 @@
             </plugin>
         </plugins>
     </reporting>
-    <profiles>
-        <profile>
-            <id>metadatanet-deploy</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <distributionManagement>
-                <repository>
-                    <id>maenad-releases</id>
-                    <name>maenad-releases</name>
-                    <url>http://maven.metadata.net/artifactory/libs-releases-local</url>
-                </repository>
-                <snapshotRepository>
-                    <id>maenad-snapshots</id>
-                    <name>maenad-snapshots</name>
-                    <url>http://maven.metadata.net/artifactory/libs-snapshots-local</url>
-                </snapshotRepository>
-            </distributionManagement>
-        </profile>
-    </profiles>
 </project>
