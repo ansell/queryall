@@ -20,12 +20,17 @@
         <dependency>
             <groupId>com.github.ansell.owlapi</groupId>
             <artifactId>owlapi-api</artifactId>
-            <version>3.4.3.3-ansell-SNAPSHOT</version>
+            <version>3.4.4.1-ansell-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ansell.owlapi</groupId>
+            <artifactId>owlapi-rio</artifactId>
+            <version>3.4.4.1-ansell-SNAPSHOT</version>
         </dependency>
 		<dependency>
 			<groupId>com.github.ansell.pellet</groupId>
 			<artifactId>pellet-owlapiv3</artifactId>
-			<version>2.3.2-SNAPSHOT</version>
+			<version>2.3.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
