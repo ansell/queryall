@@ -7,10 +7,9 @@
 		<groupId>com.github.ansell.queryall</groupId>
 		<artifactId>queryall-parent</artifactId>
 		<version>1.4-SNAPSHOT</version>
-		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>queryall-ext-querytype-regex</artifactId>
-	<name>queryall-ext-querytype-regex</name>
+	<name>QueryAll Extension :: Regex QueryType</name>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>

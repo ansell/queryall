@@ -6,11 +6,10 @@
 		<groupId>com.github.ansell.queryall</groupId>
 		<artifactId>queryall-parent</artifactId>
 		<version>1.4-SNAPSHOT</version>
-		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>queryall-lib</artifactId>
 	<packaging>jar</packaging>
-	<name>queryall lib</name>
+	<name>QueryAll :: Base Library</name>
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>

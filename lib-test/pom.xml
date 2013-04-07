@@ -7,10 +7,9 @@
 		<groupId>com.github.ansell.queryall</groupId>
 		<artifactId>queryall-parent</artifactId>
 		<version>1.4-SNAPSHOT</version>
-		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>queryall-lib-test</artifactId>
-	<name>queryall-lib-test</name>
+	<name>QueryAll :: Test library</name>
 	<description>Created to separate the tests from the multiple modules that they rely on.</description>
 	<inceptionYear>2011</inceptionYear>
 	<dependencies>

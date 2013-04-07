@@ -6,11 +6,10 @@
 		<groupId>com.github.ansell.queryall</groupId>
 		<artifactId>queryall-parent</artifactId>
 		<version>1.4-SNAPSHOT</version>
-		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>queryall-api</artifactId>
 	<packaging>jar</packaging>
-	<name>queryall-api</name>
+	<name>QueryAll :: API</name>
 	<url>http://sourceforge.net/apps/mediawiki/bio2rdf/</url>
 	<inceptionYear>2007</inceptionYear>
 	<developers>

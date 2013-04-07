@@ -10,7 +10,7 @@
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>queryall-ext-rule-xslt</artifactId>
-	<name>queryall-ext-rule-xslt</name>
+	<name>QueryAll Extension :: XSLT Rules</name>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>

@@ -7,10 +7,9 @@
 		<groupId>com.github.ansell.queryall</groupId>
 		<artifactId>queryall-parent</artifactId>
 		<version>1.4-SNAPSHOT</version>
-		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>queryall-ext-rule-owl</artifactId>
-	<name>queryall-ext-rule-owl</name>
+	<name>QueryAll Extension :: OWLAPI Rules</name>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>

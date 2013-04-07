@@ -7,10 +7,9 @@
 		<groupId>com.github.ansell.queryall</groupId>
 		<artifactId>queryall-parent</artifactId>
 		<version>1.4-SNAPSHOT</version>
-		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>queryall-content-negotiation</artifactId>
-	<name>queryall-content-negotiation</name>
+	<name>QueryAll :: Content Negotiation</name>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>

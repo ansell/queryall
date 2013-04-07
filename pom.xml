@@ -14,26 +14,23 @@
     <version>1.4-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
-        <module>queryall-api</module>
-        <module>queryall-lib</module>
-        <module>queryall-ext-querytype-rdf</module>
-        <module>queryall-ext-querytype-regex</module>
-        <module>queryall-ext-provider-http</module>
-        <module>queryall-ext-provider-rdf</module>
-        <!-- <module>queryall-ext-rule-owl</module> This requires a copy 
-            of owlapi from https://github.com/ansell/owlapi and a copy of pellet from 
-            https://github.com/ansell/pellet -->
-        <!-- <module>queryall-ext-rule-spin</module> This requires a copy 
-            of spin-api from https://github.com/ansell/spin -->
-        <module>queryall-ext-rule-xslt</module>
-        <module>queryall-ext-rule-sparql</module>
-        <module>queryall-ext-rule-regex</module>
-        <module>queryall-ext-rule-prefixmap</module>
-        <module>queryall-lib-test</module>
-        <module>queryall-content-negotiation</module>
-        <module>queryall-webapp</module>
+        <module>api</module>
+        <module>lib</module>
+        <module>ext/querytype/rdf</module>
+        <module>ext/querytype/regex</module>
+        <module>ext/provider/http</module>
+        <module>ext/provider/rdf</module>
+        <module>ext/rule/owl</module> 
+        <module>ext/rule/spin</module> 
+        <module>ext/rule/xslt</module>
+        <module>ext/rule/sparql</module>
+        <module>ext/rule/regex</module>
+        <module>ext/rule/prefixmap</module>
+        <module>lib-test</module>
+        <module>content-negotiation</module>
+        <module>webapp</module>
     </modules>
-    <name>Queryall RDF services</name>
+    <name>QueryAll :: Parent POM</name>
     <description>A package of services enabling access to a variety of RDF datasources, with the results normalised to a single browsable Linked Data set of results.</description>
     <url>http://sourceforge.net/apps/mediawiki/bio2rdf/</url>
     <inceptionYear>2007</inceptionYear>
