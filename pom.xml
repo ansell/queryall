@@ -29,6 +29,7 @@
         <module>lib-test</module>
         <module>content-negotiation</module>
         <module>webapp</module>
+	<module>example</module>
     </modules>
     <name>QueryAll :: Parent POM</name>
     <description>A package of services enabling access to a variety of RDF datasources, with the results normalised to a single browsable Linked Data set of results.</description>
@@ -66,7 +67,7 @@
         <junit.version>4.11</junit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <sesame.version>2.7.0-beta3-SNAPSHOT</sesame.version>
+        <sesame.version>2.7.0</sesame.version>
         <sesamerioextensions.version>0.4-SNAPSHOT</sesamerioextensions.version>
         <slf4j.version>1.7.4</slf4j.version>
     </properties>
@@ -228,6 +229,11 @@
                 <!-- Optional because it is only needed for compilation, 
                     and is not needed at runtime -->
                 <optional>true</optional>
+            </dependency>
+            <dependency>
+            	<groupId>org.openrdf.sesame</groupId>
+            	<artifactId>sesame-rio-rdfjson</artifactId>
+            	<version>${sesame.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
