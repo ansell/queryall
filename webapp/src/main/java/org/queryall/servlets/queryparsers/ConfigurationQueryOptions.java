@@ -217,6 +217,10 @@ public class ConfigurationQueryOptions
                 this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_JSON_PREFIX);
         final String adminConfigurationJsonSuffix =
                 this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_JSON_SUFFIX);
+        final String adminConfigurationJsonldPrefix =
+                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_JSONLD_PREFIX);
+        final String adminConfigurationJsonldSuffix =
+                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_JSONLD_SUFFIX);
         final String adminConfigurationNTriplesPrefix =
                 this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_NTRIPLES_PREFIX);
         final String adminConfigurationNTriplesSuffix =
@@ -272,6 +276,22 @@ public class ConfigurationQueryOptions
             if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("n3: requestString=" + requestString);
+            }
+        }
+        else if(this.matchesPrefixAndSuffix(requestString, adminConfigurationJsonldPrefix, adminConfigurationJsonldSuffix))
+        {
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.APPLICATION_LD_JSON;
+            if(ConfigurationQueryOptions.DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("jsonld: requestString=" + requestString);
+            }
+            requestString =
+                    this.takeOffPrefixAndSuffix(requestString, adminConfigurationJsonldPrefix,
+                            adminConfigurationJsonldSuffix);
+            if(ConfigurationQueryOptions.DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("jsonld: requestString=" + requestString);
             }
         }
         else if(this.matchesPrefixAndSuffix(requestString, adminConfigurationJsonPrefix, adminConfigurationJsonSuffix))
@@ -425,6 +445,8 @@ public class ConfigurationQueryOptions
         final String nsIdN3Suffix = this.localSettings.getStringProperty(WebappConfig.N3_URL_SUFFIX);
         final String nsIdJsonPrefix = this.localSettings.getStringProperty(WebappConfig.JSON_URL_PREFIX);
         final String nsIdJsonSuffix = this.localSettings.getStringProperty(WebappConfig.JSON_URL_SUFFIX);
+        final String nsIdJsonldPrefix = this.localSettings.getStringProperty(WebappConfig.JSONLD_URL_PREFIX);
+        final String nsIdJsonldSuffix = this.localSettings.getStringProperty(WebappConfig.JSONLD_URL_SUFFIX);
         final String nsIdNTriplesPrefix = this.localSettings.getStringProperty(WebappConfig.NTRIPLES_URL_PREFIX);
         final String nsIdNTriplesSuffix = this.localSettings.getStringProperty(WebappConfig.NTRIPLES_URL_SUFFIX);
         final String nsIdNQuadsPrefix = this.localSettings.getStringProperty(WebappConfig.NQUADS_URL_PREFIX);
@@ -470,6 +492,20 @@ public class ConfigurationQueryOptions
             if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("n3: requestString=" + requestString);
+            }
+        }
+        else if(this.matchesPrefixAndSuffix(requestString, nsIdJsonldPrefix, nsIdJsonldSuffix))
+        {
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.APPLICATION_LD_JSON;
+            if(ConfigurationQueryOptions.DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("jsonld: requestString=" + requestString);
+            }
+            requestString = this.takeOffPrefixAndSuffix(requestString, nsIdJsonldPrefix, nsIdJsonldSuffix);
+            if(ConfigurationQueryOptions.DEBUG)
+            {
+                ConfigurationQueryOptions.log.debug("jsonld: requestString=" + requestString);
             }
         }
         else if(this.matchesPrefixAndSuffix(requestString, nsIdJsonPrefix, nsIdJsonSuffix))

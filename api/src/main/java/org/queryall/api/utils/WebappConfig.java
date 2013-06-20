@@ -102,6 +102,10 @@ public enum WebappConfig
     
     ADMIN_CONFIGURATION_JSON_SUFFIX("adminConfigurationJsonSuffix", "/json"),
     
+    ADMIN_CONFIGURATION_JSONLD_PREFIX("adminConfigurationJsonldPrefix", ""),
+    
+    ADMIN_CONFIGURATION_JSONLD_SUFFIX("adminConfigurationJsonldSuffix", "/jsonld"),
+    
     ADMIN_CONFIGURATION_N3_PREFIX("adminConfigurationN3Prefix", ""),
     
     ADMIN_CONFIGURATION_N3_SUFFIX("adminConfigurationN3Suffix", "/n3"),
@@ -214,6 +218,10 @@ public enum WebappConfig
     JSON_URL_PREFIX("jsonUrlPrefix", "json/"),
     
     JSON_URL_SUFFIX("jsonUrlSuffix", ""),
+    
+    JSONLD_URL_PREFIX("jsonldUrlPrefix", "jsonld/"),
+    
+    JSONLD_URL_SUFFIX("jsonldUrlSuffix", ""),
     
     N3_URL_PREFIX("n3UrlPrefix", "n3/"),
     
