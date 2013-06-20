@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractQueryAllWebTest
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractQueryAllWebTest.class);
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     
     private WebTester tester;
     
@@ -69,7 +69,7 @@ public abstract class AbstractQueryAllWebTest
         }
         catch(final Exception ex)
         {
-            AbstractQueryAllWebTest.LOGGER.error("Found exception closing browser after test", ex);
+            this.logger.error("Found exception closing browser after test", ex);
         }
         finally
         {
