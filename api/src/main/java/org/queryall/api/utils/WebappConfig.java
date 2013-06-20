@@ -96,33 +96,33 @@ public enum WebappConfig
     
     ADMIN_CONFIGURATION_HTML_PREFIX("adminConfigurationHtmlPrefix", ""),
     
-    ADMIN_CONFIGURATION_HTML_SUFFIX("adminConfigurationHtmlSuffix", "/html"),
+    ADMIN_CONFIGURATION_HTML_SUFFIX("adminConfigurationHtmlSuffix", "html"),
     
     ADMIN_CONFIGURATION_JSON_PREFIX("adminConfigurationJsonPrefix", ""),
     
-    ADMIN_CONFIGURATION_JSON_SUFFIX("adminConfigurationJsonSuffix", "/json"),
+    ADMIN_CONFIGURATION_JSON_SUFFIX("adminConfigurationJsonSuffix", "json"),
     
     ADMIN_CONFIGURATION_JSONLD_PREFIX("adminConfigurationJsonldPrefix", ""),
     
-    ADMIN_CONFIGURATION_JSONLD_SUFFIX("adminConfigurationJsonldSuffix", "/jsonld"),
+    ADMIN_CONFIGURATION_JSONLD_SUFFIX("adminConfigurationJsonldSuffix", "jsonld"),
     
     ADMIN_CONFIGURATION_N3_PREFIX("adminConfigurationN3Prefix", ""),
     
-    ADMIN_CONFIGURATION_N3_SUFFIX("adminConfigurationN3Suffix", "/n3"),
+    ADMIN_CONFIGURATION_N3_SUFFIX("adminConfigurationN3Suffix", "n3"),
     
     ADMIN_CONFIGURATION_NQUADS_PREFIX("adminConfigurationNQuadsPrefix", ""),
     
-    ADMIN_CONFIGURATION_NQUADS_SUFFIX("adminConfigurationNQuadsSuffix", "/nquads"),
+    ADMIN_CONFIGURATION_NQUADS_SUFFIX("adminConfigurationNQuadsSuffix", "nquads"),
     
     ADMIN_CONFIGURATION_NTRIPLES_PREFIX("adminConfigurationNTriplesPrefix", ""),
     
-    ADMIN_CONFIGURATION_NTRIPLES_SUFFIX("adminConfigurationNTriplesSuffix", "/ntriples"),
+    ADMIN_CONFIGURATION_NTRIPLES_SUFFIX("adminConfigurationNTriplesSuffix", "ntriples"),
     
     ADMIN_CONFIGURATION_PREFIX("adminConfigurationPrefix", "configuration/"),
     
     ADMIN_CONFIGURATION_RDFXML_PREFIX("adminConfigurationRdfxmlPrefix", ""),
     
-    ADMIN_CONFIGURATION_RDFXML_SUFFIX("adminConfigurationRdfxmlSuffix", "/rdfxml"),
+    ADMIN_CONFIGURATION_RDFXML_SUFFIX("adminConfigurationRdfxmlSuffix", "rdfxml"),
     
     ADMIN_CONFIGURATION_REFRESH_PREFIX("adminConfigurationRefreshPrefix", "refresh"),
     

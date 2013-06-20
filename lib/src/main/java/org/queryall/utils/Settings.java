@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
 
@@ -41,17 +42,17 @@ public class Settings implements QueryAllConfiguration
     private static final boolean DEBUG = Settings.log.isDebugEnabled();
     private static final boolean INFO = Settings.log.isInfoEnabled();
     
-    private ConcurrentHashMap<URI, NamespaceEntry> namespaceEntries = new ConcurrentHashMap<URI, NamespaceEntry>();
-    private ConcurrentHashMap<URI, NormalisationRule> normalisationRules =
+    private ConcurrentMap<URI, NamespaceEntry> namespaceEntries = new ConcurrentHashMap<URI, NamespaceEntry>();
+    private ConcurrentMap<URI, NormalisationRule> normalisationRules =
             new ConcurrentHashMap<URI, NormalisationRule>();
-    private ConcurrentHashMap<URI, Profile> profiles = new ConcurrentHashMap<URI, Profile>();
-    private ConcurrentHashMap<URI, Provider> providers = new ConcurrentHashMap<URI, Provider>();
-    private ConcurrentHashMap<URI, QueryType> queryTypes = new ConcurrentHashMap<URI, QueryType>();
-    private ConcurrentHashMap<URI, RuleTest> ruleTests = new ConcurrentHashMap<URI, RuleTest>();
-    private ConcurrentHashMap<String, Collection<URI>> namespacePrefixesToUris =
+    private ConcurrentMap<URI, Profile> profiles = new ConcurrentHashMap<URI, Profile>();
+    private ConcurrentMap<URI, Provider> providers = new ConcurrentHashMap<URI, Provider>();
+    private ConcurrentMap<URI, QueryType> queryTypes = new ConcurrentHashMap<URI, QueryType>();
+    private ConcurrentMap<URI, RuleTest> ruleTests = new ConcurrentHashMap<URI, RuleTest>();
+    private ConcurrentMap<String, Collection<URI>> namespacePrefixesToUris =
             new ConcurrentHashMap<String, Collection<URI>>();
     
-    private ConcurrentHashMap<WebappConfig, Collection<Object>> properties =
+    private ConcurrentMap<WebappConfig, Collection<Object>> properties =
             new ConcurrentHashMap<WebappConfig, Collection<Object>>();
     private Pattern cachedTagPattern;
     private String cachedSeparator;

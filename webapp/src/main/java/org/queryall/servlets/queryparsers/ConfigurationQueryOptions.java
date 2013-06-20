@@ -75,7 +75,7 @@ public class ConfigurationQueryOptions
                 if(ConfigurationQueryOptions.DEBUG)
                 {
                     ConfigurationQueryOptions.log.debug("removed contextPath from requestUri contextPath="
-                            + contextPath + " requestString=" + requestString);
+                            + contextPath + " requestString={}", requestString);
                 }
             }
         }
@@ -84,12 +84,12 @@ public class ConfigurationQueryOptions
         {
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("requestString={}", requestString);
             }
             requestString = requestString.substring(1);
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("requestString={}", requestString);
             }
         }
         
@@ -201,6 +201,11 @@ public class ConfigurationQueryOptions
     
     private String parseForAdminFormat(String requestString)
     {
+    	if(TRACE)
+    	{
+    		log.trace("parseForAdminFormat: requestString: {}", requestString);
+    	}
+    	
         final String adminConfigurationHtmlPrefix =
                 this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_HTML_PREFIX);
         final String adminConfigurationHtmlSuffix =
@@ -236,14 +241,14 @@ public class ConfigurationQueryOptions
             this._chosenFormat = Constants.TEXT_HTML;
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("html: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("html: requestString={}", requestString);
             }
             requestString =
                     this.takeOffPrefixAndSuffix(requestString, adminConfigurationHtmlPrefix,
                             adminConfigurationHtmlSuffix);
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("html: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("html: requestString={}", requestString);
             }
         }
         else if(this.matchesPrefixAndSuffix(requestString, adminConfigurationRdfxmlPrefix,
@@ -253,14 +258,14 @@ public class ConfigurationQueryOptions
             this._chosenFormat = Constants.APPLICATION_RDF_XML;
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("rdfxml: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("rdfxml: requestString={}", requestString);
             }
             requestString =
                     this.takeOffPrefixAndSuffix(requestString, adminConfigurationRdfxmlPrefix,
                             adminConfigurationRdfxmlSuffix);
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("rdfxml: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("rdfxml: requestString={}", requestString);
             }
         }
         else if(this.matchesPrefixAndSuffix(requestString, adminConfigurationN3Prefix, adminConfigurationN3Suffix))
@@ -269,13 +274,13 @@ public class ConfigurationQueryOptions
             this._chosenFormat = Constants.TEXT_RDF_N3;
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("n3: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("n3: requestString={}", requestString);
             }
             requestString =
                     this.takeOffPrefixAndSuffix(requestString, adminConfigurationN3Prefix, adminConfigurationN3Suffix);
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("n3: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("n3: requestString={}", requestString);
             }
         }
         else if(this.matchesPrefixAndSuffix(requestString, adminConfigurationJsonldPrefix, adminConfigurationJsonldSuffix))
@@ -284,14 +289,14 @@ public class ConfigurationQueryOptions
             this._chosenFormat = Constants.APPLICATION_LD_JSON;
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("jsonld: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("jsonld: requestString={}", requestString);
             }
             requestString =
                     this.takeOffPrefixAndSuffix(requestString, adminConfigurationJsonldPrefix,
                             adminConfigurationJsonldSuffix);
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("jsonld: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("jsonld: requestString={}", requestString);
             }
         }
         else if(this.matchesPrefixAndSuffix(requestString, adminConfigurationJsonPrefix, adminConfigurationJsonSuffix))
@@ -300,14 +305,14 @@ public class ConfigurationQueryOptions
             this._chosenFormat = Constants.APPLICATION_JSON;
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("json: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("json: requestString={}", requestString);
             }
             requestString =
                     this.takeOffPrefixAndSuffix(requestString, adminConfigurationJsonPrefix,
                             adminConfigurationJsonSuffix);
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("json: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("json: requestString={}", requestString);
             }
         }
         else if(this.matchesPrefixAndSuffix(requestString, adminConfigurationNTriplesPrefix,
@@ -317,14 +322,14 @@ public class ConfigurationQueryOptions
             this._chosenFormat = Constants.TEXT_PLAIN;
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("ntriples: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("ntriples: requestString={}", requestString);
             }
             requestString =
                     this.takeOffPrefixAndSuffix(requestString, adminConfigurationNTriplesPrefix,
                             adminConfigurationNTriplesSuffix);
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("ntriples: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("ntriples: requestString={}", requestString);
             }
         }
         else if(this.matchesPrefixAndSuffix(requestString, adminConfigurationNQuadsPrefix,
@@ -334,17 +339,22 @@ public class ConfigurationQueryOptions
             this._chosenFormat = Constants.TEXT_X_NQUADS;
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("nquads: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("nquads: requestString={}", requestString);
             }
             requestString =
                     this.takeOffPrefixAndSuffix(requestString, adminConfigurationNQuadsPrefix,
                             adminConfigurationNQuadsSuffix);
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("nquads: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("nquads: requestString={}", requestString);
             }
         }
         
+    	if(TRACE)
+    	{
+    		log.trace("parseForAdminFormat: requestString: {}", requestString);
+    	}
+    	
         return requestString;
     }
     
@@ -389,7 +399,7 @@ public class ConfigurationQueryOptions
         if(ConfigurationQueryOptions.DEBUG)
         {
             ConfigurationQueryOptions.log.debug("apiVersionPatternString=" + apiVersionPatternString);
-            ConfigurationQueryOptions.log.debug("requestString=" + requestString);
+            ConfigurationQueryOptions.log.debug("requestString={}", requestString);
         }
         
         final Pattern apiVersionPattern = Pattern.compile(apiVersionPatternString);
@@ -429,7 +439,7 @@ public class ConfigurationQueryOptions
         if(ConfigurationQueryOptions.DEBUG)
         {
             ConfigurationQueryOptions.log.debug("apiVersion=" + this._apiVersion);
-            ConfigurationQueryOptions.log.debug("requestString=" + requestString);
+            ConfigurationQueryOptions.log.debug("requestString={}", requestString);
         }
         
         return requestString;
@@ -458,12 +468,12 @@ public class ConfigurationQueryOptions
             this._chosenFormat = Constants.TEXT_HTML;
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("html: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("html: requestString={}", requestString);
             }
             requestString = this.takeOffPrefixAndSuffix(requestString, nsIdHtmlPrefix, nsIdHtmlSuffix);
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("html: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("html: requestString={}", requestString);
             }
         }
         else if(this.matchesPrefixAndSuffix(requestString, nsIdRdfxmlPrefix, nsIdRdfxmlSuffix))
@@ -472,12 +482,12 @@ public class ConfigurationQueryOptions
             this._chosenFormat = Constants.APPLICATION_RDF_XML;
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("rdfxml: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("rdfxml: requestString={}", requestString);
             }
             requestString = this.takeOffPrefixAndSuffix(requestString, nsIdRdfxmlPrefix, nsIdRdfxmlSuffix);
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("rdfxml: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("rdfxml: requestString={}", requestString);
             }
         }
         else if(this.matchesPrefixAndSuffix(requestString, nsIdN3Prefix, nsIdN3Suffix))
@@ -486,12 +496,12 @@ public class ConfigurationQueryOptions
             this._chosenFormat = Constants.TEXT_RDF_N3;
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("n3: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("n3: requestString={}", requestString);
             }
             requestString = this.takeOffPrefixAndSuffix(requestString, nsIdN3Prefix, nsIdN3Suffix);
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("n3: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("n3: requestString={}", requestString);
             }
         }
         else if(this.matchesPrefixAndSuffix(requestString, nsIdJsonldPrefix, nsIdJsonldSuffix))
@@ -500,12 +510,12 @@ public class ConfigurationQueryOptions
             this._chosenFormat = Constants.APPLICATION_LD_JSON;
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("jsonld: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("jsonld: requestString={}", requestString);
             }
             requestString = this.takeOffPrefixAndSuffix(requestString, nsIdJsonldPrefix, nsIdJsonldSuffix);
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("jsonld: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("jsonld: requestString={}", requestString);
             }
         }
         else if(this.matchesPrefixAndSuffix(requestString, nsIdJsonPrefix, nsIdJsonSuffix))
@@ -514,12 +524,12 @@ public class ConfigurationQueryOptions
             this._chosenFormat = Constants.APPLICATION_JSON;
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("json: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("json: requestString={}", requestString);
             }
             requestString = this.takeOffPrefixAndSuffix(requestString, nsIdJsonPrefix, nsIdJsonSuffix);
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("json: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("json: requestString={}", requestString);
             }
         }
         else if(this.matchesPrefixAndSuffix(requestString, nsIdNTriplesPrefix, nsIdNTriplesSuffix))
@@ -528,12 +538,12 @@ public class ConfigurationQueryOptions
             this._chosenFormat = Constants.TEXT_PLAIN;
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("ntriples: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("ntriples: requestString={}", requestString);
             }
             requestString = this.takeOffPrefixAndSuffix(requestString, nsIdNTriplesPrefix, nsIdNTriplesSuffix);
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("ntriples: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("ntriples: requestString={}", requestString);
             }
         }
         else if(this.matchesPrefixAndSuffix(requestString, nsIdNQuadsPrefix, nsIdNQuadsSuffix))
@@ -542,12 +552,12 @@ public class ConfigurationQueryOptions
             this._chosenFormat = Constants.TEXT_X_NQUADS;
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("nquads: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("nquads: requestString={}", requestString);
             }
             requestString = this.takeOffPrefixAndSuffix(requestString, nsIdNQuadsPrefix, nsIdNQuadsSuffix);
             if(ConfigurationQueryOptions.DEBUG)
             {
-                ConfigurationQueryOptions.log.debug("nquads: requestString=" + requestString);
+                ConfigurationQueryOptions.log.debug("nquads: requestString={}", requestString);
             }
         }
         
