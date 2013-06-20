@@ -1,6 +1,5 @@
 package de.fuberlin.wiwiss.pubby.negotiation;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class Negotiation
@@ -52,9 +51,6 @@ public class Negotiation
     
     MediaRangeSpec negotiate()
     {
-        // Iterator it = variantSpecs.iterator();
-        // while (it.hasNext()) {
-        // VariantSpec variant = (VariantSpec) it.next();
         for(final VariantSpec variant : this.contentTypeNegotiator.variantSpecs)
         {
             if(variant.isDefault)
@@ -62,10 +58,8 @@ public class Negotiation
                 this.evaluateDefaultVariant(variant.getMediaType());
             }
             this.evaluateVariant(variant.getMediaType());
-            final Iterator<MediaRangeSpec> aliasIt = variant.getAliases().iterator();
-            while(aliasIt.hasNext())
+            for(MediaRangeSpec alias : variant.getAliases())
             {
-                final MediaRangeSpec alias = aliasIt.next();
                 this.evaluateVariantAlias(alias, variant.getMediaType());
             }
         }
