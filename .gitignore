@@ -1,7 +1,8 @@
-/target
+target/
 .classpath
 .project
-.settings
+.settings/
 .checkstyle
 *~
 pom.xml.versionsBackup
+
