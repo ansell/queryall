@@ -68,7 +68,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <sesame.version>2.7.2</sesame.version>
-        <sesamerioextensions.version>0.4</sesamerioextensions.version>
+        <sesamerioextensions.version>0.5-SNAPSHOT</sesamerioextensions.version>
         <slf4j.version>1.7.5</slf4j.version>
     </properties>
     <prerequisites>
