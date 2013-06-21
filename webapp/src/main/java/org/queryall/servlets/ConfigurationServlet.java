@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -26,6 +27,7 @@ import org.queryall.api.provider.Provider;
 import org.queryall.api.querytype.QueryType;
 import org.queryall.api.rdfrule.NormalisationRule;
 import org.queryall.api.ruletest.RuleTest;
+import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
 import org.queryall.negotiation.QueryallContentNegotiator;
@@ -80,8 +82,6 @@ public class ConfigurationServlet extends HttpServlet
         final ConfigurationQueryOptions requestConfigurationQueryOptions =
                 new ConfigurationQueryOptions(request.getRequestURI(), request.getContextPath(), localSettings);
         
-        final PrintWriter out = response.getWriter();
-        
         final java.io.StringWriter stBuff = new java.io.StringWriter();
         
         final String originalRequestedContentType =
@@ -95,7 +95,7 @@ public class ConfigurationServlet extends HttpServlet
         
         if(requestConfigurationQueryOptions.isRefresh())
         {
-            out.write("Refresh currently disabled");
+            response.getWriter().write("Refresh currently disabled");
             
             return;
             
@@ -166,11 +166,12 @@ public class ConfigurationServlet extends HttpServlet
                     .error("ConfigurationServlet: requested API version not supported by this server. apiVersion="
                             + apiVersion + " Settings.CONFIG_API_VERSION=" + SettingsFactory.CONFIG_API_VERSION);
             
-            response.setContentType("text/plain");
+            response.setContentType(Constants.TEXT_PLAIN);
             response.setStatus(400);
-            out.write("Requested API version not supported by this server. Current supported version="
-                    + SettingsFactory.CONFIG_API_VERSION);
-            out.flush();
+            response.getWriter().write(
+                    "Requested API version not supported by this server. Current supported version="
+                            + SettingsFactory.CONFIG_API_VERSION);
+            response.getWriter().flush();
             return;
         }
         
@@ -179,21 +180,30 @@ public class ConfigurationServlet extends HttpServlet
         final String writerFormatString =
                 RdfUtils.findBestContentType(requestedContentType,
                         localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE),
-                        "application/rdf+xml");
+                        Constants.APPLICATION_RDF_XML);
         
-        RDFFormat writerFormat = null;
-        
-        if(!writerFormatString.equals("text/html"))
-        {
-            writerFormat = RdfUtils.getWriterFormat(writerFormatString);
-        }
+        RDFFormat writerFormat = RdfUtils.getWriterFormat(writerFormatString);
         
         // localSettings.configRefreshCheck(false);
         
-        response.setContentType(requestedContentType);
-        response.setCharacterEncoding("UTF-8");
+        if(writerFormat == null)
+        {
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType(Constants.TEXT_HTML);
+        }
+        else if(writerFormat.hasCharset())
+        {
+            response.setCharacterEncoding(writerFormat.getCharset().name());
+            response.setContentType(writerFormat.getDefaultMIMEType());
+        }
+        else
+        {
+            response.setContentType(writerFormat.getDefaultMIMEType());
+            // Do not set character encoding as this may be a binary format if it doesn't have a
+            // defined charset
+        }
         
-        boolean targetOnlyQueryString = false;
+        boolean targetOnlyQueryString = StringUtils.isPlainNamespaceAndIdentifier(queryString, localSettings);
         
         final String queryStringURI = localSettings.getDefaultHostAddress() + queryString;
         
@@ -202,14 +212,9 @@ public class ConfigurationServlet extends HttpServlet
             ConfigurationServlet.log.info("queryStringUri=" + queryStringURI);
         }
         
-        if(StringUtils.isPlainNamespaceAndIdentifier(queryString, localSettings))
+        if(targetOnlyQueryString)
         {
-            targetOnlyQueryString = true;
-            
-            if(ConfigurationServlet.INFO)
-            {
-                ConfigurationServlet.log.info("requested plain namespace and identifier from configuration");
-            }
+            ConfigurationServlet.log.info("requested plain namespace and identifier from configuration");
         }
         
         final Repository myRepository = new SailRepository(new MemoryStore());
@@ -261,16 +266,16 @@ public class ConfigurationServlet extends HttpServlet
                             if(!allQueries.get(nextQueryKey).toRdf(myRepository, apiVersion, nextQueryKey))
                             {
                                 ConfigurationServlet.log
-                                        .error("ConfigurationServlet: Custom Query was not placed correctly in the rdf store key="
-                                                + nextQueryKey);
+                                        .error("ConfigurationServlet: Custom Query was not placed correctly in the rdf store key={}",
+                                                nextQueryKey);
                                 // out.write(RdfUtils.xmlEncodeString(allQueries.get(nextQueryKey).toString()));
                             }
                         }
                         catch(final Exception ex)
                         {
-                            ConfigurationServlet.log
-                                    .error("ConfigurationServlet: Problem generating Query RDF with key: "
-                                            + nextQueryKey + " type=" + ex.getClass().getName());
+                            ConfigurationServlet.log.error(
+                                    "ConfigurationServlet: Problem generating Query RDF with key: {} type: {}",
+                                    nextQueryKey, ex.getClass().getName());
                             ConfigurationServlet.log.error(ex.getMessage());
                             // out.write("Problem generating Query RDF with key: "+nextQueryKey+"<br />\n");
                             // out.write(RdfUtils.xmlEncodeString(allQueries.get(nextQueryKey).toString()));
@@ -290,8 +295,8 @@ public class ConfigurationServlet extends HttpServlet
                                     nextNormalisationRuleKey))
                             {
                                 ConfigurationServlet.log
-                                        .error("ConfigurationServlet: Rdf Normalisation Rule was not placed correctly in the rdf store key="
-                                                + nextNormalisationRuleKey);
+                                        .error("ConfigurationServlet: Rdf Normalisation Rule was not placed correctly in the rdf store key={}",
+                                                nextNormalisationRuleKey);
                             }
                         }
                         catch(final Exception ex)
@@ -646,7 +651,7 @@ public class ConfigurationServlet extends HttpServlet
                 myRepositoryConnection.close();
             }
             
-            if(requestedContentType.equals("text/html"))
+            if(writerFormat == null)
             {
                 if(ConfigurationServlet.INFO)
                 {
@@ -687,6 +692,8 @@ public class ConfigurationServlet extends HttpServlet
         {
             ConfigurationServlet.log.info("about to call out.write");
         }
+        
+        final PrintWriter out = response.getWriter();
         
         for(int i = 0; i < stBuff.getBuffer().length(); i++)
         {
