@@ -48,6 +48,8 @@ public class DefaultQueryOptions
     private String ntriplesUrlSuffix;
     private String nquadsUrlPrefix;
     private String nquadsUrlSuffix;
+    private String jsonldUrlPrefix;
+    private String jsonldUrlSuffix;
     
     public DefaultQueryOptions(String requestUri, final String contextPath, final QueryAllConfiguration nextSettings)
     {
@@ -66,6 +68,8 @@ public class DefaultQueryOptions
         this.n3UrlSuffix = this.localSettings.getStringProperty(WebappConfig.N3_URL_SUFFIX);
         this.jsonUrlPrefix = this.localSettings.getStringProperty(WebappConfig.JSON_URL_PREFIX);
         this.jsonUrlSuffix = this.localSettings.getStringProperty(WebappConfig.JSON_URL_SUFFIX);
+        this.jsonldUrlPrefix = this.localSettings.getStringProperty(WebappConfig.JSONLD_URL_PREFIX);
+        this.jsonldUrlSuffix = this.localSettings.getStringProperty(WebappConfig.JSONLD_URL_SUFFIX);
         this.ntriplesUrlPrefix = this.localSettings.getStringProperty(WebappConfig.NTRIPLES_URL_PREFIX);
         this.ntriplesUrlSuffix = this.localSettings.getStringProperty(WebappConfig.NTRIPLES_URL_SUFFIX);
         this.nquadsUrlPrefix = this.localSettings.getStringProperty(WebappConfig.NQUADS_URL_PREFIX);
@@ -214,10 +218,24 @@ public class DefaultQueryOptions
                 DefaultQueryOptions.log.debug("requestString=" + requestString);
             }
         }
+        else if(this.matchesPrefixAndSuffix(requestString, this.jsonldUrlPrefix, this.jsonldUrlSuffix))
+        {
+            this._hasExplicitFormat = true;
+            this._chosenFormat = Constants.APPLICATION_LD_JSON;
+            if(DefaultQueryOptions.DEBUG)
+            {
+                DefaultQueryOptions.log.debug("requestString=" + requestString);
+            }
+            requestString = this.takeOffPrefixAndSuffix(requestString, this.jsonldUrlPrefix, this.jsonldUrlSuffix);
+            if(DefaultQueryOptions.DEBUG)
+            {
+                DefaultQueryOptions.log.debug("requestString=" + requestString);
+            }
+        }
         else if(this.matchesPrefixAndSuffix(requestString, this.jsonUrlPrefix, this.jsonUrlSuffix))
         {
             this._hasExplicitFormat = true;
-            this._chosenFormat = Constants.APPLICATION_JSON;
+            this._chosenFormat = Constants.APPLICATION_RDF_JSON;
             if(DefaultQueryOptions.DEBUG)
             {
                 DefaultQueryOptions.log.debug("requestString=" + requestString);
