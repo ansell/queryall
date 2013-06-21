@@ -149,6 +149,9 @@ public class HtmlPageRenderer
         velocityContext.put("json_link",
                 realHostName + contextPath + localSettings.getStringProperty(WebappConfig.JSON_URL_PREFIX)
                         + queryString + localSettings.getStringProperty(WebappConfig.JSON_URL_SUFFIX));
+        velocityContext.put("jsonld_link",
+                realHostName + contextPath + localSettings.getStringProperty(WebappConfig.JSONLD_URL_PREFIX)
+                        + queryString + localSettings.getStringProperty(WebappConfig.JSONLD_URL_SUFFIX));
         // context.put("disco_link", discoLink);
         // context.put("tabulator_link", tabulatorLink);
         // context.put("openlink_link", openLinkLink);
