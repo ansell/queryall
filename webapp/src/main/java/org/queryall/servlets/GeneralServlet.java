@@ -195,11 +195,6 @@ public class GeneralServlet extends HttpServlet
             
             final Collection<String> debugStrings = new ArrayList<String>(multiProviderQueryBundles.size() + 5);
             
-            // We do not use the default catalina writer as it may not be UTF-8 compliant depending
-            // on unchangeable environment variables, instead we wrap up the catalina binary output
-            // stream as a guaranteed UTF-8 Writer
-            final Writer out = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
-            
             // Create a new in memory repository for each request
             final Repository myRepository = new SailRepository(new MemoryStore());
             myRepository.initialize();
@@ -371,6 +366,25 @@ public class GeneralServlet extends HttpServlet
             if(GeneralServlet.TRACE)
             {
                 GeneralServlet.log.trace("GeneralServlet: finished normalising pool data");
+            }
+            
+            // We do not use the default catalina writer as it may not be UTF-8 compliant depending
+            // on unchangeable environment variables, instead we wrap up the catalina binary output
+            // stream as a guaranteed UTF-8 Writer
+            Writer out;
+            
+            if(writerFormat == null)
+            {
+                out = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
+            }
+            else if(writerFormat.hasCharset())
+            {
+                out = new OutputStreamWriter(response.getOutputStream(), writerFormat.getCharset());
+            }
+            else
+            {
+                // TODO: Support binary results formats by not using a Writer
+                out = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
             }
             
             ServletUtils.resultsToWriter(localVelocityEngine, out, localSettings, writerFormat, realHostName,

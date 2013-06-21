@@ -168,10 +168,11 @@ public class ConfigurationServlet extends HttpServlet
             
             response.setContentType(Constants.TEXT_PLAIN);
             response.setStatus(400);
-            response.getWriter().write(
+            PrintWriter writer = response.getWriter();
+            writer.write(
                     "Requested API version not supported by this server. Current supported version="
                             + SettingsFactory.CONFIG_API_VERSION);
-            response.getWriter().flush();
+            writer.flush();
             return;
         }
         
