@@ -28,11 +28,14 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.openrdf.OpenRDFException;
 import org.openrdf.model.Literal;
+import org.openrdf.model.Model;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
+import org.openrdf.model.impl.LinkedHashModel;
+import org.openrdf.model.util.Literals;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.GraphQuery;
@@ -932,20 +935,17 @@ public final class RdfUtils
      * @return
      * @throws OpenRDFException
      */
-    public static Collection<Statement> getAllStatementsFromRepository(final Repository nextRepository,
-            final Resource... contexts) throws OpenRDFException
+    public static Model getAllStatementsFromRepository(final Repository nextRepository, final Resource... contexts)
+        throws OpenRDFException
     {
-        final List<Statement> results = new ArrayList<Statement>();
+        final Model results = new LinkedHashModel();
         
         RepositoryConnection con = null;
         
         try
         {
             con = nextRepository.getConnection();
-            
             Iterations.addAll(con.getStatements((Resource)null, (URI)null, (Value)null, true, contexts), results);
-            
-            Collections.sort(results, new StatementComparator());
         }
         catch(final OpenRDFException ordfe)
         {
@@ -3195,7 +3195,7 @@ public final class RdfUtils
                 localSettings, localBlacklistController, true);
     }
     
-    public static Collection<Statement> retrieveUrlsToStatements(final Collection<String> retrievalUrls,
+    public static Model retrieveUrlsToStatements(final Collection<String> retrievalUrls,
             final String defaultResultFormat, final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController) throws InterruptedException
     {
@@ -3214,7 +3214,7 @@ public final class RdfUtils
             RdfUtils.log.error("retrieveUrlsToStatements: caught OpenRDFException", e);
         }
         
-        return Collections.emptyList();
+        return new LinkedHashModel();
     }
     
     /**
