@@ -1402,12 +1402,24 @@ public class QueryCreator
                 
                 if(replacedString.contains(Constants.TEMPLATE_SEPARATOR))
                 {
+                    log.trace("Replacing separator with {}", separatorString);
                     replacedString = replacedString.replace(Constants.TEMPLATE_SEPARATOR, separatorString);
+                    log.trace("replacedString={}", replacedString);
+                }
+                else
+                {
+                    log.trace("No separator found replacedString={}", replacedString);
                 }
                 
                 if(replacedString.contains(Constants.TEMPLATE_AUTHORITY))
                 {
+                    log.trace("Replacing authority with {}", authorityString);
                     replacedString = replacedString.replace(Constants.TEMPLATE_AUTHORITY, authorityString);
+                    log.trace("replacedString={}", replacedString);
+                }
+                else
+                {
+                    log.trace("No authority found replacedString={}", replacedString);
                 }
                 
                 replacedString =
