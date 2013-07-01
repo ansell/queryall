@@ -51,7 +51,7 @@ public class NamespaceEntryImpl extends BaseQueryAllImpl implements NamespaceEnt
     
     private String uriTemplate = "";
     
-    private String separator = "";
+    private String separator = ":";
     
     // This setting determines whether input namespace prefixes in the alternatives list should be
     // converted to the preferred prefix
