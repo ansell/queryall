@@ -1313,12 +1313,13 @@ public class QueryCreator
                     {
                         if(nextProvider.containsNamespaceOrDefault(nextNamespaceEntry.getKey()))
                         {
-                            QueryCreator.log.info("Provider included matching namespace={} separator={} authority={}",
-                                    nextNamespaceEntry.getKey(), nextNamespaceEntry.getSeparator(),
-                                    nextNamespaceEntry.getAuthority());
-                            
                             if(QueryCreator.DEBUG)
                             {
+                                QueryCreator.log.debug(
+                                        "Provider included matching namespace={} separator={} authority={}",
+                                        nextNamespaceEntry.getKey(), nextNamespaceEntry.getSeparator(),
+                                        nextNamespaceEntry.getAuthority());
+                                
                                 QueryCreator.log.debug("inputReplaceString={}", inputReplaceString);
                             }
                             
