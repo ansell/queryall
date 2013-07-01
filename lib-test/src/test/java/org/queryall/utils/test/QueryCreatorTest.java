@@ -74,7 +74,7 @@ public class QueryCreatorTest
     private RegexInputQueryTypeImpl testRegexInputQueryType2;
     private RegexInputQueryTypeImpl testRegexInputQueryType3;
     
-    private ValueFactory testValueFactory;
+    private ValueFactory vf;
     
     /**
      * @throws java.lang.Exception
@@ -82,21 +82,21 @@ public class QueryCreatorTest
     @Before
     public void setUp() throws Exception
     {
-        this.testValueFactory = new ValueFactoryImpl();
+        this.vf = new ValueFactoryImpl();
         
         this.testNamespaceEntry1 = new NamespaceEntryImpl();
         this.testNamespaceEntry1.setKey("http://example.org/test/namespace/1");
         this.testNamespaceEntry1.setPreferredPrefix("myPreferredNamespace");
         this.testNamespaceEntry1.addAlternativePrefix("alternateNs");
         this.testNamespaceEntry1.setSeparator(":");
-        this.testNamespaceEntry1.setAuthority(this.testValueFactory.createURI("http://my.example.org/"));
+        this.testNamespaceEntry1.setAuthority(this.vf.createURI("http://my.example.org/"));
         
         this.testNamespaceEntry2 = new NamespaceEntryImpl();
         this.testNamespaceEntry2.setKey("http://example.org/test/namespace/2");
         this.testNamespaceEntry2.setPreferredPrefix("myOtherNamespace");
         this.testNamespaceEntry2.addAlternativePrefix("otherNs");
         this.testNamespaceEntry2.setSeparator("/");
-        this.testNamespaceEntry2.setAuthority(this.testValueFactory.createURI("http://other.example.org/"));
+        this.testNamespaceEntry2.setAuthority(this.vf.createURI("http://other.example.org/"));
         
         this.testRegexInputQueryType1 = new RegexInputQueryTypeImpl();
         this.testRegexInputQueryType1.setKey("http://example.org/test/query/1");
@@ -205,7 +205,7 @@ public class QueryCreatorTest
     @After
     public void tearDown() throws Exception
     {
-        this.testValueFactory = null;
+        this.vf = null;
         
         this.testAttributeList1 = null;
         this.testAttributeList2 = null;
@@ -316,7 +316,7 @@ public class QueryCreatorTest
         final String resultString =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType1,
                         this.testAttributeList1, "", this.emptySpecialInstructions, false,
-                        this.testNamespaceInputVariables1, this.testProvider1);
+                        this.testNamespaceInputVariables1, this.testProvider1, this.testLocalSettings1);
         
         Assert.assertEquals("", resultString);
     }
@@ -332,7 +332,8 @@ public class QueryCreatorTest
         final String resultString =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType2,
                         this.testAttributeList2, "${authority}${input_1}${separator}${input_2}",
-                        this.emptySpecialInstructions, false, this.testNamespaceInputVariables2, this.testProvider2);
+                        this.emptySpecialInstructions, false, this.testNamespaceInputVariables2, this.testProvider2,
+                        this.testLocalSettings2);
         
         Assert.assertEquals("http://other.example.org/otherNs/otherNsUniqueId", resultString);
     }
@@ -348,7 +349,8 @@ public class QueryCreatorTest
         final String resultString =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType2,
                         this.testAttributeList2, "${authority}${input_1}${separator}${input_2}",
-                        this.emptySpecialInstructions, true, this.testNamespaceInputVariables2, this.testProvider2);
+                        this.emptySpecialInstructions, true, this.testNamespaceInputVariables2, this.testProvider2,
+                        this.testLocalSettings2);
         
         Assert.assertEquals("http://other.example.org/myOtherNamespace/otherNsUniqueId", resultString);
     }
@@ -364,7 +366,7 @@ public class QueryCreatorTest
         final String resultString =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType1,
                         this.testAttributeList1, "${input_1}", this.emptySpecialInstructions, false,
-                        this.testNamespaceInputVariables1, this.testProvider1);
+                        this.testNamespaceInputVariables1, this.testProvider1, this.testLocalSettings1);
         
         Assert.assertEquals("alternateNs", resultString);
     }
@@ -380,7 +382,7 @@ public class QueryCreatorTest
         final String resultString =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType2,
                         this.testAttributeList2, "${input_1}", this.emptySpecialInstructions, false,
-                        this.testNamespaceInputVariables2, this.testProvider2);
+                        this.testNamespaceInputVariables2, this.testProvider2, this.testLocalSettings2);
         
         Assert.assertEquals("otherNs", resultString);
     }
@@ -396,7 +398,7 @@ public class QueryCreatorTest
         final String resultString =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType1,
                         this.testAttributeList1, "${input_1}", this.emptySpecialInstructions, true,
-                        this.testNamespaceInputVariables1, this.testProvider1);
+                        this.testNamespaceInputVariables1, this.testProvider1, this.testLocalSettings1);
         
         Assert.assertEquals("myPreferredNamespace", resultString);
     }
@@ -412,7 +414,7 @@ public class QueryCreatorTest
         final String resultString =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType2,
                         this.testAttributeList2, "${input_1}", this.emptySpecialInstructions, true,
-                        this.testNamespaceInputVariables2, this.testProvider2);
+                        this.testNamespaceInputVariables2, this.testProvider2, this.testLocalSettings2);
         
         Assert.assertEquals("myOtherNamespace", resultString);
     }
@@ -428,7 +430,7 @@ public class QueryCreatorTest
         final String resultString =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType2,
                         this.testAttributeList2, "${authority}${input_1}${separator}", this.emptySpecialInstructions,
-                        false, this.testNamespaceInputVariables2, this.testProvider2);
+                        false, this.testNamespaceInputVariables2, this.testProvider2, this.testLocalSettings2);
         
         Assert.assertEquals("http://other.example.org/otherNs/", resultString);
     }
@@ -444,7 +446,7 @@ public class QueryCreatorTest
         final String resultString =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType2,
                         this.testAttributeList2, "${authority}${input_1}${separator}", this.emptySpecialInstructions,
-                        true, this.testNamespaceInputVariables2, this.testProvider2);
+                        true, this.testNamespaceInputVariables2, this.testProvider2, this.testLocalSettings2);
         
         Assert.assertEquals("http://other.example.org/myOtherNamespace/", resultString);
     }
@@ -460,7 +462,7 @@ public class QueryCreatorTest
         final String resultString =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType1,
                         this.testAttributeList1, "${input_1}${separator}", this.emptySpecialInstructions, false,
-                        this.testNamespaceInputVariables1, this.testProvider1);
+                        this.testNamespaceInputVariables1, this.testProvider1, this.testLocalSettings1);
         
         Assert.assertEquals("alternateNs:", resultString);
     }
@@ -476,7 +478,7 @@ public class QueryCreatorTest
         final String resultString =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType2,
                         this.testAttributeList2, "${input_1}${separator}", this.emptySpecialInstructions, false,
-                        this.testNamespaceInputVariables2, this.testProvider2);
+                        this.testNamespaceInputVariables2, this.testProvider2, this.testLocalSettings2);
         
         Assert.assertEquals("otherNs/", resultString);
     }
@@ -492,7 +494,7 @@ public class QueryCreatorTest
         final String resultString =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType1,
                         this.testAttributeList1, "${input_1}${separator}", this.emptySpecialInstructions, true,
-                        this.testNamespaceInputVariables1, this.testProvider1);
+                        this.testNamespaceInputVariables1, this.testProvider1, this.testLocalSettings1);
         
         Assert.assertEquals("myPreferredNamespace:", resultString);
     }
@@ -508,7 +510,7 @@ public class QueryCreatorTest
         final String resultString =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(this.testRegexInputQueryType2,
                         this.testAttributeList2, "${input_1}${separator}", this.emptySpecialInstructions, true,
-                        this.testNamespaceInputVariables2, this.testProvider2);
+                        this.testNamespaceInputVariables2, this.testProvider2, this.testLocalSettings2);
         
         Assert.assertEquals("myOtherNamespace/", resultString);
     }

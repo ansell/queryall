@@ -46,7 +46,7 @@ public class QueryBundleUtils
      * @param sortedIncludedProfiles
      * @param allQueryTypes
      *            TODO
-     * @param localSettings
+     * @param settings
      * @param localBlacklistController
      * @param realHostName
      * @param useAllEndpointsForEachProvider
@@ -65,7 +65,7 @@ public class QueryBundleUtils
             final Map<String, String> queryParameters,
             final Map<String, Collection<NamespaceEntry>> namespaceInputVariables,
             final List<Profile> sortedIncludedProfiles, final Map<URI, QueryType> allQueryTypes,
-            final QueryAllConfiguration localSettings, final BlacklistController localBlacklistController,
+            final QueryAllConfiguration settings, final BlacklistController localBlacklistController,
             final String realHostName, final boolean useAllEndpointsForEachProvider, final int pageOffset,
             final boolean convertAlternateToPreferred, final boolean recogniseImplicitRdfruleInclusions,
             final boolean includeNonProfileMatchedRdfrules) throws QueryAllException
@@ -113,7 +113,7 @@ public class QueryBundleUtils
                 {
                     String replacedEndpoint =
                             nextEndpoint.replace(Constants.TEMPLATE_REAL_HOST_NAME, realHostName)
-                                    .replace(Constants.TEMPLATE_DEFAULT_SEPARATOR, localSettings.getSeparator())
+                                    .replace(Constants.TEMPLATE_DEFAULT_SEPARATOR, settings.getSeparator())
                                     .replace(Constants.TEMPLATE_OFFSET, String.valueOf(pageOffset));
                     
                     // perform the ${input_1} ${urlEncoded_input_1} ${xmlEncoded_input_1} etc
@@ -121,26 +121,26 @@ public class QueryBundleUtils
                     replacedEndpoint =
                             QueryCreator.matchAndReplaceInputVariablesForQueryType(nextQueryType, queryParameters,
                                     replacedEndpoint, Constants.EMPTY_STRING_LIST, convertAlternateToPreferred,
-                                    namespaceInputVariables, nextProvider);
+                                    namespaceInputVariables, nextProvider, settings);
                     
                     attributeList =
                             QueryCreator.getAttributeListFor(nextQueryType, nextProvider, queryParameters,
                                     replacedEndpoint, realHostName, pageOffset,
-                                    localSettings.getStringProperty(WebappConfig.HOST_NAME),
-                                    localSettings.getDefaultHostAddress(), localSettings.getSeparator());
+                                    settings.getStringProperty(WebappConfig.HOST_NAME),
+                                    settings.getDefaultHostAddress(), settings.getSeparator());
                     
                     // This step is needed in order to replace endpointSpecific related template
                     // elements on the provider URL
                     replacedEndpoint =
                             QueryCreator.replaceAttributesOnEndpointUrl(replacedEndpoint, nextQueryType, nextProvider,
                                     attributeList, sortedIncludedProfiles, recogniseImplicitRdfruleInclusions,
-                                    includeNonProfileMatchedRdfrules, convertAlternateToPreferred, localSettings,
+                                    includeNonProfileMatchedRdfrules, convertAlternateToPreferred, settings,
                                     namespaceInputVariables);
                     
                     final String nextEndpointQuery =
                             QueryCreator.createQuery(nextQueryType, nextProvider, attributeList,
                                     sortedIncludedProfiles, recogniseImplicitRdfruleInclusions,
-                                    includeNonProfileMatchedRdfrules, convertAlternateToPreferred, localSettings,
+                                    includeNonProfileMatchedRdfrules, convertAlternateToPreferred, settings,
                                     namespaceInputVariables);
                     
                     // replace the query on the endpoint URL if necessary
@@ -186,7 +186,7 @@ public class QueryBundleUtils
                                     (OutputQueryType)nextCustomIncludeType, nextProvider, attributeList,
                                     namespaceInputVariables, sortedIncludedProfiles,
                                     recogniseImplicitRdfruleInclusions, includeNonProfileMatchedRdfrules,
-                                    convertAlternateToPreferred, localSettings));
+                                    convertAlternateToPreferred, settings));
                         }
                     }
                 }
@@ -197,7 +197,7 @@ public class QueryBundleUtils
                 nextProviderQueryBundle.setOriginalProvider(nextProvider);
                 nextProviderQueryBundle.setQueryType(nextQueryType);
                 nextProviderQueryBundle.setRelevantProfiles(sortedIncludedProfiles);
-                nextProviderQueryBundle.setQueryallSettings(localSettings);
+                nextProviderQueryBundle.setQueryallSettings(settings);
                 
                 for(final String nextEndpoint : ListUtils.randomiseCollectionLayout(replacedEndpoints.keySet()))
                 {
@@ -267,8 +267,8 @@ public class QueryBundleUtils
                         final Map<String, String> attributeList =
                                 QueryCreator.getAttributeListFor(nextCustomIncludeType, nextProvider, queryParameters,
                                         "", realHostName, pageOffset,
-                                        localSettings.getStringProperty(WebappConfig.HOST_NAME),
-                                        localSettings.getDefaultHostAddress(), localSettings.getSeparator());
+                                        settings.getStringProperty(WebappConfig.HOST_NAME),
+                                        settings.getDefaultHostAddress(), settings.getSeparator());
                         
                         if(nextCustomIncludeType instanceof OutputQueryType)
                         {
@@ -276,7 +276,7 @@ public class QueryBundleUtils
                                     (OutputQueryType)nextCustomIncludeType, nextProvider, attributeList,
                                     namespaceInputVariables, sortedIncludedProfiles,
                                     recogniseImplicitRdfruleInclusions, includeNonProfileMatchedRdfrules,
-                                    convertAlternateToPreferred, localSettings));
+                                    convertAlternateToPreferred, settings));
                         }
                     }
                 }
@@ -287,7 +287,7 @@ public class QueryBundleUtils
                 nextProviderQueryBundle.setProvider(nextProvider);
                 nextProviderQueryBundle.setQueryType(nextQueryType);
                 nextProviderQueryBundle.setRelevantProfiles(sortedIncludedProfiles);
-                nextProviderQueryBundle.setQueryallSettings(localSettings);
+                nextProviderQueryBundle.setQueryallSettings(settings);
                 
                 results.add(nextProviderQueryBundle);
             }

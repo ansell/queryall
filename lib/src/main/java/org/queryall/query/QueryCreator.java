@@ -220,7 +220,7 @@ public class QueryCreator
             final Map<String, Collection<NamespaceEntry>> namespaceInputVariables,
             final List<Profile> includedProfiles, final boolean recogniseImplicitRdfRuleInclusions,
             final boolean includeNonProfileMatchedRdfRules, final boolean overallConvertAlternateToPreferredPrefix,
-            final QueryAllConfiguration localSettings) throws QueryAllException
+            final QueryAllConfiguration settings) throws QueryAllException
     {
         if(QueryCreator.TRACE)
         {
@@ -228,11 +228,11 @@ public class QueryCreator
                     + " templateString=" + templateString + " normalisationUrisNeeded=" + nextProvider);
         }
         
-        if(!(localSettings.getTagPattern().matcher(templateString).matches()))
+        if(!(settings.getTagPattern().matcher(templateString).matches()))
         {
             if(QueryCreator.TRACE)
             {
-                QueryCreator.log.trace("tag pattern " + ((Settings)localSettings).getTagPattern().toString()
+                QueryCreator.log.trace("tag pattern " + ((Settings)settings).getTagPattern().toString()
                         + " does not match template string");
                 QueryCreator.log.trace("templateString=" + templateString);
                 QueryCreator.log.trace("returning templateString unchanged");
@@ -279,19 +279,19 @@ public class QueryCreator
         
         replacedString =
                 replacedString.replace(Constants.TEMPLATE_QUICK_LIMIT,
-                        "LIMIT " + localSettings.getIntProperty(WebappConfig.PAGEOFFSET_QUICK_QUERY_LIMIT));
+                        "LIMIT " + settings.getIntProperty(WebappConfig.PAGEOFFSET_QUICK_QUERY_LIMIT));
         
         normalisedQueryUri =
                 normalisedQueryUri.replace(Constants.TEMPLATE_QUICK_LIMIT,
-                        "limit/" + localSettings.getIntProperty(WebappConfig.PAGEOFFSET_QUICK_QUERY_LIMIT));
+                        "limit/" + settings.getIntProperty(WebappConfig.PAGEOFFSET_QUICK_QUERY_LIMIT));
         
         replacedString =
                 replacedString.replace(Constants.TEMPLATE_LIMIT,
-                        "LIMIT " + localSettings.getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT));
+                        "LIMIT " + settings.getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT));
         
         normalisedQueryUri =
                 normalisedQueryUri.replace(Constants.TEMPLATE_LIMIT,
-                        "limit/" + localSettings.getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT));
+                        "limit/" + settings.getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT));
         
         if(attributeList.containsKey(Constants.TEMPLATE_KEY_OFFSET))
         {
@@ -310,7 +310,7 @@ public class QueryCreator
                 // actual offset for pageOffset 1 is 0, and pageOffset 2 is
                 // Settings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit")
                 final int actualPageOffset =
-                        (pageOffset - 1) * localSettings.getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT);
+                        (pageOffset - 1) * settings.getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT);
                 
                 replacedString = replacedString.replace(Constants.TEMPLATE_SPARQL_OFFSET, "OFFSET " + actualPageOffset);
                 replacedString = replacedString.replace(Constants.TEMPLATE_PAGEOFFSET, String.valueOf(pageOffset));
@@ -450,135 +450,135 @@ public class QueryCreator
         replacedString =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         replacedString, Constants.EMPTY_STRING_LIST, overallConvertAlternateToPreferredPrefix,
-                        namespaceInputVariables, nextProvider);
+                        namespaceInputVariables, nextProvider, settings);
         
         normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         normalisedStandardUri, Constants.EMPTY_STRING_LIST, overallConvertAlternateToPreferredPrefix,
-                        namespaceInputVariables, nextProvider);
+                        namespaceInputVariables, nextProvider, settings);
         
         inputUrlEncoded_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_normalisedStandardUri, QueryCreator.inputUrlEncodeInstructions,
-                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
+                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider, settings);
         
         inputXmlEncoded_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_normalisedStandardUri, QueryCreator.inputXmlEncodeInstructions,
-                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
+                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider, settings);
         
         normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         normalisedQueryUri, Constants.EMPTY_STRING_LIST, overallConvertAlternateToPreferredPrefix,
-                        namespaceInputVariables, nextProvider);
+                        namespaceInputVariables, nextProvider, settings);
         
         inputUrlEncoded_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_normalisedQueryUri, QueryCreator.inputUrlEncodeInstructions,
-                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
+                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider, settings);
         
         inputPlusUrlEncoded_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputPlusUrlEncoded_normalisedStandardUri, QueryCreator.inputPlusUrlEncodeInstructions,
-                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
+                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider, settings);
         
         inputPlusUrlEncoded_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputPlusUrlEncoded_normalisedQueryUri, QueryCreator.inputPlusUrlEncodeInstructions,
-                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
+                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider, settings);
         
         inputXmlEncoded_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_normalisedQueryUri, QueryCreator.inputXmlEncodeInstructions,
-                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
+                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider, settings);
         
         inputUrlEncoded_lowercase_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_lowercase_normalisedStandardUri,
                         QueryCreator.inputUrlEncodedlowercaseInstructions, overallConvertAlternateToPreferredPrefix,
-                        namespaceInputVariables, nextProvider);
+                        namespaceInputVariables, nextProvider, settings);
         inputUrlEncoded_lowercase_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_lowercase_normalisedQueryUri,
                         QueryCreator.inputUrlEncodedlowercaseInstructions, overallConvertAlternateToPreferredPrefix,
-                        namespaceInputVariables, nextProvider);
+                        namespaceInputVariables, nextProvider, settings);
         
         inputXmlEncoded_lowercase_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_lowercase_normalisedStandardUri,
                         QueryCreator.inputXmlEncodedlowercaseInstructions, overallConvertAlternateToPreferredPrefix,
-                        namespaceInputVariables, nextProvider);
+                        namespaceInputVariables, nextProvider, settings);
         inputXmlEncoded_lowercase_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_lowercase_normalisedQueryUri,
                         QueryCreator.inputXmlEncodedlowercaseInstructions, overallConvertAlternateToPreferredPrefix,
-                        namespaceInputVariables, nextProvider);
+                        namespaceInputVariables, nextProvider, settings);
         
         inputUrlEncoded_uppercase_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_uppercase_normalisedStandardUri,
                         QueryCreator.inputUrlEncodeduppercaseInstructions, overallConvertAlternateToPreferredPrefix,
-                        namespaceInputVariables, nextProvider);
+                        namespaceInputVariables, nextProvider, settings);
         inputUrlEncoded_uppercase_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_uppercase_normalisedQueryUri,
                         QueryCreator.inputUrlEncodeduppercaseInstructions, overallConvertAlternateToPreferredPrefix,
-                        namespaceInputVariables, nextProvider);
+                        namespaceInputVariables, nextProvider, settings);
         
         inputXmlEncoded_uppercase_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_uppercase_normalisedStandardUri,
                         QueryCreator.inputXmlEncodeduppercaseInstructions, overallConvertAlternateToPreferredPrefix,
-                        namespaceInputVariables, nextProvider);
+                        namespaceInputVariables, nextProvider, settings);
         inputXmlEncoded_uppercase_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_uppercase_normalisedQueryUri,
                         QueryCreator.inputXmlEncodeduppercaseInstructions, overallConvertAlternateToPreferredPrefix,
-                        namespaceInputVariables, nextProvider);
+                        namespaceInputVariables, nextProvider, settings);
         
         inputUrlEncoded_privatelowercase_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_privatelowercase_normalisedStandardUri,
                         QueryCreator.inputUrlEncodedprivatelowercaseInstructions,
-                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
+                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider, settings);
         inputUrlEncoded_privatelowercase_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_privatelowercase_normalisedQueryUri,
                         QueryCreator.inputUrlEncodedprivatelowercaseInstructions,
-                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
+                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider, settings);
         
         inputXmlEncoded_privatelowercase_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_privatelowercase_normalisedStandardUri,
                         QueryCreator.inputXmlEncodedprivatelowercaseInstructions,
-                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
+                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider, settings);
         inputXmlEncoded_privatelowercase_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_privatelowercase_normalisedQueryUri,
                         QueryCreator.inputXmlEncodedprivatelowercaseInstructions,
-                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
+                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider, settings);
         
         inputUrlEncoded_privateuppercase_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_privateuppercase_normalisedStandardUri,
                         QueryCreator.inputUrlEncodedprivateuppercaseInstructions,
-                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
+                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider, settings);
         inputUrlEncoded_privateuppercase_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputUrlEncoded_privateuppercase_normalisedQueryUri,
                         QueryCreator.inputUrlEncodedprivateuppercaseInstructions,
-                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
+                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider, settings);
         
         inputXmlEncoded_privateuppercase_normalisedStandardUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_privateuppercase_normalisedStandardUri,
                         QueryCreator.inputXmlEncodedprivateuppercaseInstructions,
-                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
+                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider, settings);
         inputXmlEncoded_privateuppercase_normalisedQueryUri =
                 QueryCreator.matchAndReplaceInputVariablesForQueryType(originalQueryType, queryParameters,
                         inputXmlEncoded_privateuppercase_normalisedQueryUri,
                         QueryCreator.inputXmlEncodedprivateuppercaseInstructions,
-                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider);
+                        overallConvertAlternateToPreferredPrefix, namespaceInputVariables, nextProvider, settings);
         
         if(QueryCreator.TRACE)
         {
@@ -797,7 +797,7 @@ public class QueryCreator
         if(nextProvider != null)
         {
             final Collection<NormalisationRule> normalisationsNeeded =
-                    RuleUtils.getSortedRulesByUris(localSettings.getAllNormalisationRules(),
+                    RuleUtils.getSortedRulesByUris(settings.getAllNormalisationRules(),
                             nextProvider.getNormalisationUris(), SortOrder.LOWEST_ORDER_FIRST);
             
             for(final NormalisationRule nextRule : normalisationsNeeded)
@@ -1251,7 +1251,8 @@ public class QueryCreator
     public static String matchAndReplaceInputVariablesForQueryType(final InputQueryType originalQueryType,
             final Map<String, String> queryParameters, final String templateString,
             final List<String> specialInstructions, final boolean convertAlternateToPreferredPrefix,
-            final Map<String, Collection<NamespaceEntry>> namespaceInputVariables, final Provider nextProvider)
+            final Map<String, Collection<NamespaceEntry>> namespaceInputVariables, final Provider nextProvider,
+            final QueryAllConfiguration settings)
     {
         if(QueryCreator.DEBUG)
         {
@@ -1263,8 +1264,8 @@ public class QueryCreator
         final long start = System.currentTimeMillis();
         
         String replacedString = templateString;
-        String separatorString = "";
-        String authorityString = "";
+        String separatorString = settings.getStringProperty(WebappConfig.DEFAULT_SEPARATOR);
+        String authorityString = settings.getDefaultHostAddress();
         
         final Map<String, List<String>> allMatches = originalQueryType.matchesForQueryParameters(queryParameters);
         
@@ -1277,15 +1278,19 @@ public class QueryCreator
             {
                 if(QueryCreator.DEBUG)
                 {
-                    QueryCreator.log.debug("isNamespace nextMatchTag=" + nextMatchTag);
+                    QueryCreator.log.debug("isNamespace nextMatchTag={}", nextMatchTag);
                 }
+            }
+            else if(QueryCreator.DEBUG)
+            {
+                QueryCreator.log.debug("NOT isNamespace nextMatchTag={} queryType={}", nextMatchTag, originalQueryType);
             }
             
             for(String inputReplaceString : allMatches.get(nextMatchTag))
             {
                 if(QueryCreator.DEBUG)
                 {
-                    QueryCreator.log.debug("allMatches.get(nextMatchTag)=" + allMatches.get(nextMatchTag));
+                    QueryCreator.log.debug("allMatches.get(nextMatchTag)={}", allMatches.get(nextMatchTag));
                 }
                 
                 // FIXME: determine why namespaceInputVariables isn't being sent here properly from
@@ -1308,6 +1313,10 @@ public class QueryCreator
                     {
                         if(nextProvider.containsNamespaceOrDefault(nextNamespaceEntry.getKey()))
                         {
+                            QueryCreator.log.info("Provider included matching namespace={} separator={} authority={}",
+                                    nextNamespaceEntry.getKey(), nextNamespaceEntry.getSeparator(),
+                                    nextNamespaceEntry.getAuthority());
+                            
                             if(QueryCreator.DEBUG)
                             {
                                 QueryCreator.log.debug("inputReplaceString={}", inputReplaceString);
@@ -1335,20 +1344,21 @@ public class QueryCreator
                     
                     if(!foundANamespace)
                     {
-                        QueryCreator.log.warn("Could not find a namespace for tag=" + nextMatchTag + " nextProvider="
-                                + nextProvider.getKey() + " inputReplaceString=" + inputReplaceString);
+                        QueryCreator.log.warn(
+                                "Could not find a namespace for tag={} nextProvider={} inputReplaceString={}",
+                                nextMatchTag, nextProvider.getKey(), inputReplaceString);
                     }
                 }
                 if(QueryCreator.TRACE)
                 {
-                    QueryCreator.log.trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: nextMatchTag="
-                            + nextMatchTag);
-                    QueryCreator.log
-                            .trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: allMatches.get(nextMatchTag)="
-                                    + allMatches.get(nextMatchTag));
-                    QueryCreator.log
-                            .trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: indexOf matchString="
-                                    + replacedString.indexOf("${" + nextMatchTag + Constants.CLOSING_BRACE));
+                    QueryCreator.log.trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: nextMatchTag={}",
+                            nextMatchTag);
+                    QueryCreator.log.trace(
+                            "QueryCreator.matchAndReplaceInputVariablesForQueryType: allMatches.get(nextMatchTag)={}",
+                            allMatches.get(nextMatchTag));
+                    QueryCreator.log.trace(
+                            "QueryCreator.matchAndReplaceInputVariablesForQueryType: indexOf matchString={}",
+                            replacedString.indexOf("${" + nextMatchTag + Constants.CLOSING_BRACE));
                 }
                 
                 // in some cases we want to specially encode user input without
@@ -1502,8 +1512,8 @@ public class QueryCreator
                 
                 if(QueryCreator.TRACE)
                 {
-                    QueryCreator.log.trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: replacedString="
-                            + replacedString);
+                    QueryCreator.log.trace("QueryCreator.matchAndReplaceInputVariablesForQueryType: replacedString={}",
+                            replacedString);
                 }
             } // end for(String nextMatch : allMatches.get(nextMatchTag)
         } // end for(String nextMatchTag : allMatches.keySet())
@@ -1570,8 +1580,9 @@ public class QueryCreator
             QueryCreator.log.debug(String.format("%s: timing=%10d",
                     "QueryCreator.matchAndReplaceInputVariablesForQueryType", (end - start)));
             
-            QueryCreator.log.debug("QueryCreator.matchAndReplaceInputVariablesForQueryType: returning replacedString="
-                    + replacedString);
+            QueryCreator.log.debug(
+                    "QueryCreator.matchAndReplaceInputVariablesForQueryType: returning replacedString={}",
+                    replacedString);
         }
         
         return replacedString;
@@ -1606,8 +1617,7 @@ public class QueryCreator
         
         if(replacementString == null)
         {
-            QueryCreator.log.error("QueryCreator.replaceAttributesOnEndpointUrl: queryType="
-                    + queryType.getKey().stringValue());
+            QueryCreator.log.error("QueryCreator.replaceAttributesOnEndpointUrl: queryType={}", queryType.getKey());
         }
         
         return QueryCreator.doReplacementsOnString(attributeList, replacementString, queryType, null, nextProvider,
