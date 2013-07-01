@@ -2990,6 +2990,7 @@ public final class RdfUtils
                 }
                 else
                 {
+                    log.warn("Could not determine provider provenance for result, as provider was null");
                     myRepositoryConnection.add(new java.io.StringReader(nextResult.getNormalisedResult()),
                             defaultHostAddress, nextReaderFormat);
                 }
