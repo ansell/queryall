@@ -251,8 +251,7 @@ public class HtmlPageRenderer
             HtmlPageRenderer.log.debug("About to get all statements from repository");
         }
         
-        final SortedSet<Statement> allStatements =
-                RdfUtils.getAllStatementsFromRepository(nextRepository, new ContextInsensitiveStatementComparator());
+        final SortedSet<Statement> allStatements = RdfUtils.getAllStatementsFromRepositorySorted(nextRepository);
         
         // TODO: go through the statements and check an internal label cache to see if there is an
         // existing label available

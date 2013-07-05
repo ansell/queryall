@@ -879,8 +879,8 @@ public final class RdfUtils
      * @return
      * @throws OpenRDFException
      */
-    public static SortedSet<Statement> getAllStatementsFromRepository(final Repository nextRepository,
-            final Comparator<Statement> nextComparator, final Resource... contexts) throws OpenRDFException
+    public static SortedSet<Statement> getAllStatementsFromRepositorySorted(final Repository nextRepository,
+            final Resource... contexts) throws OpenRDFException
     {
         RepositoryConnection con = null;
         
