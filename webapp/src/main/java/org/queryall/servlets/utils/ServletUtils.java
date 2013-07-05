@@ -716,7 +716,7 @@ public class ServletUtils
         // Assume an average document may easily contain 2000 characters, to save on copies inside
         // the stringwriter
         // By default it starts with only 16 characters if we don't set a number here
-        final java.io.StringWriter cleanOutput = new java.io.StringWriter(2000);
+        final java.io.StringWriter cleanOutput = new java.io.StringWriter(2048);
         
         // TODO: Make this process generic to allow output to arbitrary formats instead of just
         if(requestedContentType.equals(Constants.TEXT_HTML))
