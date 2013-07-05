@@ -35,10 +35,8 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.LinkedHashModel;
-import org.openrdf.model.util.Literals;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.query.BindingSet;
-import org.openrdf.query.GraphQuery;
 import org.openrdf.query.GraphQueryResult;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
@@ -53,6 +51,7 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.Rio;
+import org.openrdf.rio.helpers.StatementCollector;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.base.QueryAllConfiguration;
@@ -87,7 +86,6 @@ import org.queryall.api.utils.Constants;
 import org.queryall.api.utils.QueryAllNamespaces;
 import org.queryall.api.utils.WebappConfig;
 import org.queryall.blacklist.BlacklistController;
-import org.queryall.comparators.StatementComparator;
 import org.queryall.exception.QueryAllException;
 import org.queryall.exception.QueryAllRuntimeException;
 import org.queryall.exception.UnsupportedNamespaceEntryException;
@@ -877,7 +875,7 @@ public final class RdfUtils
      * @return
      * @throws OpenRDFException
      */
-    public static Collection<Statement> getAllStatementsFromRepository(final Repository nextRepository,
+    public static List<Statement> getAllStatementsFromRepository(final Repository nextRepository,
             final Comparator<Statement> nextComparator, final Resource... contexts) throws OpenRDFException
     {
         RepositoryConnection con = null;
@@ -885,11 +883,12 @@ public final class RdfUtils
         try
         {
             // use HashSet to remove duplicates based on the context parameter
-            Set<Statement> resultsSet = new HashSet<Statement>();
+            Model resultsSet = new LinkedHashModel();
             
             con = nextRepository.getConnection();
             
-            Iterations.addAll(con.getStatements((Resource)null, (URI)null, (Value)null, true, contexts), resultsSet);
+            con.exportStatements((Resource)null, (URI)null, (Value)null, true, new StatementCollector(resultsSet),
+                    contexts);
             
             final List<Statement> results = new ArrayList<Statement>(resultsSet);
             
@@ -945,7 +944,8 @@ public final class RdfUtils
         try
         {
             con = nextRepository.getConnection();
-            Iterations.addAll(con.getStatements((Resource)null, (URI)null, (Value)null, true, contexts), results);
+            con.exportStatements((Resource)null, (URI)null, (Value)null, true, new StatementCollector(results),
+                    contexts);
         }
         catch(final OpenRDFException ordfe)
         {
@@ -2621,10 +2621,10 @@ public final class RdfUtils
         return sparqlInsertQuery;
     }
     
-    public static Collection<Statement> getStatementsFromRepositoryByPredicateUris(final Repository nextRepository,
+    public static Model getStatementsFromRepositoryByPredicateUris(final Repository nextRepository,
             final Collection<URI> predicateUris) throws OpenRDFException
     {
-        final Collection<Statement> results = new ArrayList<Statement>();
+        final Model results = new LinkedHashModel();
         
         if(RdfUtils.DEBUG)
         {
@@ -2633,15 +2633,18 @@ public final class RdfUtils
             // RdfUtils.log.debug(predicateUris);
         }
         
-        final RepositoryConnection con = nextRepository.getConnection();
+        RepositoryConnection con = null;
         
         try
         {
+            con = nextRepository.getConnection();
+            
             for(final URI nextInputPredicateUri : predicateUris)
             {
                 try
                 {
-                    Iterations.addAll(con.getStatements((URI)null, nextInputPredicateUri, (Value)null, true), results);
+                    con.exportStatements((URI)null, nextInputPredicateUri, (Value)null, true, new StatementCollector(
+                            results));
                 }
                 catch(final OpenRDFException ordfe)
                 {
@@ -2668,11 +2671,10 @@ public final class RdfUtils
         return results;
     }
     
-    public static Collection<Statement> getStatementsFromRepositoryByPredicateUrisAndSubject(
-            final Repository nextRepository, final Collection<URI> predicateUris, final URI subjectUri)
-        throws OpenRDFException
+    public static Model getStatementsFromRepositoryByPredicateUrisAndSubject(final Repository nextRepository,
+            final Collection<URI> predicateUris, final URI subjectUri) throws OpenRDFException
     {
-        final Collection<Statement> results = new ArrayList<Statement>();
+        final Model results = new LinkedHashModel();
         if(RdfUtils.DEBUG)
         {
             RdfUtils.log.debug("getStatementsFromRepositoryByPredicateUris: entering method");
@@ -2688,7 +2690,8 @@ public final class RdfUtils
             {
                 try
                 {
-                    Iterations.addAll(con.getStatements(subjectUri, nextInputPredicateUri, (Value)null, true), results);
+                    con.exportStatements(subjectUri, nextInputPredicateUri, (Value)null, true, new StatementCollector(
+                            results));
                 }
                 catch(final OpenRDFException ordfe)
                 {
@@ -2756,18 +2759,10 @@ public final class RdfUtils
     public static Collection<Value> getValuesFromRepositoryByPredicateUris(final Repository nextRepository,
             final Collection<URI> predicateUris) throws OpenRDFException
     {
-        final Collection<Value> results = new HashSet<Value>();
-        
-        final Collection<Statement> relevantStatements =
+        final Model relevantStatements =
                 RdfUtils.getStatementsFromRepositoryByPredicateUris(nextRepository, predicateUris);
         
-        for(final Statement nextStatement : relevantStatements)
-        {
-            results.add(nextStatement.getObject());
-        }
-        
-        return results;
-        
+        return relevantStatements.objects();
     }
     
     // TODO: make me more efficient
@@ -2778,8 +2773,6 @@ public final class RdfUtils
         {
             return Collections.emptyList();
         }
-        
-        final Collection<Value> results = new HashSet<Value>();
         
         if(RdfUtils.TRACE)
         {
@@ -2792,52 +2785,13 @@ public final class RdfUtils
         
         try
         {
+            final Model model = new LinkedHashModel();
+            
             for(final URI nextInputPredicateUri : predicateUris)
             {
                 try
                 {
-                    final String queryString =
-                            "CONSTRUCT { <" + subjectUri.stringValue() + "> <" + nextInputPredicateUri.stringValue()
-                                    + "> ?object } WHERE { <" + subjectUri.stringValue() + "> <"
-                                    + nextInputPredicateUri.stringValue() + "> ?object . }";
-                    final GraphQuery tupleQuery = con.prepareGraphQuery(QueryLanguage.SPARQL, queryString);
-                    final GraphQueryResult queryResult = tupleQuery.evaluate();
-                    
-                    if(RdfUtils.TRACE)
-                    {
-                        RdfUtils.log.trace("queryString=" + queryString);
-                    }
-                    
-                    try
-                    {
-                        while(queryResult.hasNext())
-                        {
-                            final Statement nextStatement = queryResult.next();
-                            
-                            if(RdfUtils.TRACE)
-                            {
-                                RdfUtils.log.trace("getValuesFromRepositoryByPredicateUrisAndSubject: nextStatement="
-                                        + nextStatement);
-                            }
-                            
-                            results.add(nextStatement.getObject());
-                            
-                            // if(RdfUtils.DEBUG)
-                            // {
-                            // RdfUtils.log
-                            // .debug("Utilities: found object: valueOfObject="
-                            // + valueOfObject);
-                            // }
-                            
-                            // results.add(new MemStatement(subjectUri, nextInputPredicateUri,
-                            // valueOfObject, null, false, 0));
-                            // results.add(getUTF8StringValueFromSesameValue(valueOfObject));
-                        }
-                    }
-                    finally
-                    {
-                        queryResult.close();
-                    }
+                    con.exportStatements(subjectUri, nextInputPredicateUri, null, true, new StatementCollector(model));
                 }
                 catch(final OpenRDFException ordfe)
                 {
@@ -2853,8 +2807,9 @@ public final class RdfUtils
                                     + nextInputPredicateUri.stringValue(), ex);
                 }
             }
+            
+            return model.objects();
         }
-        
         // catch(OpenRDFException ordfe)
         // {
         // log.error("getValuesFromRepositoryByPredicateUris: error found");
@@ -2867,8 +2822,6 @@ public final class RdfUtils
                 con.close();
             }
         }
-        // log.info("getValuesFromRepositoryByPredicateUrisAndSubject: results.size()="+results.size());
-        return results;
         
     }
     
@@ -2990,7 +2943,7 @@ public final class RdfUtils
                 }
                 else
                 {
-                    log.warn("Could not determine provider provenance for result, as provider was null");
+                    RdfUtils.log.warn("Could not determine provider provenance for result, as provider was null");
                     myRepositoryConnection.add(new java.io.StringReader(nextResult.getNormalisedResult()),
                             defaultHostAddress, nextReaderFormat);
                 }
