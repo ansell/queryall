@@ -170,24 +170,31 @@ public class GeneralServlet extends HttpServlet
         response.setHeader("X-Application", localSettings.getStringProperty(WebappConfig.USER_AGENT) + "/"
                 + PropertyUtils.VERSION);
         
-        // If the writerFormat was not found then we default to HTML, and if we are using Ajax, we
-        // don't need to fetch and can simply return here
-        // TODO: Always render HTML for some users
-        if(writerFormat == null && localSettings.getBooleanProperty(WebappConfig.USE_AJAX_HTML_INTERFACE))
-        {
-            HtmlPageRenderer.renderHtml(localEngine, localSettings, fetchController, convertedPool, cleanOutput,
-                    queryString, localSettings.getDefaultHostAddress() + queryString, realHostName, contextPath,
-                    pageOffset, debugStrings);
-            
-            return;
-        }
-        
-        final List<Profile> includedProfiles =
-                ProfileUtils.getAndSortProfileList(localSettings.getURIProperties(WebappConfig.ACTIVE_PROFILES),
-                        SortOrder.LOWEST_ORDER_FIRST, localSettings.getAllProfiles());
+        final Collection<String> debugStrings = new ArrayList<String>();
         
         try
         {
+            // If the writerFormat was not found then we default to HTML, and if we are using Ajax,
+            // we don't need to fetch and can simply return here
+            
+            if(writerFormat == null && localSettings.getBooleanProperty(WebappConfig.USE_AJAX_HTML_INTERFACE))
+            {
+                // We do not use the default catalina writer as it may not be UTF-8 compliant
+                // depending on unchangeable environment variables, instead we wrap up the catalina
+                // binary output stream as a guaranteed UTF-8 Writer
+                Writer out = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
+                
+                HtmlPageRenderer.renderAjaxHtml(localVelocityEngine, localSettings, out, queryString,
+                        localSettings.getDefaultHostAddress() + queryString, realHostName, contextPath, pageOffset,
+                        debugStrings);
+                
+                return;
+            }
+            
+            final List<Profile> includedProfiles =
+                    ProfileUtils.getAndSortProfileList(localSettings.getURIProperties(WebappConfig.ACTIVE_PROFILES),
+                            SortOrder.LOWEST_ORDER_FIRST, localSettings.getAllProfiles());
+            
             final RdfFetchController fetchController =
                     new RdfFetchController(localSettings, localBlacklistController, queryParameters, includedProfiles,
                             realHostName, pageOffset);
@@ -205,8 +212,6 @@ public class GeneralServlet extends HttpServlet
                     nonDummyQueryTypeFound = true;
                 }
             }
-            
-            final Collection<String> debugStrings = new ArrayList<String>(multiProviderQueryBundles.size() + 5);
             
             // Create a new in memory repository for each request
             final Repository myRepository = new SailRepository(new MemoryStore());
