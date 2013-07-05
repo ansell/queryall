@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -36,6 +37,8 @@ import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
 import org.openrdf.model.impl.LinkedHashModel;
+import org.openrdf.model.impl.TreeModel;
+import org.openrdf.model.util.Literals;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.GraphQueryResult;
@@ -876,32 +879,19 @@ public final class RdfUtils
      * @return
      * @throws OpenRDFException
      */
-    public static List<Statement> getAllStatementsFromRepository(final Repository nextRepository,
+    public static SortedSet<Statement> getAllStatementsFromRepository(final Repository nextRepository,
             final Comparator<Statement> nextComparator, final Resource... contexts) throws OpenRDFException
     {
         RepositoryConnection con = null;
         
         try
         {
-            // use HashSet to remove duplicates based on the context parameter
-            Model resultsSet = new LinkedHashModel();
-            
+            final TreeModel tree = new TreeModel();
             con = nextRepository.getConnection();
             
-            con.exportStatements((Resource)null, (URI)null, (Value)null, true, new StatementCollector(resultsSet),
-                    contexts);
+            con.exportStatements((Resource)null, (URI)null, (Value)null, true, new StatementCollector(tree), contexts);
             
-            final List<Statement> results = new ArrayList<Statement>(resultsSet);
-            
-            // clear out the first set and null the reference to regain memory if needed at this
-            // point
-            resultsSet.clear();
-            resultsSet = null;
-            
-            Collections.sort(results, nextComparator);
-            
-            return results;
-            
+            return tree;
         }
         catch(final OpenRDFException ordfe)
         {
@@ -987,11 +977,11 @@ public final class RdfUtils
         {
             return ((Literal)nextValue).booleanValue();
         }
-        else if(nextValue.stringValue().toLowerCase().equals("true"))
+        else if(nextValue.stringValue().equalsIgnoreCase("true"))
         {
             return true;
         }
-        else if(nextValue.stringValue().toLowerCase().equals("false"))
+        else if(nextValue.stringValue().equalsIgnoreCase("false"))
         {
             return false;
         }
@@ -1114,6 +1104,7 @@ public final class RdfUtils
         // TODO: use this method and convert it to a Calendar instance
         if(nextValue instanceof Literal)
         {
+            // Literals.getCalendarValue(nextValue, fallback);
             final XMLGregorianCalendar calendarValue = ((Literal)nextValue).calendarValue();
         }
         
@@ -1363,14 +1354,7 @@ public final class RdfUtils
      */
     public static float getFloatFromValue(final Value nextValue) throws NumberFormatException
     {
-        float result = 0.0f;
-        
-        if(nextValue instanceof Literal)
-        {
-            result = ((Literal)nextValue).floatValue();
-        }
-        
-        return result;
+        return Literals.getFloatValue(nextValue, 0.0f);
     }
     
     /**
@@ -1379,14 +1363,7 @@ public final class RdfUtils
      */
     public static int getIntegerFromValue(final Value nextValue) throws NumberFormatException
     {
-        int result = 0;
-        
-        if(nextValue instanceof Literal)
-        {
-            result = ((Literal)nextValue).intValue();
-        }
-        
-        return result;
+        return Literals.getIntValue(nextValue, 0);
     }
     
     /**
@@ -1395,14 +1372,7 @@ public final class RdfUtils
      */
     public static long getLongFromValue(final Value nextValue) throws NumberFormatException
     {
-        long result = 0L;
-        
-        if(nextValue instanceof Literal)
-        {
-            result = ((Literal)nextValue).longValue();
-        }
-        
-        return result;
+        return Literals.getLongValue(nextValue, 0);
     }
     
     public static ConcurrentMap<URI, NamespaceEntry> getNamespaceEntries(final Repository myRepository)
