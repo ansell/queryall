@@ -201,11 +201,11 @@ public class ConfigurationQueryOptions
     
     private String parseForAdminFormat(String requestString)
     {
-    	if(TRACE)
-    	{
-    		log.trace("parseForAdminFormat: requestString: {}", requestString);
-    	}
-    	
+        if(ConfigurationQueryOptions.TRACE)
+        {
+            ConfigurationQueryOptions.log.trace("parseForAdminFormat: requestString: {}", requestString);
+        }
+        
         final String adminConfigurationHtmlPrefix =
                 this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_HTML_PREFIX);
         final String adminConfigurationHtmlSuffix =
@@ -283,7 +283,8 @@ public class ConfigurationQueryOptions
                 ConfigurationQueryOptions.log.debug("n3: requestString={}", requestString);
             }
         }
-        else if(this.matchesPrefixAndSuffix(requestString, adminConfigurationJsonldPrefix, adminConfigurationJsonldSuffix))
+        else if(this.matchesPrefixAndSuffix(requestString, adminConfigurationJsonldPrefix,
+                adminConfigurationJsonldSuffix))
         {
             this._hasExplicitFormat = true;
             this._chosenFormat = Constants.APPLICATION_LD_JSON;
@@ -350,11 +351,11 @@ public class ConfigurationQueryOptions
             }
         }
         
-    	if(TRACE)
-    	{
-    		log.trace("parseForAdminFormat: requestString: {}", requestString);
-    	}
-    	
+        if(ConfigurationQueryOptions.TRACE)
+        {
+            ConfigurationQueryOptions.log.trace("parseForAdminFormat: requestString: {}", requestString);
+        }
+        
         return requestString;
     }
     

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -866,6 +865,53 @@ public final class RdfUtils
     }
     
     /**
+     * Returns a collection of all of the statements in the repository including duplicates based on
+     * Context, including sorting on the context position.
+     * 
+     * @param nextRepository
+     * @param contexts
+     *            An optional varargs array of contexts that should be exported.
+     * @return
+     * @throws OpenRDFException
+     */
+    public static Model getAllStatementsFromRepository(final Repository nextRepository, final Resource... contexts)
+        throws OpenRDFException
+    {
+        final Model results = new LinkedHashModel();
+        
+        RepositoryConnection con = null;
+        
+        try
+        {
+            con = nextRepository.getConnection();
+            con.exportStatements((Resource)null, (URI)null, (Value)null, true, new StatementCollector(results),
+                    contexts);
+        }
+        catch(final OpenRDFException ordfe)
+        {
+            RdfUtils.log.error("getAllStatementsFromRepository: outer caught exception ", ordfe);
+            
+            throw ordfe;
+        }
+        finally
+        {
+            if(con != null)
+            {
+                try
+                {
+                    con.close();
+                }
+                catch(final RepositoryException rex)
+                {
+                    RdfUtils.log.error("Found repository exception while trying to close connection.", rex);
+                }
+            }
+        }
+        
+        return results;
+    }
+    
+    /**
      * Returns a sorted collection of all the unique Statements from a repository using the default
      * Statement equals and hashCode which do not take context into account then sorted using the
      * given comparator to sort the results.
@@ -913,53 +959,6 @@ public final class RdfUtils
                 }
             }
         }
-    }
-    
-    /**
-     * Returns a collection of all of the statements in the repository including duplicates based on
-     * Context, including sorting on the context position.
-     * 
-     * @param nextRepository
-     * @param contexts
-     *            An optional varargs array of contexts that should be exported.
-     * @return
-     * @throws OpenRDFException
-     */
-    public static Model getAllStatementsFromRepository(final Repository nextRepository, final Resource... contexts)
-        throws OpenRDFException
-    {
-        final Model results = new LinkedHashModel();
-        
-        RepositoryConnection con = null;
-        
-        try
-        {
-            con = nextRepository.getConnection();
-            con.exportStatements((Resource)null, (URI)null, (Value)null, true, new StatementCollector(results),
-                    contexts);
-        }
-        catch(final OpenRDFException ordfe)
-        {
-            RdfUtils.log.error("getAllStatementsFromRepository: outer caught exception ", ordfe);
-            
-            throw ordfe;
-        }
-        finally
-        {
-            if(con != null)
-            {
-                try
-                {
-                    con.close();
-                }
-                catch(final RepositoryException rex)
-                {
-                    RdfUtils.log.error("Found repository exception while trying to close connection.", rex);
-                }
-            }
-        }
-        
-        return results;
     }
     
     /**

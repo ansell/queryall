@@ -43,8 +43,7 @@ public class Settings implements QueryAllConfiguration
     private static final boolean INFO = Settings.log.isInfoEnabled();
     
     private ConcurrentMap<URI, NamespaceEntry> namespaceEntries = new ConcurrentHashMap<URI, NamespaceEntry>();
-    private ConcurrentMap<URI, NormalisationRule> normalisationRules =
-            new ConcurrentHashMap<URI, NormalisationRule>();
+    private ConcurrentMap<URI, NormalisationRule> normalisationRules = new ConcurrentHashMap<URI, NormalisationRule>();
     private ConcurrentMap<URI, Profile> profiles = new ConcurrentHashMap<URI, Profile>();
     private ConcurrentMap<URI, Provider> providers = new ConcurrentHashMap<URI, Provider>();
     private ConcurrentMap<URI, QueryType> queryTypes = new ConcurrentHashMap<URI, QueryType>();

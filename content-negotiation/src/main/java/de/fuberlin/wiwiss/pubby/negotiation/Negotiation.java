@@ -58,7 +58,7 @@ public class Negotiation
                 this.evaluateDefaultVariant(variant.getMediaType());
             }
             this.evaluateVariant(variant.getMediaType());
-            for(MediaRangeSpec alias : variant.getAliases())
+            for(final MediaRangeSpec alias : variant.getAliases())
             {
                 this.evaluateVariantAlias(alias, variant.getMediaType());
             }

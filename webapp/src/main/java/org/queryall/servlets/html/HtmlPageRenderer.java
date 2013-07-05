@@ -19,7 +19,6 @@ import org.openrdf.repository.Repository;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.utils.PropertyUtils;
 import org.queryall.api.utils.WebappConfig;
-import org.queryall.comparators.ContextInsensitiveStatementComparator;
 import org.queryall.query.QueryBundle;
 import org.queryall.query.RdfFetchController;
 import org.queryall.query.RdfFetcherQueryRunnable;

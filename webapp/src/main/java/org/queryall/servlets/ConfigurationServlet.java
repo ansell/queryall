@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -168,10 +167,9 @@ public class ConfigurationServlet extends HttpServlet
             
             response.setContentType(Constants.TEXT_PLAIN);
             response.setStatus(400);
-            PrintWriter writer = response.getWriter();
-            writer.write(
-                    "Requested API version not supported by this server. Current supported version="
-                            + SettingsFactory.CONFIG_API_VERSION);
+            final PrintWriter writer = response.getWriter();
+            writer.write("Requested API version not supported by this server. Current supported version="
+                    + SettingsFactory.CONFIG_API_VERSION);
             writer.flush();
             return;
         }
@@ -183,7 +181,7 @@ public class ConfigurationServlet extends HttpServlet
                         localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE),
                         Constants.APPLICATION_RDF_XML);
         
-        RDFFormat writerFormat = RdfUtils.getWriterFormat(writerFormatString);
+        final RDFFormat writerFormat = RdfUtils.getWriterFormat(writerFormatString);
         
         // localSettings.configRefreshCheck(false);
         
@@ -204,7 +202,7 @@ public class ConfigurationServlet extends HttpServlet
             // defined charset
         }
         
-        boolean targetOnlyQueryString = StringUtils.isPlainNamespaceAndIdentifier(queryString, localSettings);
+        final boolean targetOnlyQueryString = StringUtils.isPlainNamespaceAndIdentifier(queryString, localSettings);
         
         final String queryStringURI = localSettings.getDefaultHostAddress() + queryString;
         
