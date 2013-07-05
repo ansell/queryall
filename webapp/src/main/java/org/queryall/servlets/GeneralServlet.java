@@ -34,6 +34,7 @@ import org.queryall.negotiation.QueryallContentNegotiator;
 import org.queryall.query.QueryBundle;
 import org.queryall.query.RdfFetchController;
 import org.queryall.servlets.helpers.SettingsContextListener;
+import org.queryall.servlets.html.HtmlPageRenderer;
 import org.queryall.servlets.queryparsers.DefaultQueryOptions;
 import org.queryall.servlets.utils.ServletUtils;
 import org.queryall.utils.ListUtils;
@@ -168,6 +169,18 @@ public class GeneralServlet extends HttpServlet
         // TODO: arrange to move this into the header include function
         response.setHeader("X-Application", localSettings.getStringProperty(WebappConfig.USER_AGENT) + "/"
                 + PropertyUtils.VERSION);
+        
+        // If the writerFormat was not found then we default to HTML, and if we are using Ajax, we
+        // don't need to fetch and can simply return here
+        // TODO: Always render HTML for some users
+        if(writerFormat == null && localSettings.getBooleanProperty(WebappConfig.USE_AJAX_HTML_INTERFACE))
+        {
+            HtmlPageRenderer.renderHtml(localEngine, localSettings, fetchController, convertedPool, cleanOutput,
+                    queryString, localSettings.getDefaultHostAddress() + queryString, realHostName, contextPath,
+                    pageOffset, debugStrings);
+            
+            return;
+        }
         
         final List<Profile> includedProfiles =
                 ProfileUtils.getAndSortProfileList(localSettings.getURIProperties(WebappConfig.ACTIVE_PROFILES),

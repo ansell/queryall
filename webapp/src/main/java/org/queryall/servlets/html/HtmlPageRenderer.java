@@ -417,6 +417,188 @@ public class HtmlPageRenderer
         }
     }
     
+    public static void renderAjaxHtml(final VelocityEngine nextEngine, final QueryAllConfiguration localSettings,
+            final java.io.Writer nextWriter, final String queryString, final String resolvedUri, String realHostName,
+            String contextPath, int pageoffset, final Collection<String> debugStrings) throws OpenRDFException
+    {
+        if(HtmlPageRenderer.DEBUG)
+        {
+            HtmlPageRenderer.log.debug("Entering renderAjaxHtml");
+        }
+        boolean nextpagelinkuseful = false;
+        boolean previouspagelinkuseful = false;
+        int previouspageoffset = pageoffset - 1;
+        
+        if(contextPath == null || contextPath.equals("/"))
+        {
+            contextPath = "";
+        }
+        else if(contextPath.startsWith("/") && contextPath.length() > 1)
+        {
+            // take off the first slash and add one to the end for our purposes
+            contextPath = contextPath.substring(1) + "/";
+        }
+        
+        if(localSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_CONTEXT))
+        {
+            contextPath = localSettings.getStringProperty(WebappConfig.HARDCODED_REQUEST_CONTEXT);
+        }
+        
+        if(localSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_HOSTNAME))
+        {
+            realHostName = localSettings.getStringProperty(WebappConfig.HARDCODED_REQUEST_HOSTNAME);
+        }
+        
+        final Context velocityContext = new VelocityContext();
+        
+        velocityContext.put("debug_level_info", HtmlPageRenderer.INFO);
+        velocityContext.put("debug_level_debug", HtmlPageRenderer.DEBUG);
+        velocityContext.put("debug_level_trace", HtmlPageRenderer.TRACE);
+        
+        velocityContext.put("project_name", localSettings.getStringProperty(WebappConfig.PROJECT_NAME));
+        velocityContext.put("project_base_url", localSettings.getStringProperty(WebappConfig.PROJECT_HOME_URI));
+        velocityContext.put("project_html_url_prefix", localSettings.getStringProperty(WebappConfig.HTML_URL_PREFIX));
+        velocityContext.put("project_html_url_suffix", localSettings.getStringProperty(WebappConfig.HTML_URL_SUFFIX));
+        velocityContext.put("project_link", localSettings.getStringProperty(WebappConfig.PROJECT_HOME_URL));
+        velocityContext.put("application_name", localSettings.getStringProperty(WebappConfig.USER_AGENT) + "/"
+                + PropertyUtils.VERSION);
+        velocityContext.put("application_help", localSettings.getStringProperty(WebappConfig.APPLICATION_HELP_URL));
+        velocityContext.put("uri", resolvedUri);
+        
+        boolean is_plainnsid = false;
+        
+        if(queryString != null)
+        {
+            velocityContext.put("query_string", queryString);
+            
+            if(StringUtils.isPlainNamespaceAndIdentifier(queryString, localSettings))
+            {
+                is_plainnsid = true;
+                
+                final Map<String, List<String>> namespaceAndIdentifier =
+                        StringUtils.getNamespaceAndIdentifier(queryString, localSettings);
+                
+                if(namespaceAndIdentifier.size() == 2)
+                {
+                    // HACK FIXME: these may not always be returned as input_1 and input_2
+                    velocityContext.put("namespace", namespaceAndIdentifier.get("input_1").get(0));
+                    velocityContext.put("identifier", namespaceAndIdentifier.get("input_2").get(0));
+                }
+                else
+                {
+                    HtmlPageRenderer.log
+                            .warn("Namespace and identifier did not have exactly two components: namesapceAndIdentifier.size()="
+                                    + namespaceAndIdentifier.size());
+                }
+            }
+        }
+        
+        velocityContext.put("is_plainnsid", is_plainnsid);
+        velocityContext.put("real_hostname", realHostName);
+        velocityContext.put("context_path", contextPath);
+        velocityContext.put("server_base", realHostName + contextPath);
+        velocityContext.put("rdfxml_link",
+                realHostName + contextPath + localSettings.getStringProperty(WebappConfig.RDFXML_URL_PREFIX)
+                        + queryString + localSettings.getStringProperty(WebappConfig.RDFXML_URL_SUFFIX));
+        velocityContext.put("rdfn3_link",
+                realHostName + contextPath + localSettings.getStringProperty(WebappConfig.N3_URL_PREFIX) + queryString
+                        + localSettings.getStringProperty(WebappConfig.N3_URL_SUFFIX));
+        velocityContext.put("html_link",
+                realHostName + contextPath + localSettings.getStringProperty(WebappConfig.HTML_URL_PREFIX)
+                        + queryString + localSettings.getStringProperty(WebappConfig.HTML_URL_SUFFIX));
+        velocityContext.put("json_link",
+                realHostName + contextPath + localSettings.getStringProperty(WebappConfig.JSON_URL_PREFIX)
+                        + queryString + localSettings.getStringProperty(WebappConfig.JSON_URL_SUFFIX));
+        velocityContext.put("jsonld_link",
+                realHostName + contextPath + localSettings.getStringProperty(WebappConfig.JSONLD_URL_PREFIX)
+                        + queryString + localSettings.getStringProperty(WebappConfig.JSONLD_URL_SUFFIX));
+        
+        velocityContext.put("xmlutil", new info.aduna.xml.XMLUtil());
+        velocityContext.put("bio2rdfutil", new org.queryall.utils.RdfUtils());
+        
+        final int pageoffsetMaxValue = localSettings.getIntProperty(WebappConfig.PAGEOFFSET_MAX_VALUE);
+        
+        // To prevent infinite or extended requests, we have a maximum value that we can go up to
+        if(pageoffset > pageoffsetMaxValue)
+        {
+            // setup the pageoffset value so it artificially points to the limit so that
+            // non-conforming robots that don't follow robots.txt don't accidentally run into issues
+            // when people play around with links to very high page offsets
+            previouspageoffset = pageoffsetMaxValue;
+            nextpagelinkuseful = false;
+        }
+        
+        // If configured to only show pageoffset for plain nsid's as opposed to the other queries
+        // then decide here whether to show it
+        if(localSettings.getBooleanProperty(WebappConfig.PAGEOFFSET_ONLY_SHOW_FOR_NSID) && !is_plainnsid)
+        {
+            nextpagelinkuseful = false;
+        }
+        
+        if(nextpagelinkuseful)
+        {
+            velocityContext.put(
+                    "nextpagelink",
+                    realHostName + contextPath + localSettings.getStringProperty(WebappConfig.HTML_URL_PREFIX)
+                            + localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_OPENING_PREFIX)
+                            + (pageoffset + 1)
+                            + localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_CLOSING_PREFIX) + queryString
+                            + localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_SUFFIX)
+                            + localSettings.getStringProperty(WebappConfig.HTML_URL_SUFFIX));
+            velocityContext.put("nextpagelabel", (pageoffset + 1));
+        }
+        
+        if(previouspagelinkuseful)
+        {
+            velocityContext.put(
+                    "previouspagelink",
+                    realHostName + contextPath + localSettings.getStringProperty(WebappConfig.HTML_URL_PREFIX)
+                            + localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_OPENING_PREFIX)
+                            + (previouspageoffset)
+                            + localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_CLOSING_PREFIX) + queryString
+                            + localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_SUFFIX)
+                            + localSettings.getStringProperty(WebappConfig.HTML_URL_SUFFIX));
+            velocityContext.put("previouspagelabel", previouspageoffset);
+        }
+        
+        velocityContext.put("debugStrings", debugStrings);
+        
+        if(HtmlPageRenderer.TRACE)
+        {
+            HtmlPageRenderer.log.trace("renderAjaxHtml: about to render XHTML");
+        }
+        
+        try
+        {
+            if(HtmlPageRenderer.DEBUG)
+            {
+                HtmlPageRenderer.log.debug("renderAjaxHtml: fetchController.queryKnown(), using results template");
+            }
+            
+            final String templateLocation = localSettings.getStringProperty(WebappConfig.AJAX_RESULTS_TEMPLATE);
+            
+            VelocityHelper.renderXHTML(nextEngine, velocityContext, templateLocation, nextWriter);
+        }
+        catch(final VelocityException ex)
+        {
+            HtmlPageRenderer.log.error("renderAjaxHtml: caught exception while rendering XHTML", ex);
+            
+            try
+            {
+                nextWriter.write("Fatal error. See logs for details");
+            }
+            catch(final IOException ioe)
+            {
+                HtmlPageRenderer.log.error("renderAjaxHtml: Could not write out error message to nextWriter");
+            }
+        }
+        
+        if(HtmlPageRenderer.TRACE)
+        {
+            HtmlPageRenderer.log.trace("renderAjaxHtml: finished rendering XHTML");
+        }
+    }
+    
     public static void renderHtml(final VelocityEngine nextEngine, final QueryAllConfiguration localSettings,
             final Repository nextRepository, final java.io.Writer nextWriter, final String queryString,
             final String resolvedUri, final String realHostName, final String contextPath, final int pageoffset,
@@ -521,4 +703,101 @@ public class HtmlPageRenderer
             HtmlPageRenderer.log.trace("renderIndexPage: finished rendering XHTML");
         }
     }
+    
+    public static void renderAjaxIndexPage(final VelocityEngine nextEngine, final QueryAllConfiguration localSettings,
+            final java.io.Writer nextWriter, String realHostName, String contextPath,
+            final Collection<String> debugStrings) throws OpenRDFException
+    {
+        if(localSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_CONTEXT))
+        {
+            contextPath = localSettings.getStringProperty(WebappConfig.HARDCODED_REQUEST_CONTEXT);
+        }
+        
+        if(contextPath == null || contextPath.equals("/"))
+        {
+            contextPath = "";
+        }
+        else if(contextPath.startsWith("/") && contextPath.length() > 1)
+        {
+            // take off the first slash and add one to the end for our purposes
+            contextPath = contextPath.substring(1) + "/";
+        }
+        
+        if(localSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_HOSTNAME))
+        {
+            realHostName = localSettings.getStringProperty(WebappConfig.HARDCODED_REQUEST_HOSTNAME);
+        }
+        
+        if(HtmlPageRenderer.TRACE)
+        {
+            HtmlPageRenderer.log.trace("renderIndexPage: about to create VelocityHelper class");
+        }
+        
+        final Context velocityContext = new VelocityContext();
+        velocityContext.put("statistics_providers", Integer.toString(localSettings.getAllProviders().size()));
+        velocityContext.put("statistics_namespaceentries",
+                Integer.toString(localSettings.getAllNamespaceEntries().size()));
+        velocityContext.put("statistics_normalisationrules",
+                Integer.toString(localSettings.getAllNormalisationRules().size()));
+        velocityContext.put("statistics_normalisationruletests",
+                Integer.toString(localSettings.getAllRuleTests().size()));
+        velocityContext.put("statistics_querytypes", Integer.toString(localSettings.getAllQueryTypes().size()));
+        
+        velocityContext.put("debug_level_info", HtmlPageRenderer.INFO);
+        velocityContext.put("debug_level_debug", HtmlPageRenderer.DEBUG);
+        velocityContext.put("debug_level_trace", HtmlPageRenderer.TRACE);
+        
+        velocityContext.put("title", localSettings.getStringProperty(WebappConfig.PROJECT_NAME));
+        
+        velocityContext.put("project_name", localSettings.getStringProperty(WebappConfig.PROJECT_NAME));
+        velocityContext.put("project_base_url", localSettings.getStringProperty(WebappConfig.PROJECT_HOME_URI));
+        velocityContext.put("project_html_url_prefix", localSettings.getStringProperty(WebappConfig.HTML_URL_PREFIX));
+        velocityContext.put("project_html_url_suffix", localSettings.getStringProperty(WebappConfig.HTML_URL_SUFFIX));
+        velocityContext.put("project_link", localSettings.getStringProperty(WebappConfig.PROJECT_HOME_URL));
+        velocityContext.put("application_name", localSettings.getStringProperty(WebappConfig.USER_AGENT) + "/"
+                + PropertyUtils.VERSION);
+        velocityContext.put("application_help", localSettings.getStringProperty(WebappConfig.APPLICATION_HELP_URL));
+        
+        velocityContext
+                .put("index_banner_image", localSettings.getStringProperty(WebappConfig.INDEX_BANNER_IMAGE_PATH));
+        velocityContext.put("index_project_image",
+                localSettings.getStringProperty(WebappConfig.INDEX_PROJECT_IMAGE_PATH));
+        
+        velocityContext.put("shortcut_icon", localSettings.getStringProperty(WebappConfig.SHORTCUT_ICON_PATH));
+        velocityContext.put("scripts", localSettings.getStringProperties(WebappConfig.INDEX_PAGE_SCRIPTS));
+        velocityContext.put("local_scripts", localSettings.getStringProperties(WebappConfig.INDEX_PAGE_SCRIPTS_LOCAL));
+        velocityContext.put("stylesheets", localSettings.getStringProperties(WebappConfig.INDEX_PAGE_STYLESHEETS));
+        velocityContext.put("local_stylesheets",
+                localSettings.getStringProperties(WebappConfig.INDEX_PAGE_STYLESHEETS_LOCAL));
+        
+        velocityContext.put("real_hostname", realHostName);
+        velocityContext.put("context_path", contextPath);
+        velocityContext.put("server_base", realHostName + contextPath);
+        
+        final String templateLocation = localSettings.getStringProperty(WebappConfig.AJAX_INDEX_TEMPLATE);
+        
+        try
+        {
+            VelocityHelper.renderXHTML(nextEngine, velocityContext, templateLocation, nextWriter);
+        }
+        catch(final Exception ex)
+        {
+            HtmlPageRenderer.log.error("renderIndexPage: caught exception while rendering XHTML", ex);
+            
+            try
+            {
+                nextWriter.write("Fatal error. See logs for details");
+            }
+            catch(final IOException ioe)
+            {
+                HtmlPageRenderer.log.error("renderIndexPage: Could not write out error message to nextWriter");
+            }
+        }
+        
+        if(HtmlPageRenderer.TRACE)
+        {
+            HtmlPageRenderer.log.trace("renderIndexPage: finished rendering XHTML");
+        }
+    }
+    
 }

@@ -755,6 +755,7 @@ public class ServletUtils
         
         if(requestedContentType.equals(Constants.APPLICATION_RDF_XML))
         {
+            // FIXME: Use XMLWriterSettings to fix having to do this
             out.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
             
             for(final String nextDebugString : debugStrings)
