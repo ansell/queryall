@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -1404,12 +1405,13 @@ public final class RdfUtils
         return result;
     }
     
-    public static Map<URI, NamespaceEntry> getNamespaceEntries(final Repository myRepository)
+    public static ConcurrentMap<URI, NamespaceEntry> getNamespaceEntries(final Repository myRepository)
     {
         return RdfUtils.getNamespaceEntries(myRepository, SettingsFactory.CONFIG_API_VERSION);
     }
     
-    public static Map<URI, NamespaceEntry> getNamespaceEntries(final Repository myRepository, final int configApiVersion)
+    public static ConcurrentMap<URI, NamespaceEntry> getNamespaceEntries(final Repository myRepository,
+            final int configApiVersion)
     {
         if(configApiVersion > SettingsFactory.CONFIG_API_VERSION)
         {
@@ -1419,6 +1421,8 @@ public final class RdfUtils
         
         final long start = System.currentTimeMillis();
         RepositoryConnection con = null;
+        
+        final ConcurrentMap<URI, NamespaceEntry> results = new ConcurrentHashMap<URI, NamespaceEntry>();
         
         try
         {
@@ -1430,8 +1434,6 @@ public final class RdfUtils
             // This is the base namespace entry URI, extensions or plugins must include this URI
             // alongside their customised type URIs
             final URI providerTypeUri = NamespaceEntrySchema.getNamespaceTypeUri();
-            
-            final Map<URI, NamespaceEntry> results = new ConcurrentHashMap<URI, NamespaceEntry>();
             
             con = myRepository.getConnection();
             
@@ -1526,7 +1528,6 @@ public final class RdfUtils
                 RdfUtils.log.debug("getNamespaceEntries: finished parsing namespace entrys");
             }
             
-            return results;
         }
         catch(final OpenRDFException e)
         {
@@ -1548,15 +1549,15 @@ public final class RdfUtils
             }
         }
         
-        return Collections.emptyMap();
+        return results;
     }
     
-    public static Map<URI, NormalisationRule> getNormalisationRules(final Repository myRepository)
+    public static ConcurrentMap<URI, NormalisationRule> getNormalisationRules(final Repository myRepository)
     {
         return RdfUtils.getNormalisationRules(myRepository, SettingsFactory.CONFIG_API_VERSION);
     }
     
-    public static Map<URI, NormalisationRule> getNormalisationRules(final Repository myRepository,
+    public static ConcurrentMap<URI, NormalisationRule> getNormalisationRules(final Repository myRepository,
             final int configApiVersion)
     {
         if(configApiVersion > SettingsFactory.CONFIG_API_VERSION)
@@ -1568,6 +1569,8 @@ public final class RdfUtils
         final long start = System.currentTimeMillis();
         RepositoryConnection con = null;
         
+        final ConcurrentMap<URI, NormalisationRule> results = new ConcurrentHashMap<URI, NormalisationRule>();
+        
         try
         {
             if(RdfUtils.DEBUG)
@@ -1578,8 +1581,6 @@ public final class RdfUtils
             // This is the base normalisation rule URI, extensions or plugins must include this URI
             // alongside their customised type URIs
             final URI normalisationRuleUri = NormalisationRuleSchema.getNormalisationRuleTypeUri();
-            
-            final Map<URI, NormalisationRule> results = new ConcurrentHashMap<URI, NormalisationRule>();
             
             con = myRepository.getConnection();
             
@@ -1674,7 +1675,6 @@ public final class RdfUtils
                 RdfUtils.log.debug("getNormalisationRules: finished parsing normalisation rules");
             }
             
-            return results;
         }
         catch(final OpenRDFException e)
         {
@@ -1696,7 +1696,7 @@ public final class RdfUtils
             }
         }
         
-        return Collections.emptyMap();
+        return results;
     }
     
     /**
@@ -1796,12 +1796,12 @@ public final class RdfUtils
         return results;
     }
     
-    public static Map<URI, Profile> getProfiles(final Repository myRepository)
+    public static ConcurrentMap<URI, Profile> getProfiles(final Repository myRepository)
     {
         return RdfUtils.getProfiles(myRepository, SettingsFactory.CONFIG_API_VERSION);
     }
     
-    public static Map<URI, Profile> getProfiles(final Repository myRepository, final int configApiVersion)
+    public static ConcurrentMap<URI, Profile> getProfiles(final Repository myRepository, final int configApiVersion)
     {
         if(configApiVersion > SettingsFactory.CONFIG_API_VERSION)
         {
@@ -1811,6 +1811,8 @@ public final class RdfUtils
         
         final long start = System.currentTimeMillis();
         RepositoryConnection con = null;
+        
+        final ConcurrentMap<URI, Profile> results = new ConcurrentHashMap<URI, Profile>();
         
         try
         {
@@ -1822,8 +1824,6 @@ public final class RdfUtils
             // This is the base profile URI, extensions or plugins must include this URI
             // alongside their customised type URIs
             final URI providerTypeUri = ProfileSchema.getProfileTypeUri();
-            
-            final Map<URI, Profile> results = new ConcurrentHashMap<URI, Profile>();
             
             con = myRepository.getConnection();
             
@@ -1914,7 +1914,6 @@ public final class RdfUtils
                 RdfUtils.log.debug("getProfiles: finished parsing profiles");
             }
             
-            return results;
         }
         catch(final OpenRDFException e)
         {
@@ -1936,15 +1935,15 @@ public final class RdfUtils
             }
         }
         
-        return Collections.emptyMap();
+        return results;
     }
     
-    public static Map<URI, Project> getProjects(final Repository myRepository)
+    public static ConcurrentMap<URI, Project> getProjects(final Repository myRepository)
     {
         return RdfUtils.getProjects(myRepository, SettingsFactory.CONFIG_API_VERSION);
     }
     
-    public static Map<URI, Project> getProjects(final Repository myRepository, final int configApiVersion)
+    public static ConcurrentMap<URI, Project> getProjects(final Repository myRepository, final int configApiVersion)
     {
         if(configApiVersion > SettingsFactory.CONFIG_API_VERSION)
         {
@@ -1954,6 +1953,8 @@ public final class RdfUtils
         
         final long start = System.currentTimeMillis();
         RepositoryConnection con = null;
+        
+        final ConcurrentMap<URI, Project> results = new ConcurrentHashMap<URI, Project>();
         
         try
         {
@@ -1965,8 +1966,6 @@ public final class RdfUtils
             // This is the base project URI, extensions or plugins must include this URI
             // alongside their customised type URIs
             final URI providerTypeUri = ProjectSchema.getProjectTypeUri();
-            
-            final Map<URI, Project> results = new ConcurrentHashMap<URI, Project>();
             
             con = myRepository.getConnection();
             
@@ -2060,7 +2059,6 @@ public final class RdfUtils
                 RdfUtils.log.debug("getProjects: finished parsing projects");
             }
             
-            return results;
         }
         catch(final OpenRDFException e)
         {
@@ -2082,15 +2080,15 @@ public final class RdfUtils
             }
         }
         
-        return Collections.emptyMap();
+        return results;
     }
     
-    public static Map<URI, Provider> getProviders(final Repository myRepository)
+    public static ConcurrentMap<URI, Provider> getProviders(final Repository myRepository)
     {
         return RdfUtils.getProviders(myRepository, SettingsFactory.CONFIG_API_VERSION);
     }
     
-    public static Map<URI, Provider> getProviders(final Repository myRepository, final int configApiVersion)
+    public static ConcurrentMap<URI, Provider> getProviders(final Repository myRepository, final int configApiVersion)
     {
         if(configApiVersion > SettingsFactory.CONFIG_API_VERSION)
         {
@@ -2100,6 +2098,8 @@ public final class RdfUtils
         
         final long start = System.currentTimeMillis();
         RepositoryConnection con = null;
+        
+        final ConcurrentMap<URI, Provider> results = new ConcurrentHashMap<URI, Provider>();
         
         try
         {
@@ -2117,8 +2117,6 @@ public final class RdfUtils
             {
                 RdfUtils.log.debug("getProviders: providerUri=" + providerUri.stringValue());
             }
-            
-            final Map<URI, Provider> results = new ConcurrentHashMap<URI, Provider>();
             
             con = myRepository.getConnection();
             
@@ -2215,7 +2213,6 @@ public final class RdfUtils
                 RdfUtils.log.debug("getProviders: finished parsing providers");
             }
             
-            return results;
         }
         catch(final OpenRDFException e)
         {
@@ -2237,15 +2234,15 @@ public final class RdfUtils
             }
         }
         
-        return Collections.emptyMap();
+        return results;
     }
     
-    public static Map<URI, QueryType> getQueryTypes(final Repository myRepository)
+    public static ConcurrentMap<URI, QueryType> getQueryTypes(final Repository myRepository)
     {
         return RdfUtils.getQueryTypes(myRepository, SettingsFactory.CONFIG_API_VERSION);
     }
     
-    public static Map<URI, QueryType> getQueryTypes(final Repository myRepository, final int configApiVersion)
+    public static ConcurrentMap<URI, QueryType> getQueryTypes(final Repository myRepository, final int configApiVersion)
     {
         if(configApiVersion > SettingsFactory.CONFIG_API_VERSION)
         {
@@ -2255,6 +2252,8 @@ public final class RdfUtils
         
         final long start = System.currentTimeMillis();
         RepositoryConnection con = null;
+        
+        final ConcurrentMap<URI, QueryType> results = new ConcurrentHashMap<URI, QueryType>();
         
         try
         {
@@ -2267,8 +2266,6 @@ public final class RdfUtils
             // alongside
             // their customised type URIs
             final URI queryTypeUri = QueryTypeSchema.getQueryTypeUri();
-            
-            final Map<URI, QueryType> results = new ConcurrentHashMap<URI, QueryType>();
             
             con = myRepository.getConnection();
             
@@ -2360,7 +2357,6 @@ public final class RdfUtils
                 RdfUtils.log.debug("getQueryTypes: finished parsing query types");
             }
             
-            return results;
         }
         catch(final OpenRDFException e)
         {
@@ -2382,7 +2378,7 @@ public final class RdfUtils
             }
         }
         
-        return Collections.emptyMap();
+        return results;
     }
     
     /**
@@ -2392,7 +2388,7 @@ public final class RdfUtils
      * @param myRepository
      * @return
      */
-    public static Map<URI, RuleTest> getRuleTests(final Repository myRepository)
+    public static ConcurrentMap<URI, RuleTest> getRuleTests(final Repository myRepository)
     {
         return RdfUtils.getRuleTests(myRepository, SettingsFactory.CONFIG_API_VERSION);
     }
@@ -2404,7 +2400,7 @@ public final class RdfUtils
      * @param configApiVersion
      * @return
      */
-    public static Map<URI, RuleTest> getRuleTests(final Repository myRepository, final int configApiVersion)
+    public static ConcurrentMap<URI, RuleTest> getRuleTests(final Repository myRepository, final int configApiVersion)
     {
         if(configApiVersion > SettingsFactory.CONFIG_API_VERSION)
         {
@@ -2414,6 +2410,8 @@ public final class RdfUtils
         
         final long start = System.currentTimeMillis();
         RepositoryConnection con = null;
+        
+        final ConcurrentMap<URI, RuleTest> results = new ConcurrentHashMap<URI, RuleTest>();
         
         try
         {
@@ -2425,8 +2423,6 @@ public final class RdfUtils
             // This is the base ruleTest URI, extensions or plugins must include this URI
             // alongside their customised type URIs
             final URI providerTypeUri = RuleTestSchema.getRuletestTypeUri();
-            
-            final Map<URI, RuleTest> results = new ConcurrentHashMap<URI, RuleTest>();
             
             con = myRepository.getConnection();
             
@@ -2516,7 +2512,6 @@ public final class RdfUtils
                 RdfUtils.log.debug("getRuleTests: finished parsing rule tests");
             }
             
-            return results;
         }
         catch(final OpenRDFException e)
         {
@@ -2538,7 +2533,7 @@ public final class RdfUtils
             }
         }
         
-        return Collections.emptyMap();
+        return results;
     }
     
     /**
@@ -3153,9 +3148,10 @@ public final class RdfUtils
             final String defaultResultFormat, final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController) throws InterruptedException
     {
+        Repository resultsRepository = null;
         try
         {
-            final Repository resultsRepository = new SailRepository(new MemoryStore());
+            resultsRepository = new SailRepository(new MemoryStore());
             resultsRepository.initialize();
             
             RdfUtils.retrieveUrls(retrievalUrls, defaultResultFormat, resultsRepository, localSettings,
@@ -3166,6 +3162,20 @@ public final class RdfUtils
         catch(final OpenRDFException e)
         {
             RdfUtils.log.error("retrieveUrlsToStatements: caught OpenRDFException", e);
+        }
+        finally
+        {
+            if(resultsRepository != null)
+            {
+                try
+                {
+                    resultsRepository.shutDown();
+                }
+                catch(final RepositoryException e)
+                {
+                    RdfUtils.log.error("retrieveUrlsToStatements: caught OpenRDFException", e);
+                }
+            }
         }
         
         return new LinkedHashModel();
