@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -250,7 +251,7 @@ public class HtmlPageRenderer
             HtmlPageRenderer.log.debug("About to get all statements from repository");
         }
         
-        final Collection<Statement> allStatements =
+        final SortedSet<Statement> allStatements =
                 RdfUtils.getAllStatementsFromRepository(nextRepository, new ContextInsensitiveStatementComparator());
         
         // TODO: go through the statements and check an internal label cache to see if there is an
