@@ -53,8 +53,11 @@ import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandlerException;
+import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.Rio;
+import org.openrdf.rio.WriterConfig;
 import org.openrdf.rio.helpers.StatementCollector;
+import org.openrdf.rio.helpers.XMLWriterSettings;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.base.QueryAllConfiguration;
@@ -2538,7 +2541,7 @@ public final class RdfUtils
         
         if(isInsert)
         {
-            RdfUtils.toWriter(myRepository, insertTriples, writerFormat);
+            RdfUtils.toWriter(myRepository, insertTriples, writerFormat, new WriterConfig());
             
             RdfUtils.log.debug("getSparulQueryForObject: insertTriples.toString()=" + insertTriples.toString());
         }
@@ -3159,7 +3162,7 @@ public final class RdfUtils
             final RDFFormat format, final Resource... contexts)
     {
         RdfUtils.toWriter(nextRepository, new OutputStreamWriter(outputStream, Charset.forName("UTF-8")), format,
-                contexts);
+                new WriterConfig(), contexts);
     }
     
     /**
@@ -3180,7 +3183,7 @@ public final class RdfUtils
     {
         final StringWriter stBuff = new StringWriter();
         
-        RdfUtils.toWriter(nextRepository, stBuff, RDFFormat.RDFXML, contexts);
+        RdfUtils.toWriter(nextRepository, stBuff, RDFFormat.RDFXML, new WriterConfig(), contexts);
         
         return stBuff.toString();
     }
@@ -3204,13 +3207,41 @@ public final class RdfUtils
     public static void toWriter(final Repository nextRepository, final java.io.Writer nextWriter,
             final RDFFormat format, final Resource... contexts)
     {
+        toWriter(nextRepository, nextWriter, format, new WriterConfig(), contexts);
+    }
+    
+    /**
+     * Writes the contents of the repository, with optional contexts restrictions, to the given
+     * writer.
+     * 
+     * NOTE: This method logs, but does not through any exceptions.
+     * 
+     * @param nextRepository
+     *            The repository that contains the data to be exported.
+     * @param nextWriter
+     *            The writer to write the results to.
+     * @param format
+     *            The format to write the contents of the repository using
+     * @param config
+     *            The {@link WriterConfig} to use for the writer
+     * @param contexts
+     *            An optional varargs set of Resources identifying contexts in the repository that
+     *            are to be exported
+     */
+    public static void toWriter(final Repository nextRepository, final java.io.Writer nextWriter,
+            final RDFFormat format, WriterConfig config, final Resource... contexts)
+    {
         RepositoryConnection nextConnection = null;
         
         try
         {
             nextConnection = nextRepository.getConnection();
             
-            nextConnection.export(Rio.createWriter(format, nextWriter), contexts);
+            RDFWriter writer = Rio.createWriter(format, nextWriter);
+            
+            writer.setWriterConfig(config);
+            
+            nextConnection.export(writer, contexts);
         }
         catch(final RepositoryException e)
         {
@@ -3253,7 +3284,7 @@ public final class RdfUtils
     public static void toWriter(final Repository nextRepository, final java.io.Writer nextWriter,
             final Resource... contexts)
     {
-        RdfUtils.toWriter(nextRepository, nextWriter, RDFFormat.RDFXML, contexts);
+        RdfUtils.toWriter(nextRepository, nextWriter, RDFFormat.RDFXML, new WriterConfig(), contexts);
     }
     
     // from http://java.sun.com/developer/technicalArticles/ThirdParty/WebCrawler/WebCrawler.java

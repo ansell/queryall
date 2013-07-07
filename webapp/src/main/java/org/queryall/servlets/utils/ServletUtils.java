@@ -21,6 +21,8 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.WriterConfig;
+import org.openrdf.rio.helpers.XMLWriterSettings;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
@@ -713,10 +715,22 @@ public class ServletUtils
             final RdfFetchController fetchController, final Collection<String> debugStrings,
             final Repository convertedPool, final String contextPath) throws IOException
     {
-        // Assume an average document may easily contain 2000 characters, to save on copies inside
-        // the stringwriter
-        // By default it starts with only 16 characters if we don't set a number here
-        final java.io.StringWriter cleanOutput = new java.io.StringWriter(2048);
+        if(requestedContentType.equals(Constants.APPLICATION_RDF_XML))
+        {
+            out.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+            
+            for(final String nextDebugString : debugStrings)
+            {
+                out.write(nextDebugString + "\n");
+            }
+        }
+        else if(requestedContentType.equals(Constants.TEXT_RDF_N3))
+        {
+            for(final String nextDebugString : debugStrings)
+            {
+                out.write(nextDebugString + "\n");
+            }
+        }
         
         // TODO: Make this process generic to allow output to arbitrary formats instead of just
         if(requestedContentType.equals(Constants.TEXT_HTML))
@@ -729,7 +743,7 @@ public class ServletUtils
             
             try
             {
-                HtmlPageRenderer.renderHtml(nextEngine, localSettings, fetchController, convertedPool, cleanOutput,
+                HtmlPageRenderer.renderHtml(nextEngine, localSettings, fetchController, convertedPool, out,
                         queryString, localSettings.getDefaultHostAddress() + queryString, realHostName, contextPath,
                         pageOffset, debugStrings);
             }
@@ -750,54 +764,13 @@ public class ServletUtils
                 ServletUtils.log.debug("GeneralServlet: fetchController.queryKnown()=" + fetchController.queryKnown());
             }
             
-            RdfUtils.toWriter(convertedPool, cleanOutput, writerFormat);
-        }
-        
-        if(requestedContentType.equals(Constants.APPLICATION_RDF_XML))
-        {
-            // FIXME: Use XMLWriterSettings to fix having to do this
-            out.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+            WriterConfig config = new WriterConfig();
             
-            for(final String nextDebugString : debugStrings)
-            {
-                out.write(nextDebugString + "\n");
-            }
-            final StringBuffer buffer = cleanOutput.getBuffer();
+            // We have already written the XML PI, so specify that we don't want it written out by
+            // the Rio RDFXMLWriter
+            config.set(XMLWriterSettings.INCLUDE_XML_PI, false);
             
-            // HACK to get around lack of interest in sesame for getting RDF/XML documents without
-            // the XML PI
-            // 38 is the length of the sesame RDF/XML PI, if it changes we will start to fail with
-            // all RDF/XML results and we need to change the magic number here
-            // TODO: Make a sesametools version of the RDF/XML output writer that allows the choice
-            // of having a PI or not
-            if(buffer.length() > 38)
-            {
-                for(int i = 38; i < cleanOutput.getBuffer().length(); i++)
-                {
-                    out.write(buffer.charAt(i));
-                }
-            }
-        }
-        else if(requestedContentType.equals(Constants.TEXT_RDF_N3))
-        {
-            for(final String nextDebugString : debugStrings)
-            {
-                out.write(nextDebugString + "\n");
-            }
-            
-            final StringBuffer buffer = cleanOutput.getBuffer();
-            for(int i = 0; i < cleanOutput.getBuffer().length(); i++)
-            {
-                out.write(buffer.charAt(i));
-            }
-        }
-        else
-        {
-            final StringBuffer buffer = cleanOutput.getBuffer();
-            for(int i = 0; i < cleanOutput.getBuffer().length(); i++)
-            {
-                out.write(buffer.charAt(i));
-            }
+            RdfUtils.toWriter(convertedPool, out, writerFormat, config);
         }
     }
     
