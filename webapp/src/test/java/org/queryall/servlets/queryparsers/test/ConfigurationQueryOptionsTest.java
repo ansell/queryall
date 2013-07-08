@@ -58,15 +58,13 @@ public class ConfigurationQueryOptionsTest
     {
         this.settings = new Settings();
         this.contextPath = "/queryall-test-context";
-        this.adminPath = this.contextPath + this.settings.getStringProperty(WebappConfig.ADMIN_URL_PREFIX);
-        this.adminConfigurationPath =
-                this.adminPath + this.settings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_PREFIX);
+        this.adminPath = this.contextPath + this.settings.getString(WebappConfig.ADMIN_URL_PREFIX);
+        this.adminConfigurationPath = this.adminPath + this.settings.getString(WebappConfig.ADMIN_CONFIGURATION_PREFIX);
         final String adminConfigurationApiOpeningPrefix =
-                this.settings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_API_VERSION_OPENING_PREFIX);
+                this.settings.getString(WebappConfig.ADMIN_CONFIGURATION_API_VERSION_OPENING_PREFIX);
         final String adminConfigurationApiClosingPrefix =
-                this.settings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_API_VERSION_CLOSING_PREFIX);
-        this.adminConfigurationApiSuffix =
-                this.settings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_API_VERSION_SUFFIX);
+                this.settings.getString(WebappConfig.ADMIN_CONFIGURATION_API_VERSION_CLOSING_PREFIX);
+        this.adminConfigurationApiSuffix = this.settings.getString(WebappConfig.ADMIN_CONFIGURATION_API_VERSION_SUFFIX);
         
         this.versionedAdminConfigurationPathPrefix =
                 this.adminConfigurationPath + adminConfigurationApiOpeningPrefix + SettingsFactory.CONFIG_API_VERSION

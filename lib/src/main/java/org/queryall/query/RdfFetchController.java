@@ -189,16 +189,13 @@ public class RdfFetchController
                     final String nextResult = nextThread.getRawResult();
                     
                     final String convertedResult =
-                            (String)RuleUtils.normaliseByStage(
-                                    NormalisationRuleSchema.getRdfruleStageBeforeResultsImport(),
-                                    nextResult,
-                                    RuleUtils.getSortedRulesByUris(this.getSettings().getAllNormalisationRules(),
-                                            nextThread.getOriginalQueryBundle().getProvider().getNormalisationUris(),
-                                            SortOrder.HIGHEST_ORDER_FIRST),
+                            (String)RuleUtils.normaliseByStage(NormalisationRuleSchema
+                                    .getRdfruleStageBeforeResultsImport(), nextResult, RuleUtils.getSortedRulesByUris(
+                                    this.getSettings().getAllNormalisationRules(), nextThread.getOriginalQueryBundle()
+                                            .getProvider().getNormalisationUris(), SortOrder.HIGHEST_ORDER_FIRST),
                                     this.sortedIncludedProfiles,
-                                    this.getSettings().getBooleanProperty(
-                                            WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS), this.getSettings()
-                                            .getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
+                                    this.getSettings().getBoolean(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                                    this.getSettings().getBoolean(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
                     
                     nextThread.setNormalisedResult(convertedResult);
                     
@@ -349,7 +346,7 @@ public class RdfFetchController
                         new RdfFetcherSparqlQueryRunnableImpl(nextEndpoint,
                                 ((SparqlProvider)nextBundle.getProvider()).getSparqlGraphUri(), nextQuery, "off",
                                 ((HttpProvider)nextBundle.getProvider()).getAcceptHeaderString(this.getSettings()
-                                        .getStringProperty(WebappConfig.DEFAULT_ACCEPT_HEADER)),
+                                        .getString(WebappConfig.DEFAULT_ACCEPT_HEADER)),
                                 pageoffsetIndividualQueryLimit, this.getSettings(), this.getBlacklistController(),
                                 nextBundle);
                 
@@ -391,7 +388,7 @@ public class RdfFetchController
                 nextThread =
                         new RdfFetcherUriQueryRunnableImpl(nextEndpoint, nextQuery, "off",
                                 ((HttpProvider)nextBundle.getProvider()).getAcceptHeaderString(this.getSettings()
-                                        .getStringProperty(WebappConfig.DEFAULT_ACCEPT_HEADER)), this.getSettings(),
+                                        .getString(WebappConfig.DEFAULT_ACCEPT_HEADER)), this.getSettings(),
                                 this.getBlacklistController(), nextBundle);
                 
                 addToFetchQueue = true;
@@ -575,8 +572,8 @@ public class RdfFetchController
                     QueryTypeUtils.getQueryTypesMatchingQuery(this.queryParameters, this.sortedIncludedProfiles, this
                             .getSettings().getAllQueryTypes(), this.getSettings().getNamespacePrefixesToUris(), this
                             .getSettings().getAllNamespaceEntries(),
-                            this.getSettings().getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_QUERY_INCLUSIONS),
-                            this.getSettings().getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_QUERIES));
+                            this.getSettings().getBoolean(WebappConfig.RECOGNISE_IMPLICIT_QUERY_INCLUSIONS), this
+                                    .getSettings().getBoolean(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_QUERIES));
             
             if(RdfFetchController.DEBUG)
             {
@@ -630,15 +627,15 @@ public class RdfFetchController
                                                 this.getSettings(),
                                                 this.getBlacklistController(),
                                                 this.getRealHostName(),
-                                                this.getSettings().getBooleanProperty(
+                                                this.getSettings().getBoolean(
                                                         WebappConfig.TRY_ALL_ENDPOINTS_FOR_EACH_PROVIDER),
                                                 this.getPageOffset(),
                                                 this.localSettings
-                                                        .getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
+                                                        .getBoolean(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
                                                 this.localSettings
-                                                        .getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                                                        .getBoolean(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
                                                 this.localSettings
-                                                        .getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
+                                                        .getBoolean(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
                         
                         this.queryBundles.addAll(queryBundlesForQueryType);
                         
@@ -664,9 +661,9 @@ public class RdfFetchController
                                                 this.getSettings().getAllProviders(),
                                                 nextInputQueryType,
                                                 this.sortedIncludedProfiles,
-                                                this.getSettings().getBooleanProperty(
+                                                this.getSettings().getBoolean(
                                                         WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
-                                                this.getSettings().getBooleanProperty(
+                                                this.getSettings().getBoolean(
                                                         WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS)).size() > 0)
                                 {
                                     this.namespaceNotRecognised = true;
@@ -697,7 +694,7 @@ public class RdfFetchController
         if(generateQueryBundles || this.fetchThreadGroup.size() == 0)
         {
             this.setFetchThreadGroup(this.generateFetchThreadsFromQueryBundles(this.getQueryBundles(), this
-                    .getSettings().getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT)));
+                    .getSettings().getInt(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT)));
         }
         
         // ---------------------------------

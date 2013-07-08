@@ -160,22 +160,22 @@ public class QueryCreatorTest
         this.testConvertAlternateToPreferredPrefix = true;
         
         this.testLocalSettings1 = new Settings();
-        this.testLocalSettings1.setProperty(WebappConfig.HOST_NAME, "1.example.org");
-        this.testLocalSettings1.setProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED, true);
+        this.testLocalSettings1.setString(WebappConfig.HOST_NAME, "1.example.org");
+        this.testLocalSettings1.setBoolean(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED, true);
         this.testLocalSettings1.addQueryType(this.testRegexInputQueryType1);
         this.testLocalSettings1.addProvider(this.testProvider1);
         this.testLocalSettings1.addNamespaceEntry(this.testNamespaceEntry1);
         
         this.testLocalSettings2 = new Settings();
-        this.testLocalSettings2.setProperty(WebappConfig.HOST_NAME, "1.example.org");
-        this.testLocalSettings2.setProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED, true);
+        this.testLocalSettings2.setString(WebappConfig.HOST_NAME, "1.example.org");
+        this.testLocalSettings2.setBoolean(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED, true);
         this.testLocalSettings2.addQueryType(this.testRegexInputQueryType2);
         this.testLocalSettings2.addProvider(this.testProvider2);
         this.testLocalSettings2.addNamespaceEntry(this.testNamespaceEntry2);
         
         this.testLocalSettings3 = new Settings();
-        this.testLocalSettings3.setProperty(WebappConfig.HOST_NAME, "1.example.org");
-        this.testLocalSettings3.setProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED, true);
+        this.testLocalSettings3.setString(WebappConfig.HOST_NAME, "1.example.org");
+        this.testLocalSettings3.setBoolean(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED, true);
         
         this.testLocalSettings3.addQueryType(this.testRegexInputQueryType3);
         this.testLocalSettings3.addProvider(this.testHttpProvider3);

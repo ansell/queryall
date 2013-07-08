@@ -21,6 +21,8 @@ import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
+import org.openrdf.rio.WriterConfig;
+import org.openrdf.rio.helpers.XMLWriterSettings;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.QueryAllConfiguration;
 import org.queryall.api.namespace.NamespaceEntry;
@@ -76,10 +78,9 @@ public class ServletUtils
     {
         if(!requestQueryOptions.containsExplicitFormat())
         {
-            if(localSettings.getBooleanProperty(WebappConfig.ALWAYS_REDIRECT_TO_EXPLICIT_FORMAT_URL))
+            if(localSettings.getBoolean(WebappConfig.ALWAYS_REDIRECT_TO_EXPLICIT_FORMAT_URL))
             {
-                final int redirectCode =
-                        localSettings.getIntProperty(WebappConfig.REDIRECT_TO_EXPLICIT_FORMAT_HTTP_CODE);
+                final int redirectCode = localSettings.getInt(WebappConfig.REDIRECT_TO_EXPLICIT_FORMAT_HTTP_CODE);
                 
                 final StringBuilder redirectString = new StringBuilder();
                 final boolean ignoreContextPath = false;
@@ -128,8 +129,8 @@ public class ServletUtils
                     myRepository,
                     RuleUtils.getSortedRulesForProviders(fetchController.getAllUsedProviders(),
                             localSettings.getAllNormalisationRules(), SortOrder.HIGHEST_ORDER_FIRST), includedProfiles,
-                    localSettings.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
-                    localSettings.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
+                    localSettings.getBoolean(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                    localSettings.getBoolean(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
         }
         catch(final UnnormalisableRuleException e)
         {
@@ -247,7 +248,7 @@ public class ServletUtils
                 tempRepository.initialize();
                 
                 RdfUtils.insertResultIntoRepository(nextResult, tempRepository,
-                        localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE),
+                        localSettings.getString(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE),
                         localSettings.getDefaultHostAddress());
                 
                 // Perform normalisation for the AfterResultsImport stage
@@ -257,8 +258,8 @@ public class ServletUtils
                                 localSettings.getAllNormalisationRules(), nextResult.getOriginalQueryBundle()
                                         .getProvider().getNormalisationUris(), SortOrder.HIGHEST_ORDER_FIRST),
                                 includedProfiles, localSettings
-                                        .getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
-                                localSettings.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
+                                        .getBoolean(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS), localSettings
+                                        .getBoolean(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
                 
                 if(ServletUtils.DEBUG)
                 {
@@ -398,7 +399,7 @@ public class ServletUtils
         RepositoryConnection myRepositoryConnection = null;
         
         final boolean convertAlternateToPreferredPrefix =
-                localSettings.getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED);
+                localSettings.getBoolean(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED);
         
         try
         {
@@ -412,18 +413,16 @@ public class ServletUtils
             {
                 // TODO: attempt to generate a non-empty namespaceEntryMap in this case
                 staticQueryTypesForUnknown =
-                        localSettings.getURIProperties(WebappConfig.NO_ACCESSIBLE_PROVIDERS_STATIC_ADDITIONS);
+                        localSettings.getURIs(WebappConfig.NO_ACCESSIBLE_PROVIDERS_STATIC_ADDITIONS);
             }
             else if(anyNamespaceNotRecognised)
             {
                 // TODO: attempt to generate a non-empty namespaceEntryMap in this case??
-                staticQueryTypesForUnknown =
-                        localSettings.getURIProperties(WebappConfig.UNKNOWN_NAMESPACE_STATIC_ADDITIONS);
+                staticQueryTypesForUnknown = localSettings.getURIs(WebappConfig.UNKNOWN_NAMESPACE_STATIC_ADDITIONS);
             }
             else if(queryNotRecognised)
             {
-                staticQueryTypesForUnknown =
-                        localSettings.getURIProperties(WebappConfig.UNKNOWN_QUERY_STATIC_ADDITIONS);
+                staticQueryTypesForUnknown = localSettings.getURIs(WebappConfig.UNKNOWN_QUERY_STATIC_ADDITIONS);
             }
             else
             {
@@ -455,8 +454,8 @@ public class ServletUtils
                 {
                     final Map<String, String> attributeList =
                             QueryCreator.getAttributeListFor(nextIncludeType, null, queryParameters,
-                                    localSettings.getStringProperty(WebappConfig.HOST_NAME), realHostName, pageOffset,
-                                    localSettings.getStringProperty(WebappConfig.HOST_NAME),
+                                    localSettings.getString(WebappConfig.HOST_NAME), realHostName, pageOffset,
+                                    localSettings.getString(WebappConfig.HOST_NAME),
                                     localSettings.getDefaultHostAddress(), localSettings.getSeparator());
                     
                     // This is a last ditch solution to giving some meaningful feedback, as we
@@ -465,19 +464,12 @@ public class ServletUtils
                     // NOTE: An empty NamespaceEntry Map is currently always provided to this
                     // method, so static strings should not rely on namespace-related placeholders
                     String nextBackupString =
-                            QueryCreator
-                                    .createStaticRdfXmlString(
-                                            (InputQueryType)nextIncludeType,
-                                            (OutputQueryType)nextIncludeType,
-                                            null,
-                                            attributeList,
-                                            emptyNamespaceEntryMap,
-                                            includedProfiles,
-                                            localSettings
-                                                    .getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
-                                            localSettings
-                                                    .getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES),
-                                            convertAlternateToPreferredPrefix, localSettings)
+                            QueryCreator.createStaticRdfXmlString((InputQueryType)nextIncludeType,
+                                    (OutputQueryType)nextIncludeType, null, attributeList, emptyNamespaceEntryMap,
+                                    includedProfiles,
+                                    localSettings.getBoolean(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                                    localSettings.getBoolean(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES),
+                                    convertAlternateToPreferredPrefix, localSettings)
                                     + "\n";
                     
                     nextBackupString =
@@ -547,14 +539,14 @@ public class ServletUtils
             final DefaultQueryOptions requestQueryOptions, final String requestedContentType,
             boolean ignoreContextPath, final String contextPath)
     {
-        if(localSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_HOSTNAME))
+        if(localSettings.getBoolean(WebappConfig.USE_HARDCODED_REQUEST_HOSTNAME))
         {
-            redirectString.append(localSettings.getStringProperty(WebappConfig.HARDCODED_REQUEST_HOSTNAME));
+            redirectString.append(localSettings.getString(WebappConfig.HARDCODED_REQUEST_HOSTNAME));
         }
         
-        if(localSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_CONTEXT))
+        if(localSettings.getBoolean(WebappConfig.USE_HARDCODED_REQUEST_CONTEXT))
         {
-            redirectString.append(localSettings.getStringProperty(WebappConfig.HARDCODED_REQUEST_CONTEXT));
+            redirectString.append(localSettings.getString(WebappConfig.HARDCODED_REQUEST_CONTEXT));
             ignoreContextPath = true;
         }
         
@@ -575,19 +567,19 @@ public class ServletUtils
         // add the prefix for this type
         if(requestedContentType.equals(Constants.TEXT_HTML))
         {
-            redirectString.append(localSettings.getStringProperty(WebappConfig.HTML_URL_PREFIX));
+            redirectString.append(localSettings.getString(WebappConfig.HTML_URL_PREFIX));
         }
         else if(requestedContentType.equals(Constants.TEXT_RDF_N3))
         {
-            redirectString.append(localSettings.getStringProperty(WebappConfig.N3_URL_PREFIX));
+            redirectString.append(localSettings.getString(WebappConfig.N3_URL_PREFIX));
         }
         else if(requestedContentType.equals(Constants.APPLICATION_RDF_XML))
         {
-            redirectString.append(localSettings.getStringProperty(WebappConfig.RDFXML_URL_PREFIX));
+            redirectString.append(localSettings.getString(WebappConfig.RDFXML_URL_PREFIX));
         }
         else if(requestedContentType.equals(Constants.APPLICATION_JSON))
         {
-            redirectString.append(localSettings.getStringProperty(WebappConfig.JSON_URL_PREFIX));
+            redirectString.append(localSettings.getString(WebappConfig.JSON_URL_PREFIX));
         }
         else
         {
@@ -598,44 +590,44 @@ public class ServletUtils
         
         if(requestQueryOptions.isQueryPlanRequest())
         {
-            redirectString.append(localSettings.getStringProperty(WebappConfig.QUERYPLAN_URL_PREFIX));
+            redirectString.append(localSettings.getString(WebappConfig.QUERYPLAN_URL_PREFIX));
         }
         
         if(requestQueryOptions.containsExplicitPageOffsetValue())
         {
-            redirectString.append(localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_OPENING_PREFIX));
+            redirectString.append(localSettings.getString(WebappConfig.PAGEOFFSET_URL_OPENING_PREFIX));
             redirectString.append(requestQueryOptions.getPageOffset());
-            redirectString.append(localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_CLOSING_PREFIX));
+            redirectString.append(localSettings.getString(WebappConfig.PAGEOFFSET_URL_CLOSING_PREFIX));
         }
         
         redirectString.append(requestQueryOptions.getParsedRequest());
         
         if(requestQueryOptions.containsExplicitPageOffsetValue())
         {
-            redirectString.append(localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_SUFFIX));
+            redirectString.append(localSettings.getString(WebappConfig.PAGEOFFSET_URL_SUFFIX));
         }
         
         if(requestQueryOptions.isQueryPlanRequest())
         {
-            redirectString.append(localSettings.getStringProperty(WebappConfig.QUERYPLAN_URL_SUFFIX));
+            redirectString.append(localSettings.getString(WebappConfig.QUERYPLAN_URL_SUFFIX));
         }
         
         // Then add on the suffix for this type
         if(requestedContentType.equals(Constants.TEXT_HTML))
         {
-            redirectString.append(localSettings.getStringProperty(WebappConfig.HTML_URL_SUFFIX));
+            redirectString.append(localSettings.getString(WebappConfig.HTML_URL_SUFFIX));
         }
         else if(requestedContentType.equals(Constants.TEXT_RDF_N3))
         {
-            redirectString.append(localSettings.getStringProperty(WebappConfig.N3_URL_SUFFIX));
+            redirectString.append(localSettings.getString(WebappConfig.N3_URL_SUFFIX));
         }
         else if(requestedContentType.equals(Constants.APPLICATION_RDF_XML))
         {
-            redirectString.append(localSettings.getStringProperty(WebappConfig.RDFXML_URL_SUFFIX));
+            redirectString.append(localSettings.getString(WebappConfig.RDFXML_URL_SUFFIX));
         }
         else if(requestedContentType.equals(Constants.APPLICATION_JSON))
         {
-            redirectString.append(localSettings.getStringProperty(WebappConfig.JSON_URL_SUFFIX));
+            redirectString.append(localSettings.getString(WebappConfig.JSON_URL_SUFFIX));
         }
         else
         {
@@ -713,10 +705,22 @@ public class ServletUtils
             final RdfFetchController fetchController, final Collection<String> debugStrings,
             final Repository convertedPool, final String contextPath) throws IOException
     {
-        // Assume an average document may easily contain 2000 characters, to save on copies inside
-        // the stringwriter
-        // By default it starts with only 16 characters if we don't set a number here
-        final java.io.StringWriter cleanOutput = new java.io.StringWriter(2048);
+        if(requestedContentType.equals(Constants.APPLICATION_RDF_XML))
+        {
+            out.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+            
+            for(final String nextDebugString : debugStrings)
+            {
+                out.write(nextDebugString + "\n");
+            }
+        }
+        else if(requestedContentType.equals(Constants.TEXT_RDF_N3))
+        {
+            for(final String nextDebugString : debugStrings)
+            {
+                out.write(nextDebugString + "\n");
+            }
+        }
         
         // TODO: Make this process generic to allow output to arbitrary formats instead of just
         if(requestedContentType.equals(Constants.TEXT_HTML))
@@ -729,7 +733,7 @@ public class ServletUtils
             
             try
             {
-                HtmlPageRenderer.renderHtml(nextEngine, localSettings, fetchController, convertedPool, cleanOutput,
+                HtmlPageRenderer.renderHtml(nextEngine, localSettings, fetchController, convertedPool, out,
                         queryString, localSettings.getDefaultHostAddress() + queryString, realHostName, contextPath,
                         pageOffset, debugStrings);
             }
@@ -750,53 +754,13 @@ public class ServletUtils
                 ServletUtils.log.debug("GeneralServlet: fetchController.queryKnown()=" + fetchController.queryKnown());
             }
             
-            RdfUtils.toWriter(convertedPool, cleanOutput, writerFormat);
-        }
-        
-        if(requestedContentType.equals(Constants.APPLICATION_RDF_XML))
-        {
-            out.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+            final WriterConfig config = new WriterConfig();
             
-            for(final String nextDebugString : debugStrings)
-            {
-                out.write(nextDebugString + "\n");
-            }
-            final StringBuffer buffer = cleanOutput.getBuffer();
+            // We have already written the XML PI, so specify that we don't want it written out by
+            // the Rio RDFXMLWriter
+            config.set(XMLWriterSettings.INCLUDE_XML_PI, false);
             
-            // HACK to get around lack of interest in sesame for getting RDF/XML documents without
-            // the XML PI
-            // 38 is the length of the sesame RDF/XML PI, if it changes we will start to fail with
-            // all RDF/XML results and we need to change the magic number here
-            // TODO: Make a sesametools version of the RDF/XML output writer that allows the choice
-            // of having a PI or not
-            if(buffer.length() > 38)
-            {
-                for(int i = 38; i < cleanOutput.getBuffer().length(); i++)
-                {
-                    out.write(buffer.charAt(i));
-                }
-            }
-        }
-        else if(requestedContentType.equals(Constants.TEXT_RDF_N3))
-        {
-            for(final String nextDebugString : debugStrings)
-            {
-                out.write(nextDebugString + "\n");
-            }
-            
-            final StringBuffer buffer = cleanOutput.getBuffer();
-            for(int i = 0; i < cleanOutput.getBuffer().length(); i++)
-            {
-                out.write(buffer.charAt(i));
-            }
-        }
-        else
-        {
-            final StringBuffer buffer = cleanOutput.getBuffer();
-            for(int i = 0; i < cleanOutput.getBuffer().length(); i++)
-            {
-                out.write(buffer.charAt(i));
-            }
+            RdfUtils.toWriter(convertedPool, out, writerFormat, config);
         }
     }
     

@@ -177,11 +177,10 @@ public class ConfigurationQueryOptions
     
     private String parseForAdminConfiguration(String requestString)
     {
-        final String adminConfigurationPrefix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_PREFIX);
+        final String adminConfigurationPrefix = this.localSettings.getString(WebappConfig.ADMIN_CONFIGURATION_PREFIX);
         
         final String adminWebappConfigurationPrefix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_WEBAPP_CONFIGURATION_PREFIX);
+                this.localSettings.getString(WebappConfig.ADMIN_WEBAPP_CONFIGURATION_PREFIX);
         
         if(this.matchesPrefixAndSuffix(requestString, adminConfigurationPrefix, ""))
         {
@@ -207,33 +206,33 @@ public class ConfigurationQueryOptions
         }
         
         final String adminConfigurationHtmlPrefix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_HTML_PREFIX);
+                this.localSettings.getString(WebappConfig.ADMIN_CONFIGURATION_HTML_PREFIX);
         final String adminConfigurationHtmlSuffix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_HTML_SUFFIX);
+                this.localSettings.getString(WebappConfig.ADMIN_CONFIGURATION_HTML_SUFFIX);
         final String adminConfigurationRdfxmlPrefix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_RDFXML_PREFIX);
+                this.localSettings.getString(WebappConfig.ADMIN_CONFIGURATION_RDFXML_PREFIX);
         final String adminConfigurationRdfxmlSuffix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_RDFXML_SUFFIX);
+                this.localSettings.getString(WebappConfig.ADMIN_CONFIGURATION_RDFXML_SUFFIX);
         final String adminConfigurationN3Prefix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_N3_PREFIX);
+                this.localSettings.getString(WebappConfig.ADMIN_CONFIGURATION_N3_PREFIX);
         final String adminConfigurationN3Suffix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_N3_SUFFIX);
+                this.localSettings.getString(WebappConfig.ADMIN_CONFIGURATION_N3_SUFFIX);
         final String adminConfigurationJsonPrefix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_JSON_PREFIX);
+                this.localSettings.getString(WebappConfig.ADMIN_CONFIGURATION_JSON_PREFIX);
         final String adminConfigurationJsonSuffix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_JSON_SUFFIX);
+                this.localSettings.getString(WebappConfig.ADMIN_CONFIGURATION_JSON_SUFFIX);
         final String adminConfigurationJsonldPrefix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_JSONLD_PREFIX);
+                this.localSettings.getString(WebappConfig.ADMIN_CONFIGURATION_JSONLD_PREFIX);
         final String adminConfigurationJsonldSuffix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_JSONLD_SUFFIX);
+                this.localSettings.getString(WebappConfig.ADMIN_CONFIGURATION_JSONLD_SUFFIX);
         final String adminConfigurationNTriplesPrefix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_NTRIPLES_PREFIX);
+                this.localSettings.getString(WebappConfig.ADMIN_CONFIGURATION_NTRIPLES_PREFIX);
         final String adminConfigurationNTriplesSuffix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_NTRIPLES_SUFFIX);
+                this.localSettings.getString(WebappConfig.ADMIN_CONFIGURATION_NTRIPLES_SUFFIX);
         final String adminConfigurationNQuadsPrefix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_NQUADS_PREFIX);
+                this.localSettings.getString(WebappConfig.ADMIN_CONFIGURATION_NQUADS_PREFIX);
         final String adminConfigurationNQuadsSuffix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_NQUADS_SUFFIX);
+                this.localSettings.getString(WebappConfig.ADMIN_CONFIGURATION_NQUADS_SUFFIX);
         
         if(this.matchesPrefixAndSuffix(requestString, adminConfigurationHtmlPrefix, adminConfigurationHtmlSuffix))
         {
@@ -361,7 +360,7 @@ public class ConfigurationQueryOptions
     
     private String parseForAdminPrefix(String requestString)
     {
-        final String adminUrlPrefix = this.localSettings.getStringProperty(WebappConfig.ADMIN_URL_PREFIX);
+        final String adminUrlPrefix = this.localSettings.getString(WebappConfig.ADMIN_URL_PREFIX);
         
         if(this.matchesPrefixAndSuffix(requestString, adminUrlPrefix, ""))
         {
@@ -385,11 +384,11 @@ public class ConfigurationQueryOptions
     private String parseForApiVersion(String requestString)
     {
         final String adminConfigurationApiOpeningPrefix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_API_VERSION_OPENING_PREFIX);
+                this.localSettings.getString(WebappConfig.ADMIN_CONFIGURATION_API_VERSION_OPENING_PREFIX);
         final String adminConfigurationApiClosingPrefix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_API_VERSION_CLOSING_PREFIX);
+                this.localSettings.getString(WebappConfig.ADMIN_CONFIGURATION_API_VERSION_CLOSING_PREFIX);
         final String adminConfigurationApiSuffix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_API_VERSION_SUFFIX);
+                this.localSettings.getString(WebappConfig.ADMIN_CONFIGURATION_API_VERSION_SUFFIX);
         
         // FIXME: this does not work if there is no file format suffix, it will always call the
         // current API version in these cases
@@ -448,20 +447,20 @@ public class ConfigurationQueryOptions
     
     private String parseForNsIdFormat(String requestString)
     {
-        final String nsIdHtmlPrefix = this.localSettings.getStringProperty(WebappConfig.HTML_URL_PREFIX);
-        final String nsIdHtmlSuffix = this.localSettings.getStringProperty(WebappConfig.HTML_URL_SUFFIX);
-        final String nsIdRdfxmlPrefix = this.localSettings.getStringProperty(WebappConfig.RDFXML_URL_PREFIX);
-        final String nsIdRdfxmlSuffix = this.localSettings.getStringProperty(WebappConfig.RDFXML_URL_SUFFIX);
-        final String nsIdN3Prefix = this.localSettings.getStringProperty(WebappConfig.N3_URL_PREFIX);
-        final String nsIdN3Suffix = this.localSettings.getStringProperty(WebappConfig.N3_URL_SUFFIX);
-        final String nsIdJsonPrefix = this.localSettings.getStringProperty(WebappConfig.JSON_URL_PREFIX);
-        final String nsIdJsonSuffix = this.localSettings.getStringProperty(WebappConfig.JSON_URL_SUFFIX);
-        final String nsIdJsonldPrefix = this.localSettings.getStringProperty(WebappConfig.JSONLD_URL_PREFIX);
-        final String nsIdJsonldSuffix = this.localSettings.getStringProperty(WebappConfig.JSONLD_URL_SUFFIX);
-        final String nsIdNTriplesPrefix = this.localSettings.getStringProperty(WebappConfig.NTRIPLES_URL_PREFIX);
-        final String nsIdNTriplesSuffix = this.localSettings.getStringProperty(WebappConfig.NTRIPLES_URL_SUFFIX);
-        final String nsIdNQuadsPrefix = this.localSettings.getStringProperty(WebappConfig.NQUADS_URL_PREFIX);
-        final String nsIdNQuadsSuffix = this.localSettings.getStringProperty(WebappConfig.NQUADS_URL_SUFFIX);
+        final String nsIdHtmlPrefix = this.localSettings.getString(WebappConfig.HTML_URL_PREFIX);
+        final String nsIdHtmlSuffix = this.localSettings.getString(WebappConfig.HTML_URL_SUFFIX);
+        final String nsIdRdfxmlPrefix = this.localSettings.getString(WebappConfig.RDFXML_URL_PREFIX);
+        final String nsIdRdfxmlSuffix = this.localSettings.getString(WebappConfig.RDFXML_URL_SUFFIX);
+        final String nsIdN3Prefix = this.localSettings.getString(WebappConfig.N3_URL_PREFIX);
+        final String nsIdN3Suffix = this.localSettings.getString(WebappConfig.N3_URL_SUFFIX);
+        final String nsIdJsonPrefix = this.localSettings.getString(WebappConfig.JSON_URL_PREFIX);
+        final String nsIdJsonSuffix = this.localSettings.getString(WebappConfig.JSON_URL_SUFFIX);
+        final String nsIdJsonldPrefix = this.localSettings.getString(WebappConfig.JSONLD_URL_PREFIX);
+        final String nsIdJsonldSuffix = this.localSettings.getString(WebappConfig.JSONLD_URL_SUFFIX);
+        final String nsIdNTriplesPrefix = this.localSettings.getString(WebappConfig.NTRIPLES_URL_PREFIX);
+        final String nsIdNTriplesSuffix = this.localSettings.getString(WebappConfig.NTRIPLES_URL_SUFFIX);
+        final String nsIdNQuadsPrefix = this.localSettings.getString(WebappConfig.NQUADS_URL_PREFIX);
+        final String nsIdNQuadsSuffix = this.localSettings.getString(WebappConfig.NQUADS_URL_SUFFIX);
         
         if(this.matchesPrefixAndSuffix(requestString, nsIdHtmlPrefix, nsIdHtmlSuffix))
         {
@@ -568,7 +567,7 @@ public class ConfigurationQueryOptions
     private String parseForRefresh(String requestString)
     {
         final String adminConfigurationRefreshPrefix =
-                this.localSettings.getStringProperty(WebappConfig.ADMIN_CONFIGURATION_REFRESH_PREFIX);
+                this.localSettings.getString(WebappConfig.ADMIN_CONFIGURATION_REFRESH_PREFIX);
         
         if(this.matchesPrefixAndSuffix(requestString, adminConfigurationRefreshPrefix, ""))
         {

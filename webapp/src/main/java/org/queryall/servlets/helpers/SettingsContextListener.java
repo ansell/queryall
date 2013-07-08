@@ -69,7 +69,7 @@ public class SettingsContextListener implements ServletContextListener
         // setup the default content type negotiator using the users given preference
         final ContentTypeNegotiator contentTypeNegotiator =
                 QueryallContentNegotiator.getContentNegotiator(tempSettings
-                        .getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE));
+                        .getString(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE));
         
         // then put both of them into servlet context so they can be shared between requests in this
         // servlet

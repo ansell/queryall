@@ -62,7 +62,7 @@ public class ProfilesServlet extends HttpServlet
         final Map<URI, Profile> allProfiles = localSettings.getAllProfiles();
         
         final List<Profile> enabledProfiles =
-                ProfileUtils.getAndSortProfileList(localSettings.getURIProperties(WebappConfig.ACTIVE_PROFILES),
+                ProfileUtils.getAndSortProfileList(localSettings.getURIs(WebappConfig.ACTIVE_PROFILES),
                         SortOrder.LOWEST_ORDER_FIRST, localSettings.getAllProfiles());
         
         out.write("<br />Number of queries = " + allCustomQueries.size() + "<br />\n");
@@ -70,7 +70,7 @@ public class ProfilesServlet extends HttpServlet
         out.write("<br />Number of rdf normalisation rules = " + allRdfRules.size() + "<br />\n");
         out.write("<br />Number of profiles = " + allProfiles.size() + "<br />\n");
         
-        out.write("<br />Enabled profiles: (" + localSettings.getURIProperties(WebappConfig.ACTIVE_PROFILES).size()
+        out.write("<br />Enabled profiles: (" + localSettings.getURIs(WebappConfig.ACTIVE_PROFILES).size()
                 + ")<br />\n");
         
         out.write("<ul>\n");
@@ -94,8 +94,8 @@ public class ProfilesServlet extends HttpServlet
         for(final Provider nextProvider : allProviders.values())
         {
             if(nextProvider.isUsedWithProfileList(enabledProfiles,
-                    localSettings.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
-                    localSettings.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS)))
+                    localSettings.getBoolean(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
+                    localSettings.getBoolean(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS)))
             {
                 // included for this profile...
                 // out.write("Provider included: "+nextProvider.getKey()+"<br />\n");
@@ -111,8 +111,8 @@ public class ProfilesServlet extends HttpServlet
         for(final QueryType nextQuery : allCustomQueries.values())
         {
             if(nextQuery.isUsedWithProfileList(enabledProfiles,
-                    localSettings.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_QUERY_INCLUSIONS),
-                    localSettings.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_QUERIES)))
+                    localSettings.getBoolean(WebappConfig.RECOGNISE_IMPLICIT_QUERY_INCLUSIONS),
+                    localSettings.getBoolean(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_QUERIES)))
             {
                 // included for this profile...
                 // out.write("Query included: "+nextQuery.getKey()+"<br />\n");
@@ -128,8 +128,8 @@ public class ProfilesServlet extends HttpServlet
         for(final NormalisationRule nextRdfRule : allRdfRules.values())
         {
             if(nextRdfRule.isUsedWithProfileList(enabledProfiles,
-                    localSettings.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
-                    localSettings.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES)))
+                    localSettings.getBoolean(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                    localSettings.getBoolean(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES)))
             {
                 // included for this profile...
                 // out.write("Rdfrule included: "+nextRdfrule.getKey()+"<br />\n");
@@ -200,7 +200,7 @@ public class ProfilesServlet extends HttpServlet
             final List<Profile> nextProfileAsList = new ArrayList<Profile>(1);
             nextProfileAsList.add(nextProfile);
             
-            if(localSettings.getURIProperties(WebappConfig.ACTIVE_PROFILES).contains(nextProfile.getKey()))
+            if(localSettings.getURIs(WebappConfig.ACTIVE_PROFILES).contains(nextProfile.getKey()))
             {
                 out.write("<div style=\"display:block;\">\n");
                 out.write("Profile:" + nextProfile.getKey() + "\n");
@@ -218,8 +218,8 @@ public class ProfilesServlet extends HttpServlet
             for(final Provider nextProvider : allProviders.values())
             {
                 if(nextProvider.isUsedWithProfileList(nextProfileAsList,
-                        localSettings.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
-                        localSettings.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS)))
+                        localSettings.getBoolean(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
+                        localSettings.getBoolean(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS)))
                 {
                     // included for this profile...
                     // out.write("Provider included: "+nextProvider.getKey()+"<br />\n");
@@ -235,8 +235,8 @@ public class ProfilesServlet extends HttpServlet
             for(final QueryType nextQuery : allCustomQueries.values())
             {
                 if(nextQuery.isUsedWithProfileList(nextProfileAsList,
-                        localSettings.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_QUERY_INCLUSIONS),
-                        localSettings.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_QUERIES)))
+                        localSettings.getBoolean(WebappConfig.RECOGNISE_IMPLICIT_QUERY_INCLUSIONS),
+                        localSettings.getBoolean(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_QUERIES)))
                 {
                     // included for this profile...
                     // out.write("Query included: "+nextQuery.getKey()+"<br />\n");
@@ -252,8 +252,8 @@ public class ProfilesServlet extends HttpServlet
             for(final NormalisationRule nextRdfRule : allRdfRules.values())
             {
                 if(nextRdfRule.isUsedWithProfileList(nextProfileAsList,
-                        localSettings.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
-                        localSettings.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES)))
+                        localSettings.getBoolean(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                        localSettings.getBoolean(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES)))
                 {
                     // included for this profile...
                     // out.write("RdfRule included: "+nextRdfRule.getKey()+"<br />\n");

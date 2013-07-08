@@ -55,7 +55,7 @@ public class RdfFetcher
         {
             RdfFetcher.log.debug("RdfFetcher.getDocumentFromUrl: endpointUrl=" + endpointUrl
                     + " Settings.getStringPropertyFromConfig(\"connectTimeout\")="
-                    + this.localSettings.getIntProperty(WebappConfig.CONNECT_TIMEOUT));
+                    + this.localSettings.getInt(WebappConfig.CONNECT_TIMEOUT));
         }
         
         if(endpointUrl == null)
@@ -96,22 +96,21 @@ public class RdfFetcher
             this.localBlacklistController.accumulateQueryTotal(url.getProtocol() + "://" + url.getHost());
             
             conn = (HttpURLConnection)url.openConnection();
-            conn.setRequestProperty(
-                    "User-Agent",
-                    "Mozilla/5.0 (compatible; " + this.localSettings.getStringProperty(WebappConfig.USER_AGENT) + "/"
-                            + PropertyUtils.VERSION + " +"
-                            + this.localSettings.getStringProperty(WebappConfig.ROBOT_HELP_URL) + ")");
+            conn.setRequestProperty("User-Agent",
+                    "Mozilla/5.0 (compatible; " + this.localSettings.getString(WebappConfig.USER_AGENT) + "/"
+                            + PropertyUtils.VERSION + " +" + this.localSettings.getString(WebappConfig.ROBOT_HELP_URL)
+                            + ")");
             
             if(acceptHeader != null && !acceptHeader.equals(""))
             {
-                acceptHeader = this.localSettings.getStringProperty(WebappConfig.DEFAULT_ACCEPT_HEADER);
+                acceptHeader = this.localSettings.getString(WebappConfig.DEFAULT_ACCEPT_HEADER);
             }
             
             conn.setRequestProperty("Accept", acceptHeader);
             
-            conn.setUseCaches(this.localSettings.getBooleanProperty(WebappConfig.USE_REQUEST_CACHE));
-            conn.setConnectTimeout(this.localSettings.getIntProperty(WebappConfig.CONNECT_TIMEOUT));
-            conn.setReadTimeout(this.localSettings.getIntProperty(WebappConfig.READ_TIMEOUT));
+            conn.setUseCaches(this.localSettings.getBoolean(WebappConfig.USE_REQUEST_CACHE));
+            conn.setConnectTimeout(this.localSettings.getInt(WebappConfig.CONNECT_TIMEOUT));
+            conn.setReadTimeout(this.localSettings.getInt(WebappConfig.READ_TIMEOUT));
             
             if(postInformation != null && !postInformation.trim().equals(""))
             {

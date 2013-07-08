@@ -279,19 +279,19 @@ public class QueryCreator
         
         replacedString =
                 replacedString.replace(Constants.TEMPLATE_QUICK_LIMIT,
-                        "LIMIT " + settings.getIntProperty(WebappConfig.PAGEOFFSET_QUICK_QUERY_LIMIT));
+                        "LIMIT " + settings.getInt(WebappConfig.PAGEOFFSET_QUICK_QUERY_LIMIT));
         
         normalisedQueryUri =
                 normalisedQueryUri.replace(Constants.TEMPLATE_QUICK_LIMIT,
-                        "limit/" + settings.getIntProperty(WebappConfig.PAGEOFFSET_QUICK_QUERY_LIMIT));
+                        "limit/" + settings.getInt(WebappConfig.PAGEOFFSET_QUICK_QUERY_LIMIT));
         
         replacedString =
                 replacedString.replace(Constants.TEMPLATE_LIMIT,
-                        "LIMIT " + settings.getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT));
+                        "LIMIT " + settings.getInt(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT));
         
         normalisedQueryUri =
                 normalisedQueryUri.replace(Constants.TEMPLATE_LIMIT,
-                        "limit/" + settings.getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT));
+                        "limit/" + settings.getInt(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT));
         
         if(attributeList.containsKey(Constants.TEMPLATE_KEY_OFFSET))
         {
@@ -310,7 +310,7 @@ public class QueryCreator
                 // actual offset for pageOffset 1 is 0, and pageOffset 2 is
                 // Settings.getIntPropertyFromConfig("pageoffsetIndividualQueryLimit")
                 final int actualPageOffset =
-                        (pageOffset - 1) * settings.getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT);
+                        (pageOffset - 1) * settings.getInt(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT);
                 
                 replacedString = replacedString.replace(Constants.TEMPLATE_SPARQL_OFFSET, "OFFSET " + actualPageOffset);
                 replacedString = replacedString.replace(Constants.TEMPLATE_PAGEOFFSET, String.valueOf(pageOffset));
@@ -1264,7 +1264,7 @@ public class QueryCreator
         final long start = System.currentTimeMillis();
         
         String replacedString = templateString;
-        String separatorString = settings.getStringProperty(WebappConfig.DEFAULT_SEPARATOR);
+        String separatorString = settings.getString(WebappConfig.DEFAULT_SEPARATOR);
         String authorityString = settings.getDefaultHostAddress();
         
         final Map<String, List<String>> allMatches = originalQueryType.matchesForQueryParameters(queryParameters);
