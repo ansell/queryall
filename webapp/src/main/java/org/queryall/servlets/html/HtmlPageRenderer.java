@@ -145,6 +145,7 @@ public class HtmlPageRenderer
         
         velocityContext.put("xmlutil", new info.aduna.xml.XMLUtil());
         velocityContext.put("bio2rdfutil", new org.queryall.utils.RdfUtils());
+        velocityContext.put("stringutil", new org.apache.commons.lang.StringUtils());
         
         final int pageoffsetMaxValue = localSettings.getInt(WebappConfig.PAGEOFFSET_MAX_VALUE);
         
