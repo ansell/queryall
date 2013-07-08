@@ -23,8 +23,7 @@ public class RdfFetcherSparqlQueryRunnableImpl extends RdfFetcherQueryRunnableIm
     private static final boolean INFO = RdfFetcherSparqlQueryRunnableImpl.log.isInfoEnabled();
     
     public String graphUri = "";
-    public int maxRowsParameter = this.getLocalSettings()
-            .getIntProperty(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT);
+    public int maxRowsParameter = this.getLocalSettings().getInt(WebappConfig.PAGEOFFSET_INDIVIDUAL_QUERY_LIMIT);
     
     public RdfFetcherSparqlQueryRunnableImpl(final String nextEndpointUrl, final String nextGraphUri,
             final String nextQuery, final String nextDebug, final String nextAcceptHeader,

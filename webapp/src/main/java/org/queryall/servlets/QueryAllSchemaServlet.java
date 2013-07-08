@@ -73,7 +73,7 @@ public class QueryAllSchemaServlet extends HttpServlet
         final String originalRequestedContentType =
                 QueryallContentNegotiator.getResponseContentType(request.getHeader("Accept"),
                         request.getHeader("User-Agent"), localContentTypeNegotiator,
-                        localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE));
+                        localSettings.getString(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE));
         
         String requestedContentType = originalRequestedContentType;
         
@@ -150,7 +150,7 @@ public class QueryAllSchemaServlet extends HttpServlet
         // this method
         requestedContentType =
                 RdfUtils.findBestContentType(requestedContentType,
-                        localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE),
+                        localSettings.getString(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE),
                         Constants.APPLICATION_RDF_XML);
         
         // this will be null if they chose text/html, but it will be a valid format in other cases

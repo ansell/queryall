@@ -107,7 +107,7 @@ public class GeneralServlet extends HttpServlet
         
         if(originalAcceptHeader == null || originalAcceptHeader.equals(""))
         {
-            acceptHeader = localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE);
+            acceptHeader = localSettings.getString(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE);
         }
         else
         {
@@ -117,7 +117,7 @@ public class GeneralServlet extends HttpServlet
         final String originalRequestedContentType =
                 QueryallContentNegotiator.getResponseContentType(acceptHeader, userAgentHeader,
                         localContentTypeNegotiator,
-                        localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE));
+                        localSettings.getString(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE));
         
         String requestedContentType = originalRequestedContentType;
         
@@ -131,7 +131,7 @@ public class GeneralServlet extends HttpServlet
         // this method
         requestedContentType =
                 RdfUtils.findBestContentType(requestedContentType,
-                        localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE),
+                        localSettings.getString(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE),
                         Constants.APPLICATION_RDF_XML);
         
         // this will be null if they chose text/html, but it will be a valid format in other cases
@@ -162,12 +162,12 @@ public class GeneralServlet extends HttpServlet
                     + " to blacklist redirect page");
             
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.setHeader("Location", localSettings.getStringProperty(WebappConfig.BLACKLIST_REDIRECT_PAGE));
+            response.setHeader("Location", localSettings.getString(WebappConfig.BLACKLIST_REDIRECT_PAGE));
             return;
         }
         
         // TODO: arrange to move this into the header include function
-        response.setHeader("X-Application", localSettings.getStringProperty(WebappConfig.USER_AGENT) + "/"
+        response.setHeader("X-Application", localSettings.getString(WebappConfig.USER_AGENT) + "/"
                 + PropertyUtils.VERSION);
         
         final Collection<String> debugStrings = new ArrayList<String>();
@@ -177,12 +177,14 @@ public class GeneralServlet extends HttpServlet
             // If the writerFormat was not found then we default to HTML, and if we are using Ajax,
             // we don't need to fetch and can simply return here
             
-            if(writerFormat == null && localSettings.getBooleanProperty(WebappConfig.USE_AJAX_HTML_INTERFACE))
+            if(writerFormat == null && localSettings.getBoolean(WebappConfig.USE_AJAX_HTML_INTERFACE))
             {
+                ServletUtils.sendBasicHeaders(response, responseCode, requestedContentType);
+                
                 // We do not use the default catalina writer as it may not be UTF-8 compliant
                 // depending on unchangeable environment variables, instead we wrap up the catalina
                 // binary output stream as a guaranteed UTF-8 Writer
-                Writer out = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
+                final Writer out = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
                 
                 HtmlPageRenderer.renderAjaxHtml(localVelocityEngine, localSettings, out, queryString,
                         localSettings.getDefaultHostAddress() + queryString, realHostName, contextPath, pageOffset,
@@ -192,7 +194,7 @@ public class GeneralServlet extends HttpServlet
             }
             
             final List<Profile> includedProfiles =
-                    ProfileUtils.getAndSortProfileList(localSettings.getURIProperties(WebappConfig.ACTIVE_PROFILES),
+                    ProfileUtils.getAndSortProfileList(localSettings.getURIs(WebappConfig.ACTIVE_PROFILES),
                             SortOrder.LOWEST_ORDER_FIRST, localSettings.getAllProfiles());
             
             final RdfFetchController fetchController =
@@ -247,13 +249,12 @@ public class GeneralServlet extends HttpServlet
                 
                 // Defaults to 503 when there was a blacklisted provider and we have no planned
                 // query bundles
-                responseCode = localSettings.getIntProperty(WebappConfig.NO_ACCESSIBLE_PROVIDERS_HTTP_RESPONSE_CODE);
+                responseCode = localSettings.getInt(WebappConfig.NO_ACCESSIBLE_PROVIDERS_HTTP_RESPONSE_CODE);
                 
                 ServletUtils.sendBasicHeaders(response, responseCode, requestedContentType);
                 
                 // estimate the Retry-After header based on the known blacklist reset period
-                final int blacklistResetPeriod =
-                        localSettings.getIntProperty(WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS);
+                final int blacklistResetPeriod = localSettings.getInt(WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS);
                 
                 if(blacklistResetPeriod > 0)
                 {
@@ -288,13 +289,13 @@ public class GeneralServlet extends HttpServlet
                     // 404 for document not found, as a query type matched somewhere without having
                     // the namespace recognised
                     // There are still no results, but this is a more specific exception
-                    responseCode = localSettings.getIntProperty(WebappConfig.UNKNOWN_NAMESPACE_HTTP_RESPONSE_CODE);
+                    responseCode = localSettings.getInt(WebappConfig.UNKNOWN_NAMESPACE_HTTP_RESPONSE_CODE);
                 }
                 else
                 {
                     // 400 for query completely unrecognised, even when not including namespace in
                     // each query type calculation
-                    responseCode = localSettings.getIntProperty(WebappConfig.UNKNOWN_QUERY_HTTP_RESPONSE_CODE);
+                    responseCode = localSettings.getInt(WebappConfig.UNKNOWN_QUERY_HTTP_RESPONSE_CODE);
                 }
                 
                 ServletUtils.sendBasicHeaders(response, responseCode, requestedContentType);
@@ -430,9 +431,9 @@ public class GeneralServlet extends HttpServlet
             localBlacklistController.accumulateBlacklist(fetchController.getErrorResults());
             
             final boolean resetClientBlacklistFailuresOnSuccess =
-                    localSettings.getBooleanProperty(WebappConfig.BLACKLIST_RESET_ENDPOINT_FAILURES_ON_SUCCESS);
+                    localSettings.getBoolean(WebappConfig.BLACKLIST_RESET_ENDPOINT_FAILURES_ON_SUCCESS);
             final boolean resetClientBlacklistWithEndpoints =
-                    localSettings.getBooleanProperty(WebappConfig.BLACKLIST_RESET_CLIENT_BLACKLIST_WITH_ENDPOINTS);
+                    localSettings.getBoolean(WebappConfig.BLACKLIST_RESET_CLIENT_BLACKLIST_WITH_ENDPOINTS);
             
             if(resetClientBlacklistFailuresOnSuccess)
             {
@@ -444,7 +445,7 @@ public class GeneralServlet extends HttpServlet
             // equal to info and we aren't interested in using the client IP blacklist
             // functionalities
             if(GeneralServlet.INFO
-                    || localSettings.getBooleanProperty(WebappConfig.BLACKLIST_AUTOMATICALLY_BLACKLIST_CLIENTS,
+                    || localSettings.getBoolean(WebappConfig.BLACKLIST_AUTOMATICALLY_BLACKLIST_CLIENTS,
                             (Boolean)WebappConfig.BLACKLIST_AUTOMATICALLY_BLACKLIST_CLIENTS.getDefaultValue()))
             {
                 ServletUtils.doQueryDebug(localBlacklistController, queryString, requesterIpAddress,

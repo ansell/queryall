@@ -357,7 +357,7 @@ public enum WebappConfig
      */
     USER_AGENT("userAgent", "queryall"),
     
-    WHITELIST_BASE_CLIENT_IP_ADDRESSES("whitelistBaseClientIPAddresses", Collections.emptyList()), 
+    WHITELIST_BASE_CLIENT_IP_ADDRESSES("whitelistBaseClientIPAddresses", Collections.emptyList()),
     
     USE_AJAX_HTML_INTERFACE("useAjaxHtmlInterface", true)
     

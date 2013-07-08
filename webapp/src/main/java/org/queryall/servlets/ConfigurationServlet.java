@@ -86,7 +86,7 @@ public class ConfigurationServlet extends HttpServlet
         final String originalRequestedContentType =
                 QueryallContentNegotiator.getResponseContentType(request.getHeader("Accept"),
                         request.getHeader("User-Agent"), localContentTypeNegotiator,
-                        localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE));
+                        localSettings.getString(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE));
         
         String requestedContentType = originalRequestedContentType;
         
@@ -178,7 +178,7 @@ public class ConfigurationServlet extends HttpServlet
         
         final String writerFormatString =
                 RdfUtils.findBestContentType(requestedContentType,
-                        localSettings.getStringProperty(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE),
+                        localSettings.getString(WebappConfig.PREFERRED_DISPLAY_CONTENT_TYPE),
                         Constants.APPLICATION_RDF_XML);
         
         final RDFFormat writerFormat = RdfUtils.getWriterFormat(writerFormatString);

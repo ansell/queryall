@@ -227,9 +227,9 @@ public class SettingsFactory
         final long currentTimestamp = System.currentTimeMillis();
         
         final boolean enablePeriodicConfigurationRefresh =
-                nextSettings.getBooleanProperty(WebappConfig.ENABLE_PERIODIC_CONFIGURATION_REFRESH);
+                nextSettings.getBoolean(WebappConfig.ENABLE_PERIODIC_CONFIGURATION_REFRESH);
         final long periodicConfigurationMilliseconds =
-                nextSettings.getLongProperty(WebappConfig.PERIODIC_CONFIGURATION_REFRESH_MILLISECONDS);
+                nextSettings.getLong(WebappConfig.PERIODIC_CONFIGURATION_REFRESH_MILLISECONDS);
         
         if(SettingsFactory.DEBUG)
         {
@@ -323,7 +323,7 @@ public class SettingsFactory
                         final Binding value = bindingSet.getBinding("value");
                         
                         // TODO: verify or compile a collection of the values?
-                        nextSettings.setProperty(nextConfig, value.getValue());
+                        nextSettings.setValue(nextConfig, value.getValue());
                     }
                     
                 }

@@ -126,8 +126,8 @@ public class QueryBundleUtils
                     attributeList =
                             QueryCreator.getAttributeListFor(nextQueryType, nextProvider, queryParameters,
                                     replacedEndpoint, realHostName, pageOffset,
-                                    settings.getStringProperty(WebappConfig.HOST_NAME),
-                                    settings.getDefaultHostAddress(), settings.getSeparator());
+                                    settings.getString(WebappConfig.HOST_NAME), settings.getDefaultHostAddress(),
+                                    settings.getSeparator());
                     
                     // This step is needed in order to replace endpointSpecific related template
                     // elements on the provider URL
@@ -266,8 +266,7 @@ public class QueryBundleUtils
                     {
                         final Map<String, String> attributeList =
                                 QueryCreator.getAttributeListFor(nextCustomIncludeType, nextProvider, queryParameters,
-                                        "", realHostName, pageOffset,
-                                        settings.getStringProperty(WebappConfig.HOST_NAME),
+                                        "", realHostName, pageOffset, settings.getString(WebappConfig.HOST_NAME),
                                         settings.getDefaultHostAddress(), settings.getSeparator());
                         
                         if(nextCustomIncludeType instanceof OutputQueryType)

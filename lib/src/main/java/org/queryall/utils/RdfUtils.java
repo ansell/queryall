@@ -57,7 +57,6 @@ import org.openrdf.rio.RDFWriter;
 import org.openrdf.rio.Rio;
 import org.openrdf.rio.WriterConfig;
 import org.openrdf.rio.helpers.StatementCollector;
-import org.openrdf.rio.helpers.XMLWriterSettings;
 import org.openrdf.sail.memory.MemoryStore;
 import org.queryall.api.base.BaseQueryAllInterface;
 import org.queryall.api.base.QueryAllConfiguration;
@@ -729,7 +728,7 @@ public final class RdfUtils
                     {
                         nextReaderFormat =
                                 Rio.getParserFormatForMIMEType(localSettings
-                                        .getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
+                                        .getString(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
                         
                         if(nextReaderFormat == null)
                         {
@@ -737,8 +736,7 @@ public final class RdfUtils
                                     .error("getQueryTypesForQueryBundles: Not attempting to parse result because Settings.getStringPropertyFromConfig(\"assumedResponseContentType\") isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="
                                             + nextResult.getReturnedMIMEType()
                                             + " localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE)="
-                                            + localSettings
-                                                    .getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
+                                            + localSettings.getString(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
                             continue;
                         }
                         else
@@ -747,8 +745,7 @@ public final class RdfUtils
                                     .warn("getQueryTypesForQueryBundles: readerFormat NOT matched for returnedMIMEType="
                                             + nextResult.getReturnedMIMEType()
                                             + " using configured assumed response content type as fallback localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE)="
-                                            + localSettings
-                                                    .getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
+                                            + localSettings.getString(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE));
                         }
                     }
                     else if(RdfUtils.log.isDebugEnabled())
@@ -1009,7 +1006,7 @@ public final class RdfUtils
         int counter = 0;
         
         // TODO: change this to List<String> when titleProperties are ordered in the configuration
-        final Collection<URI> titleProperties = localSettings.getURIProperties(WebappConfig.TITLE_PROPERTIES);
+        final Collection<URI> titleProperties = localSettings.getURIs(WebappConfig.TITLE_PROPERTIES);
         
         for(final URI nextTitleUri : titleProperties)
         {
@@ -2964,7 +2961,7 @@ public final class RdfUtils
         for(final RdfFetcherQueryRunnable nextResult : results)
         {
             RdfUtils.insertResultIntoRepository(nextResult, myRepository,
-                    localSettings.getStringProperty(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE),
+                    localSettings.getString(WebappConfig.ASSUMED_RESPONSE_CONTENT_TYPE),
                     localSettings.getDefaultHostAddress());
         }
     }
@@ -3207,7 +3204,7 @@ public final class RdfUtils
     public static void toWriter(final Repository nextRepository, final java.io.Writer nextWriter,
             final RDFFormat format, final Resource... contexts)
     {
-        toWriter(nextRepository, nextWriter, format, new WriterConfig(), contexts);
+        RdfUtils.toWriter(nextRepository, nextWriter, format, new WriterConfig(), contexts);
     }
     
     /**
@@ -3229,7 +3226,7 @@ public final class RdfUtils
      *            are to be exported
      */
     public static void toWriter(final Repository nextRepository, final java.io.Writer nextWriter,
-            final RDFFormat format, WriterConfig config, final Resource... contexts)
+            final RDFFormat format, final WriterConfig config, final Resource... contexts)
     {
         RepositoryConnection nextConnection = null;
         
@@ -3237,7 +3234,7 @@ public final class RdfUtils
         {
             nextConnection = nextRepository.getConnection();
             
-            RDFWriter writer = Rio.createWriter(format, nextWriter);
+            final RDFWriter writer = Rio.createWriter(format, nextWriter);
             
             writer.setWriterConfig(config);
             
