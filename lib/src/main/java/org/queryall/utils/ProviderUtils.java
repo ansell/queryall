@@ -227,8 +227,8 @@ public final class ProviderUtils
     {
         return ProviderUtils.getProvidersForQuery(nextInputQueryType, queryParameters, sortedIncludedProfiles,
                 nextSettings.getAllProviders(), nextSettings.getNamespacePrefixesToUris(),
-                nextSettings.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
-                nextSettings.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS));
+                nextSettings.getBoolean(WebappConfig.RECOGNISE_IMPLICIT_PROVIDER_INCLUSIONS),
+                nextSettings.getBoolean(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_PROVIDERS));
     }
     
     /**

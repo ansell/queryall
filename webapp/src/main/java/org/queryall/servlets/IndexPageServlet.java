@@ -1,8 +1,14 @@
 package org.queryall.servlets;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,9 +17,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.openrdf.OpenRDFException;
+import org.openrdf.rio.RDFFormat;
 import org.queryall.api.base.QueryAllConfiguration;
+import org.queryall.api.utils.Constants;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.servlets.html.HtmlPageRenderer;
+import org.queryall.servlets.queryparsers.DefaultQueryOptions;
+import org.queryall.servlets.utils.ServletUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,20 +44,38 @@ public class IndexPageServlet extends HttpServlet
     {
         final QueryAllConfiguration localSettings =
                 (QueryAllConfiguration)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_CONFIG);
-        final VelocityEngine localVelocity =
+        final VelocityEngine localVelocityEngine =
                 (VelocityEngine)this.getServletContext().getAttribute(SettingsContextListener.QUERYALL_VELOCITY);
         
-        final PrintWriter out = response.getWriter();
-        response.setContentType("text/html");
+        final DefaultQueryOptions requestQueryOptions =
+                new DefaultQueryOptions(request.getRequestURI(), request.getContextPath(), localSettings);
         
+        final String serverName = request.getServerName();
         final String realHostName =
-                request.getScheme() + "://" + request.getServerName()
-                        + (request.getServerPort() == 80 ? "" : ":" + request.getServerPort()) + "/";
+                request.getScheme()
+                        + "://"
+                        + serverName
+                        + (request.getServerPort() == 80 && request.getScheme().equals("http") ? "" : ":"
+                                + request.getServerPort()) + "/";
+        final String queryString = requestQueryOptions.getParsedRequest();
+        final String contextPath = request.getContextPath();
+        // default to 200 for response...
+        int responseCode = HttpServletResponse.SC_OK;
+        final int pageOffset = requestQueryOptions.getPageOffset();
         
         try
         {
-            HtmlPageRenderer.renderIndexPage(localVelocity, localSettings, out, realHostName, request.getContextPath(),
-                    new ArrayList<String>(0));
+            ServletUtils.sendBasicHeaders(response, responseCode, "text/html");
+            
+            // We do not use the default catalina writer as it may not be UTF-8 compliant
+            // depending on unchangeable environment variables, instead we wrap up the catalina
+            // binary output stream as a guaranteed UTF-8 Writer
+            final Writer out = new OutputStreamWriter(response.getOutputStream(), Charset.forName("UTF-8"));
+            
+            HtmlPageRenderer.renderAjaxHtml(localVelocityEngine, localSettings, out, queryString,
+                    localSettings.getDefaultHostAddress() + queryString, realHostName, contextPath, pageOffset,
+                    Arrays.asList(""));
+            
         }
         catch(final OpenRDFException ordfe)
         {

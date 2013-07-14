@@ -163,9 +163,9 @@ public class QueryBundleUtilsTest
                         this.testSettingsEmpty.getAllQueryTypes(), this.testSettingsEmpty,
                         this.testBlacklistControllerEmpty, this.testHostName, this.testUseAllEndpointsTrue,
                         this.testPageOffset1, this.testSettingsEmpty
-                                .getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
-                        this.testSettingsEmpty.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
-                        this.testSettingsEmpty.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
+                                .getBoolean(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
+                        this.testSettingsEmpty.getBoolean(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                        this.testSettingsEmpty.getBoolean(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
         
         Assert.assertNotNull(results);
         Assert.assertEquals(0, results.size());
@@ -191,9 +191,9 @@ public class QueryBundleUtilsTest
                         this.testSettingsEmpty.getAllQueryTypes(), this.testSettingsEmpty,
                         this.testBlacklistControllerEmpty, this.testHostName, this.testUseAllEndpointsTrue,
                         this.testPageOffset1, this.testSettingsEmpty
-                                .getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
-                        this.testSettingsEmpty.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
-                        this.testSettingsEmpty.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
+                                .getBoolean(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
+                        this.testSettingsEmpty.getBoolean(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                        this.testSettingsEmpty.getBoolean(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
         
         Assert.assertNotNull(results);
         Assert.assertEquals(1, results.size());
@@ -228,25 +228,15 @@ public class QueryBundleUtilsTest
         try
         {
             final Collection<QueryBundle> collection =
-                    QueryBundleUtils
-                            .generateQueryBundlesForQueryTypeAndProviders(
-                                    this.testQueryTypeSingleProvider,
-                                    this.testChosenProvidersSingleBlacklisted,
-                                    this.testQueryParametersEmpty,
-                                    this.testNamespaceInputVariablesEmpty,
-                                    this.testSortedIncludedProfilesEmpty,
-                                    this.testSettingsEmpty.getAllQueryTypes(),
-                                    this.testSettingsEmpty,
-                                    this.testBlacklistControllerAll,
-                                    this.testHostName,
-                                    this.testUseAllEndpointsTrue,
-                                    this.testPageOffset1,
-                                    this.testSettingsEmpty
-                                            .getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
-                                    this.testSettingsEmpty
-                                            .getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
-                                    this.testSettingsEmpty
-                                            .getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
+                    QueryBundleUtils.generateQueryBundlesForQueryTypeAndProviders(this.testQueryTypeSingleProvider,
+                            this.testChosenProvidersSingleBlacklisted, this.testQueryParametersEmpty,
+                            this.testNamespaceInputVariablesEmpty, this.testSortedIncludedProfilesEmpty,
+                            this.testSettingsEmpty.getAllQueryTypes(), this.testSettingsEmpty,
+                            this.testBlacklistControllerAll, this.testHostName, this.testUseAllEndpointsTrue,
+                            this.testPageOffset1, this.testSettingsEmpty
+                                    .getBoolean(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
+                            this.testSettingsEmpty.getBoolean(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                            this.testSettingsEmpty.getBoolean(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
             
             QueryBundleUtilsTest.LOG.error(collection.toString());
             
@@ -283,9 +273,9 @@ public class QueryBundleUtilsTest
                         this.testSettingsEmpty.getAllQueryTypes(), this.testSettingsEmpty,
                         this.testBlacklistControllerEmpty, this.testHostName, this.testUseAllEndpointsTrue,
                         this.testPageOffset1, this.testSettingsEmpty
-                                .getBooleanProperty(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
-                        this.testSettingsEmpty.getBooleanProperty(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
-                        this.testSettingsEmpty.getBooleanProperty(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
+                                .getBoolean(WebappConfig.CONVERT_ALTERNATE_NAMESPACE_PREFIXES_TO_PREFERRED),
+                        this.testSettingsEmpty.getBoolean(WebappConfig.RECOGNISE_IMPLICIT_RDFRULE_INCLUSIONS),
+                        this.testSettingsEmpty.getBoolean(WebappConfig.INCLUDE_NON_PROFILE_MATCHED_RDFRULES));
         
         Assert.assertNotNull(results);
         Assert.assertEquals(1, results.size());

@@ -74,10 +74,10 @@ public class ServerStatsServlet extends HttpServlet
         out.write("Now : " + now + "<br />\n");
         out.write("Last error reset date: " + localBlacklistController.getLastExpiryDate().toString() + "<br />\n");
         out.write("Server startup date: " + localBlacklistController.getLastServerStartupDate().toString() + "<br />\n");
-        out.write("Reset period " + localSettings.getLongProperty(WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS)
+        out.write("Reset period " + localSettings.getLong(WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS)
                 + "<br />\n");
         out.write("Client blacklist will reset in "
-                + ((localSettings.getLongProperty(WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS) - differenceMilliseconds) / 1000)
+                + ((localSettings.getLong(WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS) - differenceMilliseconds) / 1000)
                 + " seconds.<br /><br />\n");
         
         if(localBlacklistController.getAllHttpErrorResponseCodesByServer() != null)

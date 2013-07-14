@@ -55,27 +55,25 @@ public class DefaultQueryOptions
     {
         this.localSettings = nextSettings;
         
-        this.pageoffsetUrlOpeningPrefix =
-                this.localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_OPENING_PREFIX);
-        this.pageoffsetUrlClosingPrefix =
-                this.localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_CLOSING_PREFIX);
-        this.pageoffsetUrlSuffix = this.localSettings.getStringProperty(WebappConfig.PAGEOFFSET_URL_SUFFIX);
-        this.htmlUrlPrefix = this.localSettings.getStringProperty(WebappConfig.HTML_URL_PREFIX);
-        this.htmlUrlSuffix = this.localSettings.getStringProperty(WebappConfig.HTML_URL_SUFFIX);
-        this.rdfXmlUrlPrefix = this.localSettings.getStringProperty(WebappConfig.RDFXML_URL_PREFIX);
-        this.rdfXmlUrlSuffix = this.localSettings.getStringProperty(WebappConfig.RDFXML_URL_SUFFIX);
-        this.n3UrlPrefix = this.localSettings.getStringProperty(WebappConfig.N3_URL_PREFIX);
-        this.n3UrlSuffix = this.localSettings.getStringProperty(WebappConfig.N3_URL_SUFFIX);
-        this.jsonUrlPrefix = this.localSettings.getStringProperty(WebappConfig.JSON_URL_PREFIX);
-        this.jsonUrlSuffix = this.localSettings.getStringProperty(WebappConfig.JSON_URL_SUFFIX);
-        this.jsonldUrlPrefix = this.localSettings.getStringProperty(WebappConfig.JSONLD_URL_PREFIX);
-        this.jsonldUrlSuffix = this.localSettings.getStringProperty(WebappConfig.JSONLD_URL_SUFFIX);
-        this.ntriplesUrlPrefix = this.localSettings.getStringProperty(WebappConfig.NTRIPLES_URL_PREFIX);
-        this.ntriplesUrlSuffix = this.localSettings.getStringProperty(WebappConfig.NTRIPLES_URL_SUFFIX);
-        this.nquadsUrlPrefix = this.localSettings.getStringProperty(WebappConfig.NQUADS_URL_PREFIX);
-        this.nquadsUrlSuffix = this.localSettings.getStringProperty(WebappConfig.NQUADS_URL_SUFFIX);
-        this.queryplanUrlPrefix = this.localSettings.getStringProperty(WebappConfig.QUERYPLAN_URL_PREFIX);
-        this.queryplanUrlSuffix = this.localSettings.getStringProperty(WebappConfig.QUERYPLAN_URL_SUFFIX);
+        this.pageoffsetUrlOpeningPrefix = this.localSettings.getString(WebappConfig.PAGEOFFSET_URL_OPENING_PREFIX);
+        this.pageoffsetUrlClosingPrefix = this.localSettings.getString(WebappConfig.PAGEOFFSET_URL_CLOSING_PREFIX);
+        this.pageoffsetUrlSuffix = this.localSettings.getString(WebappConfig.PAGEOFFSET_URL_SUFFIX);
+        this.htmlUrlPrefix = this.localSettings.getString(WebappConfig.HTML_URL_PREFIX);
+        this.htmlUrlSuffix = this.localSettings.getString(WebappConfig.HTML_URL_SUFFIX);
+        this.rdfXmlUrlPrefix = this.localSettings.getString(WebappConfig.RDFXML_URL_PREFIX);
+        this.rdfXmlUrlSuffix = this.localSettings.getString(WebappConfig.RDFXML_URL_SUFFIX);
+        this.n3UrlPrefix = this.localSettings.getString(WebappConfig.N3_URL_PREFIX);
+        this.n3UrlSuffix = this.localSettings.getString(WebappConfig.N3_URL_SUFFIX);
+        this.jsonUrlPrefix = this.localSettings.getString(WebappConfig.JSON_URL_PREFIX);
+        this.jsonUrlSuffix = this.localSettings.getString(WebappConfig.JSON_URL_SUFFIX);
+        this.jsonldUrlPrefix = this.localSettings.getString(WebappConfig.JSONLD_URL_PREFIX);
+        this.jsonldUrlSuffix = this.localSettings.getString(WebappConfig.JSONLD_URL_SUFFIX);
+        this.ntriplesUrlPrefix = this.localSettings.getString(WebappConfig.NTRIPLES_URL_PREFIX);
+        this.ntriplesUrlSuffix = this.localSettings.getString(WebappConfig.NTRIPLES_URL_SUFFIX);
+        this.nquadsUrlPrefix = this.localSettings.getString(WebappConfig.NQUADS_URL_PREFIX);
+        this.nquadsUrlSuffix = this.localSettings.getString(WebappConfig.NQUADS_URL_SUFFIX);
+        this.queryplanUrlPrefix = this.localSettings.getString(WebappConfig.QUERYPLAN_URL_PREFIX);
+        this.queryplanUrlSuffix = this.localSettings.getString(WebappConfig.QUERYPLAN_URL_SUFFIX);
         
         final String pageOffsetPatternString =
                 "^" + this.pageoffsetUrlOpeningPrefix + "(\\d+)" + this.pageoffsetUrlClosingPrefix + "(.+)"

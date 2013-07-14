@@ -130,6 +130,10 @@ public enum WebappConfig
     
     ADMIN_WEBAPP_CONFIGURATION_PREFIX("adminWebappConfigurationPrefix", "webappconfiguration/"),
     
+    AJAX_INDEX_TEMPLATE("ajaxIndexTemplate", "default-ajax-index.vm"),
+    
+    AJAX_RESULTS_TEMPLATE("ajaxResultsTemplate", "default-ajax-results.vm"),
+    
     ALWAYS_REDIRECT_TO_EXPLICIT_FORMAT_URL("alwaysRedirectToExplicitFormatUrl", false),
     
     APPLICATION_HELP_URL("applicationHelpUrl", "http://sourceforge.net/apps/mediawiki/bio2rdf/"),
@@ -353,7 +357,11 @@ public enum WebappConfig
      */
     USER_AGENT("userAgent", "queryall"),
     
-    WHITELIST_BASE_CLIENT_IP_ADDRESSES("whitelistBaseClientIPAddresses", Collections.emptyList());
+    WHITELIST_BASE_CLIENT_IP_ADDRESSES("whitelistBaseClientIPAddresses", Collections.emptyList()),
+    
+    USE_AJAX_HTML_INTERFACE("useAjaxHtmlInterface", true)
+    
+    ;
     
     public static WebappConfig valueOf(final URI keyUri)
     {

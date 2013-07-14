@@ -45,7 +45,7 @@ public class StringUtils
             final QueryAllConfiguration localSettings)
     {
         return StringUtils.matchesForRegexOnString(localSettings.getPlainNamespaceAndIdentifierPattern(),
-                localSettings.getStringProperty(WebappConfig.PLAIN_NAMESPACE_AND_IDENTIFIER_REGEX), nsAndId);
+                localSettings.getString(WebappConfig.PLAIN_NAMESPACE_AND_IDENTIFIER_REGEX), nsAndId);
     }
     
     @SuppressWarnings("unused")

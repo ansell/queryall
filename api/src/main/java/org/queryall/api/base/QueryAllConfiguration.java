@@ -49,25 +49,25 @@ public interface QueryAllConfiguration
     
     Map<URI, RuleTest> getAllRuleTests();
     
-    boolean getBooleanProperty(WebappConfig propertyKey);
+    boolean getBoolean(WebappConfig propertyKey);
     
-    boolean getBooleanProperty(WebappConfig propertyKey, boolean defaultValue);
+    boolean getBoolean(WebappConfig propertyKey, boolean defaultValue);
     
     String getDefaultHostAddress();
     
-    float getFloatProperty(WebappConfig key);
+    float getFloat(WebappConfig key);
     
-    float getFloatProperty(WebappConfig key, float defaultValue);
+    float getFloat(WebappConfig key, float defaultValue);
     
-    int getIntProperty(WebappConfig key);
+    int getInt(WebappConfig key);
     
-    int getIntProperty(WebappConfig key, int defaultValue);
+    int getInt(WebappConfig key, int defaultValue);
     
     long getLastInitialised();
     
-    long getLongProperty(WebappConfig key);
+    long getLong(WebappConfig key);
     
-    long getLongProperty(WebappConfig key, long defaultValue);
+    long getLong(WebappConfig key, long defaultValue);
     
     NamespaceEntry getNamespaceEntry(URI nextNamespaceEntryUri);
     
@@ -89,19 +89,19 @@ public interface QueryAllConfiguration
     
     String getSeparator();
     
-    Collection<String> getStringProperties(WebappConfig key);
+    String getString(WebappConfig key);
     
-    String getStringProperty(WebappConfig key);
+    String getString(WebappConfig key, String defaultValue);
     
-    String getStringProperty(WebappConfig key, String defaultValue);
+    Collection<String> getStrings(WebappConfig key);
     
     Pattern getTagPattern();
     
-    Collection<URI> getURIProperties(WebappConfig key);
+    URI getURI(WebappConfig key);
     
-    URI getURIProperty(WebappConfig key);
+    URI getURI(WebappConfig key, URI defaultValue);
     
-    URI getURIProperty(WebappConfig key, URI defaultValue);
+    Collection<URI> getURIs(WebappConfig key);
     
     boolean resetNamespaceEntries();
     
@@ -117,25 +117,25 @@ public interface QueryAllConfiguration
     
     boolean resetRuleTests();
     
+    void setBoolean(WebappConfig propertyKey, boolean propertyValue);
+    
+    void setFloat(WebappConfig propertyKey, float propertyValue);
+    
+    void setInt(WebappConfig propertyKey, int propertyValue);
+    
     void setLastInitialised(long lastInitialised);
     
-    void setProperty(WebappConfig propertyKey, boolean propertyValue);
+    void setLong(WebappConfig propertyKey, long propertyValue);
     
-    void setProperty(WebappConfig propertyKey, float propertyValue);
+    void setString(WebappConfig propertyKey, String propertyValue);
     
-    void setProperty(WebappConfig propertyKey, int propertyValue);
+    void setStrings(WebappConfig propertyKey, Collection<String> propertyValues);
     
-    void setProperty(WebappConfig propertyKey, long propertyValue);
+    void setURI(WebappConfig propertyKey, URI propertyValue);
     
-    void setProperty(WebappConfig propertyKey, String propertyValue);
+    void setURIs(WebappConfig propertyKey, Collection<URI> propertyValues);
     
-    void setProperty(WebappConfig propertyKey, URI propertyValue);
+    void setValue(WebappConfig propertyKey, Value propertyValue);
     
-    void setProperty(WebappConfig propertyKey, Value propertyValue);
-    
-    void setStringCollectionProperty(WebappConfig propertyKey, Collection<String> propertyValues);
-    
-    void setURICollectionProperty(WebappConfig propertyKey, Collection<URI> propertyValues);
-    
-    void setValueCollectionProperty(WebappConfig propertyKey, Collection<Value> propertyValues);
+    void setValues(WebappConfig propertyKey, Collection<Value> propertyValues);
 }

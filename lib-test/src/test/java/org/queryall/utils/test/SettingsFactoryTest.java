@@ -255,29 +255,29 @@ public class SettingsFactoryTest
         SettingsFactory.extractProperties(testSettings, this.testRepository, webappConfigUris);
         
         Assert.assertTrue("boolean property not set correctly",
-                testSettings.getBooleanProperty(WebappConfig.USE_HARDCODED_REQUEST_HOSTNAME));
+                testSettings.getBoolean(WebappConfig.USE_HARDCODED_REQUEST_HOSTNAME));
         
         // NOTE: This is 302 to distinguish it from the default for this property which is 303
         Assert.assertEquals("int property not set correctly", 302,
-                testSettings.getIntProperty(WebappConfig.REDIRECT_TO_EXPLICIT_FORMAT_HTTP_CODE));
+                testSettings.getInt(WebappConfig.REDIRECT_TO_EXPLICIT_FORMAT_HTTP_CODE));
         
         Assert.assertEquals("string property not set correctly", "Bio2RDF",
-                testSettings.getStringProperty(WebappConfig.USER_AGENT));
+                testSettings.getString(WebappConfig.USER_AGENT));
         
-        final Collection<URI> titlePropertiesList = testSettings.getURIProperties(WebappConfig.TITLE_PROPERTIES);
+        final Collection<URI> titlePropertiesList = testSettings.getURIs(WebappConfig.TITLE_PROPERTIES);
         
         Assert.assertNotNull(titlePropertiesList);
         Assert.assertEquals(16, titlePropertiesList.size());
         Assert.assertTrue(titlePropertiesList.contains(Constants.DC_TITLE));
         Assert.assertTrue(titlePropertiesList.contains(RDFS.LABEL));
         
-        Assert.assertEquals(1440000L, testSettings.getLongProperty(WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS));
+        Assert.assertEquals(1440000L, testSettings.getLong(WebappConfig.BLACKLIST_RESET_PERIOD_MILLISECONDS));
         
         // verify equality to accuracy of 0.0001
-        Assert.assertEquals(0.50f, testSettings.getFloatProperty(WebappConfig.BLACKLIST_ROBOTS_TXT_PERCENTAGE), 0.0001f);
+        Assert.assertEquals(0.50f, testSettings.getFloat(WebappConfig.BLACKLIST_ROBOTS_TXT_PERCENTAGE), 0.0001f);
         
         final Collection<String> whitelistIpAddressList =
-                testSettings.getStringProperties(WebappConfig.WHITELIST_BASE_CLIENT_IP_ADDRESSES);
+                testSettings.getStrings(WebappConfig.WHITELIST_BASE_CLIENT_IP_ADDRESSES);
         
         Assert.assertNotNull(whitelistIpAddressList);
         Assert.assertEquals(8, whitelistIpAddressList.size());
