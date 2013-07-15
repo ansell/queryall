@@ -25,7 +25,7 @@ public abstract class AbstractQueryAllWebTest
      * Timeout all tests after 30 seconds.
      */
     @Rule
-    Timeout timeout = new Timeout(30000); 
+    public Timeout timeout = new Timeout(30000); 
     
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     
