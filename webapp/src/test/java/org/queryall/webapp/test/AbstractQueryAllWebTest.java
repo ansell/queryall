@@ -8,6 +8,8 @@ import net.sourceforge.jwebunit.junit.WebTester;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +21,12 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractQueryAllWebTest
 {
+    /**
+     * Timeout all tests after 30 seconds.
+     */
+    @Rule
+    Timeout timeout = new Timeout(30000); 
+    
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     
     private WebTester tester;
