@@ -134,12 +134,6 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.ansell.sesame-rio-extensions</groupId>
-            <artifactId>sesame-rio-extensions-rdfjson</artifactId>
-            <type>jar</type>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
             <groupId>org.openrdf.sesame</groupId>
             <artifactId>sesame-queryparser-sparql</artifactId>
             <type>jar</type>
