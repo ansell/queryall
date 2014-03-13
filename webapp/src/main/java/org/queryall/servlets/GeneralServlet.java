@@ -476,7 +476,7 @@ public class GeneralServlet extends HttpServlet
             {
                 myRepository.shutDown();
             }
-            catch(final RepositoryException e)
+            catch(final RepositoryException ordfe)
             {
                 GeneralServlet.log.error("GeneralServlet.doGet: caught RDF exception", ordfe);
             }
