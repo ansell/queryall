@@ -2813,6 +2813,127 @@ public final class RdfUtils
         return Rio.getWriterFormatForMIMEType(requestedContentType, RDFFormat.RDFXML);
     }
     
+    public static void insertResultIntoRepository(final RdfFetcherQueryRunnable nextResult, final Model myRepository,
+            final String defaultAssumedResponseContentType, final String defaultHostAddress)
+        throws RepositoryException, java.io.IOException
+    {
+        if(RdfUtils.TRACE)
+        {
+            RdfUtils.log.trace("insertResultIntoRepository: nextResult.toString()=" + nextResult.toString());
+        }
+        
+        try
+        {
+            RDFFormat nextReaderFormat = RDFFormat.forMIMEType(nextResult.getReturnedMIMEType());
+            
+            if(RdfUtils.TRACE)
+            {
+                RdfUtils.log.trace("insertResultIntoRepository: nextReaderFormat for returnedContentType="
+                        + nextResult.getReturnedContentType() + " nextReaderFormat=" + nextReaderFormat);
+            }
+            
+            // TODO: Integrate the Any23 methods here if a fallback is needed
+            if(nextReaderFormat == null)
+            {
+                String assumedContentType = null;
+                
+                if(nextResult.getOriginalQueryBundle() != null
+                        && nextResult.getOriginalQueryBundle().getProvider() != null)
+                {
+                    assumedContentType = nextResult.getOriginalQueryBundle().getProvider().getAssumedContentType();
+                }
+                
+                if(assumedContentType != null && assumedContentType.trim().length() > 0)
+                {
+                    nextReaderFormat = Rio.getParserFormatForMIMEType(assumedContentType);
+                }
+                
+                // HACK: Do not try to parse text/html, as it results in meaningless triples that
+                // are confusing
+                if(nextReaderFormat == null && !Constants.TEXT_HTML.equals(nextResult.getReturnedMIMEType()))
+                {
+                    nextReaderFormat = Rio.getParserFormatForMIMEType(defaultAssumedResponseContentType);
+                }
+                
+                if(nextReaderFormat == null)
+                {
+                    RdfUtils.log
+                            .error("insertResultIntoRepository: Not attempting to parse result because assumedResponseContentType isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="
+                                    + nextResult.getReturnedMIMEType()
+                                    + " nextResult.assumedContentType="
+                                    + assumedContentType
+                                    + " defaultAssumedResponseContentType="
+                                    + defaultAssumedResponseContentType);
+                    // throw new
+                    // RuntimeException("Utilities: Not attempting to parse because there are no content types to use for interpretation");
+                }
+                else if(nextResult.getWasSuccessful())
+                {
+                    RdfUtils.log
+                            .warn("insertResultIntoRepository: successful query, but readerFormat NOT matched for returnedMIMEType="
+                                    + nextResult.getReturnedMIMEType());
+                }
+            }
+            else if(RdfUtils.DEBUG)
+            {
+                RdfUtils.log.debug("insertResultIntoRepository: readerFormat matched for returnedMIMEType="
+                        + nextResult.getReturnedMIMEType());
+            }
+            
+            if(RdfUtils.DEBUG)
+            {
+                RdfUtils.log.debug("insertResultIntoRepository: nextResult.normalisedResult.length()="
+                        + nextResult.getNormalisedResult().length());
+                
+                if(RdfUtils.TRACE)
+                {
+                    RdfUtils.log.trace("insertResultIntoRepository: nextResult.normalisedResult="
+                            + nextResult.getNormalisedResult());
+                }
+            }
+            
+            if(nextReaderFormat != null && nextResult.getNormalisedResult().length() > 0)
+            {
+                if(nextResult.getOriginalQueryBundle() != null
+                        && nextResult.getOriginalQueryBundle().getProvider() != null)
+                {
+                    myRepository.addAll(Rio.parse(new java.io.StringReader(nextResult.getNormalisedResult()),
+                            defaultHostAddress, nextReaderFormat, nextResult.getOriginalQueryBundle().getProvider()
+                                    .getKey()));
+                }
+                else
+                {
+                    RdfUtils.log.warn("Could not determine provider provenance for result, as provider was null");
+                    myRepository.addAll(Rio.parse(new java.io.StringReader(nextResult.getNormalisedResult()),
+                            defaultHostAddress, nextReaderFormat));
+                }
+            }
+            else if(RdfUtils.DEBUG)
+            {
+                // Hiding this message in production, in debugging it will show up as WARN in error
+                // logs
+                RdfUtils.log
+                        .warn("Not adding anything for next result as the result was empty or the format was not understood");
+            }
+            
+            if(RdfUtils.DEBUG)
+            {
+                RdfUtils.log.debug("insertResultIntoRepository: myRepository.size()=" + myRepository.size());
+            }
+        }
+        catch(final org.openrdf.rio.RDFParseException rdfpe)
+        {
+            RdfUtils.log.error("insertResultIntoRepository: RDFParseException result: nextResult.actualendpointUrl="
+                    + nextResult.getActualEndpointUrl() + " message=" + rdfpe.getMessage());
+            
+            if(RdfUtils.TRACE)
+            {
+                RdfUtils.log.debug("insertResultIntoRepository: RDFParseException result: normalisedResult="
+                        + nextResult.getNormalisedResult());
+            }
+        }
+    }
+    
     public static void insertResultIntoRepository(final RdfFetcherQueryRunnable nextResult,
             final Repository myRepository, final String defaultAssumedResponseContentType,
             final String defaultHostAddress) throws RepositoryException, java.io.IOException
@@ -2954,129 +3075,8 @@ public final class RdfUtils
         }
     }
     
-    public static void insertResultIntoRepository(final RdfFetcherQueryRunnable nextResult, final Model myRepository,
-            final String defaultAssumedResponseContentType, final String defaultHostAddress)
-        throws RepositoryException, java.io.IOException
-    {
-        if(RdfUtils.TRACE)
-        {
-            RdfUtils.log.trace("insertResultIntoRepository: nextResult.toString()=" + nextResult.toString());
-        }
-        
-        try
-        {
-            RDFFormat nextReaderFormat = RDFFormat.forMIMEType(nextResult.getReturnedMIMEType());
-            
-            if(RdfUtils.TRACE)
-            {
-                RdfUtils.log.trace("insertResultIntoRepository: nextReaderFormat for returnedContentType="
-                        + nextResult.getReturnedContentType() + " nextReaderFormat=" + nextReaderFormat);
-            }
-            
-            // TODO: Integrate the Any23 methods here if a fallback is needed
-            if(nextReaderFormat == null)
-            {
-                String assumedContentType = null;
-                
-                if(nextResult.getOriginalQueryBundle() != null
-                        && nextResult.getOriginalQueryBundle().getProvider() != null)
-                {
-                    assumedContentType = nextResult.getOriginalQueryBundle().getProvider().getAssumedContentType();
-                }
-                
-                if(assumedContentType != null && assumedContentType.trim().length() > 0)
-                {
-                    nextReaderFormat = Rio.getParserFormatForMIMEType(assumedContentType);
-                }
-                
-                // HACK: Do not try to parse text/html, as it results in meaningless triples that
-                // are confusing
-                if(nextReaderFormat == null && !Constants.TEXT_HTML.equals(nextResult.getReturnedMIMEType()))
-                {
-                    nextReaderFormat = Rio.getParserFormatForMIMEType(defaultAssumedResponseContentType);
-                }
-                
-                if(nextReaderFormat == null)
-                {
-                    RdfUtils.log
-                            .error("insertResultIntoRepository: Not attempting to parse result because assumedResponseContentType isn't supported by Rio and the returned content type wasn't either nextResult.returnedMIMEType="
-                                    + nextResult.getReturnedMIMEType()
-                                    + " nextResult.assumedContentType="
-                                    + assumedContentType
-                                    + " defaultAssumedResponseContentType="
-                                    + defaultAssumedResponseContentType);
-                    // throw new
-                    // RuntimeException("Utilities: Not attempting to parse because there are no content types to use for interpretation");
-                }
-                else if(nextResult.getWasSuccessful())
-                {
-                    RdfUtils.log
-                            .warn("insertResultIntoRepository: successful query, but readerFormat NOT matched for returnedMIMEType="
-                                    + nextResult.getReturnedMIMEType());
-                }
-            }
-            else if(RdfUtils.DEBUG)
-            {
-                RdfUtils.log.debug("insertResultIntoRepository: readerFormat matched for returnedMIMEType="
-                        + nextResult.getReturnedMIMEType());
-            }
-            
-            if(RdfUtils.DEBUG)
-            {
-                RdfUtils.log.debug("insertResultIntoRepository: nextResult.normalisedResult.length()="
-                        + nextResult.getNormalisedResult().length());
-                
-                if(RdfUtils.TRACE)
-                {
-                    RdfUtils.log.trace("insertResultIntoRepository: nextResult.normalisedResult="
-                            + nextResult.getNormalisedResult());
-                }
-            }
-            
-            if(nextReaderFormat != null && nextResult.getNormalisedResult().length() > 0)
-            {
-                if(nextResult.getOriginalQueryBundle() != null
-                        && nextResult.getOriginalQueryBundle().getProvider() != null)
-                {
-                    myRepository.addAll(Rio.parse(new java.io.StringReader(nextResult.getNormalisedResult()),
-                            defaultHostAddress, nextReaderFormat, nextResult.getOriginalQueryBundle().getProvider()
-                                    .getKey()));
-                }
-                else
-                {
-                    RdfUtils.log.warn("Could not determine provider provenance for result, as provider was null");
-                    myRepository.addAll(Rio.parse(new java.io.StringReader(nextResult.getNormalisedResult()),
-                            defaultHostAddress, nextReaderFormat));
-                }
-            }
-            else if(RdfUtils.DEBUG)
-            {
-                // Hiding this message in production, in debugging it will show up as WARN in error
-                // logs
-                RdfUtils.log
-                        .warn("Not adding anything for next result as the result was empty or the format was not understood");
-            }
-            
-            if(RdfUtils.DEBUG)
-            {
-                RdfUtils.log.debug("insertResultIntoRepository: myRepository.size()=" + myRepository.size());
-            }
-        }
-        catch(final org.openrdf.rio.RDFParseException rdfpe)
-        {
-            RdfUtils.log.error("insertResultIntoRepository: RDFParseException result: nextResult.actualendpointUrl="
-                    + nextResult.getActualEndpointUrl() + " message=" + rdfpe.getMessage());
-            
-            if(RdfUtils.TRACE)
-            {
-                RdfUtils.log.debug("insertResultIntoRepository: RDFParseException result: normalisedResult="
-                        + nextResult.getNormalisedResult());
-            }
-        }
-    }
-    
     public static void insertResultsIntoRepository(final Collection<RdfFetcherQueryRunnableImpl> results,
-            final Repository myRepository, final QueryAllConfiguration localSettings) throws RepositoryException,
+            final Model myRepository, final QueryAllConfiguration localSettings) throws RepositoryException,
         java.io.IOException
     {
         for(final RdfFetcherQueryRunnable nextResult : results)
@@ -3088,7 +3088,7 @@ public final class RdfUtils
     }
     
     public static void insertResultsIntoRepository(final Collection<RdfFetcherQueryRunnableImpl> results,
-            final Model myRepository, final QueryAllConfiguration localSettings) throws RepositoryException,
+            final Repository myRepository, final QueryAllConfiguration localSettings) throws RepositoryException,
         java.io.IOException
     {
         for(final RdfFetcherQueryRunnable nextResult : results)
@@ -3165,15 +3165,7 @@ public final class RdfUtils
     }
     
     public static void retrieveUrls(final Collection<String> retrievalUrls, final String defaultResultFormat,
-            final Repository myRepository, final QueryAllConfiguration localSettings,
-            final BlacklistController localBlacklistController) throws InterruptedException
-    {
-        RdfUtils.retrieveUrls(retrievalUrls, defaultResultFormat, myRepository, localSettings,
-                localBlacklistController, true);
-    }
-    
-    public static void retrieveUrls(final Collection<String> retrievalUrls, final String defaultResultFormat,
-            final Repository myRepository, final QueryAllConfiguration localSettings,
+            final Model myRepository, final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController, final boolean inParallel) throws InterruptedException
     {
         final Collection<RdfFetcherQueryRunnableImpl> retrievalThreads = new ArrayList<RdfFetcherQueryRunnableImpl>();
@@ -3238,7 +3230,15 @@ public final class RdfUtils
     }
     
     public static void retrieveUrls(final Collection<String> retrievalUrls, final String defaultResultFormat,
-            final Model myRepository, final QueryAllConfiguration localSettings,
+            final Repository myRepository, final QueryAllConfiguration localSettings,
+            final BlacklistController localBlacklistController) throws InterruptedException
+    {
+        RdfUtils.retrieveUrls(retrievalUrls, defaultResultFormat, myRepository, localSettings,
+                localBlacklistController, true);
+    }
+    
+    public static void retrieveUrls(final Collection<String> retrievalUrls, final String defaultResultFormat,
+            final Repository myRepository, final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController, final boolean inParallel) throws InterruptedException
     {
         final Collection<RdfFetcherQueryRunnableImpl> retrievalThreads = new ArrayList<RdfFetcherQueryRunnableImpl>();
@@ -3315,7 +3315,7 @@ public final class RdfUtils
             final String defaultResultFormat, final QueryAllConfiguration localSettings,
             final BlacklistController localBlacklistController) throws InterruptedException
     {
-        Model results = new LinkedHashModel();
+        final Model results = new LinkedHashModel();
         
         RdfUtils.retrieveUrls(retrievalUrls, defaultResultFormat, results, localSettings, localBlacklistController,
                 true);

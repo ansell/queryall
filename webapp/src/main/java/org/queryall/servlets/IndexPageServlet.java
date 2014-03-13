@@ -2,13 +2,9 @@ package org.queryall.servlets;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,9 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.openrdf.OpenRDFException;
-import org.openrdf.rio.RDFFormat;
 import org.queryall.api.base.QueryAllConfiguration;
-import org.queryall.api.utils.Constants;
 import org.queryall.servlets.helpers.SettingsContextListener;
 import org.queryall.servlets.html.HtmlPageRenderer;
 import org.queryall.servlets.queryparsers.DefaultQueryOptions;
@@ -60,7 +54,7 @@ public class IndexPageServlet extends HttpServlet
         final String queryString = requestQueryOptions.getParsedRequest();
         final String contextPath = request.getContextPath();
         // default to 200 for response...
-        int responseCode = HttpServletResponse.SC_OK;
+        final int responseCode = HttpServletResponse.SC_OK;
         final int pageOffset = requestQueryOptions.getPageOffset();
         
         try

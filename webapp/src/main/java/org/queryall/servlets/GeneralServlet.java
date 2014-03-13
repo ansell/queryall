@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.velocity.app.VelocityEngine;
 import org.openrdf.OpenRDFException;
 import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.sail.memory.MemoryStore;
@@ -172,8 +173,13 @@ public class GeneralServlet extends HttpServlet
         
         final Collection<String> debugStrings = new ArrayList<String>();
         
+        // Create a new in memory repository for each request
+        final Repository myRepository = new SailRepository(new MemoryStore());
+        
         try
         {
+            myRepository.initialize();
+            
             // If the writerFormat was not found then we default to HTML, and if we are using Ajax,
             // we don't need to fetch and can simply return here
             
@@ -214,10 +220,6 @@ public class GeneralServlet extends HttpServlet
                     nonDummyQueryTypeFound = true;
                 }
             }
-            
-            // Create a new in memory repository for each request
-            final Repository myRepository = new SailRepository(new MemoryStore());
-            myRepository.initialize();
             
             if(isPretendQuery)
             {
@@ -467,6 +469,17 @@ public class GeneralServlet extends HttpServlet
         catch(final RuntimeException rex)
         {
             GeneralServlet.log.error("GeneralServlet.doGet: caught runtime exception", rex);
+        }
+        finally
+        {
+            try
+            {
+                myRepository.shutDown();
+            }
+            catch(final RepositoryException e)
+            {
+                GeneralServlet.log.error("GeneralServlet.doGet: caught RDF exception", ordfe);
+            }
         }
     }
     
