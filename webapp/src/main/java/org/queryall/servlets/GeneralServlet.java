@@ -159,8 +159,8 @@ public class GeneralServlet extends HttpServlet
         
         if(localBlacklistController.isClientBlacklisted(requesterIpAddress))
         {
-            GeneralServlet.log.warn("GeneralServlet: sending requesterIpAddress=" + requesterIpAddress
-                    + " to blacklist redirect page");
+            GeneralServlet.log.warn("GeneralServlet: sending requesterIpAddress={} to blacklist redirect page",
+                    requesterIpAddress);
             
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setHeader("Location", localSettings.getString(WebappConfig.BLACKLIST_REDIRECT_PAGE));
@@ -339,7 +339,7 @@ public class GeneralServlet extends HttpServlet
                             
                             if(GeneralServlet.INFO)
                             {
-                                GeneralServlet.log.info("Sending redirect to url=" + randomlyChosenRedirect);
+                                GeneralServlet.log.info("Sending redirect to url={}", randomlyChosenRedirect);
                             }
                             
                             response.sendRedirect(randomlyChosenRedirect);
@@ -423,8 +423,9 @@ public class GeneralServlet extends HttpServlet
             
             if(GeneralServlet.INFO)
             {
-                GeneralServlet.log.info("GeneralServlet: query complete requesterIpAddress=" + requesterIpAddress
-                        + " queryString=" + queryString + " pageOffset=" + pageOffset + " totalTime=" + nextTotalTime);
+                GeneralServlet.log
+                        .info("GeneralServlet: query complete requesterIpAddress={} queryString={} pageOffset={} totalTime={}",
+                                requesterIpAddress, queryString, pageOffset, nextTotalTime);
             }
             
             // Housekeeping
