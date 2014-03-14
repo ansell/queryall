@@ -84,11 +84,11 @@ public class QueryallContentNegotiator
         if(preferredDisplayContentType.equals(Constants.APPLICATION_JSON)
                 || preferredDisplayContentType.equals(Constants.APPLICATION_RDF_JSON))
         {
-            newContentNegotiator.addVariant("application/json;q=0.99").addAliasMediaType("application/rdf+json;q=0.95");
+            newContentNegotiator.addVariant("application/rdf+json;q=0.99").addAliasMediaType("application/json;q=0.90");
         }
         else
         {
-            newContentNegotiator.addVariant("application/json;q=0.4").addAliasMediaType("application/rdf+json;q=0.4");
+            newContentNegotiator.addVariant("application/rdf+json;q=0.4").addAliasMediaType("application/json;q=0.4");
         }
         
         // NOTE: Currently we prefer the Talis RDF/JSON specification for application/json requests

@@ -191,7 +191,7 @@ public class ConfigurationQueryOptionsTest
     @Test
     public void testContainsExplicitFormatRdfJson()
     {
-        this.assertAdminConfigurationFormat("json", Constants.APPLICATION_JSON);
+        this.assertAdminConfigurationFormat("json", Constants.APPLICATION_RDF_JSON);
     }
     
     /**

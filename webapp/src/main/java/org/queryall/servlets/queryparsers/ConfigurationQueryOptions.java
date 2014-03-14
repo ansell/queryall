@@ -302,7 +302,7 @@ public class ConfigurationQueryOptions
         else if(this.matchesPrefixAndSuffix(requestString, adminConfigurationJsonPrefix, adminConfigurationJsonSuffix))
         {
             this._hasExplicitFormat = true;
-            this._chosenFormat = Constants.APPLICATION_JSON;
+            this._chosenFormat = Constants.APPLICATION_RDF_JSON;
             if(ConfigurationQueryOptions.DEBUG)
             {
                 ConfigurationQueryOptions.log.debug("json: requestString={}", requestString);

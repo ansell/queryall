@@ -352,12 +352,12 @@ public class QueryallContentNegotiatorTest
     {
         this.testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("application/json");
         
-        Assert.assertEquals("application/json", QueryallContentNegotiator.getResponseContentType("application/json",
+        Assert.assertEquals("application/rdf+json", QueryallContentNegotiator.getResponseContentType("application/json",
                 "dummy-agent/1.0", this.testContentNegotiator, "text/fake"));
         
         this.testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("application/rdf+json");
         
-        Assert.assertEquals("application/json", QueryallContentNegotiator.getResponseContentType("application/json",
+        Assert.assertEquals("application/rdf+json", QueryallContentNegotiator.getResponseContentType("application/json",
                 "dummy-agent/1.0", this.testContentNegotiator, "text/fake"));
         
         // make sure that JSON-LD is able to take over application/json if it is specifically
@@ -557,12 +557,12 @@ public class QueryallContentNegotiatorTest
         
         this.testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("application/json");
         
-        Assert.assertEquals("application/json", QueryallContentNegotiator.getResponseContentType("*/*",
+        Assert.assertEquals("application/rdf+json", QueryallContentNegotiator.getResponseContentType("*/*",
                 "dummy-agent/1.0", this.testContentNegotiator, "text/fake"));
         
         this.testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("application/rdf+json");
         
-        Assert.assertEquals("application/json", QueryallContentNegotiator.getResponseContentType("*/*",
+        Assert.assertEquals("application/rdf+json", QueryallContentNegotiator.getResponseContentType("*/*",
                 "dummy-agent/1.0", this.testContentNegotiator, "text/fake"));
         
         this.testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("application/ld+json");
@@ -671,16 +671,16 @@ public class QueryallContentNegotiatorTest
         this.testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("application/json");
         
         Assert.assertEquals(browserName
-                + " : failed to return application/json when application/json was the preferred display content type",
-                "application/json", QueryallContentNegotiator.getResponseContentType(defaultAcceptHeader,
+                + " : failed to return application/rdf+json when application/json was the preferred display content type",
+                "application/rdf+json", QueryallContentNegotiator.getResponseContentType(defaultAcceptHeader,
                         typicalUserAgent, this.testContentNegotiator, "text/fake"));
         
         this.testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("application/rdf+json");
         
         Assert.assertEquals(
                 browserName
-                        + " : failed to return application/json when application/rdf+json was the preferred display content type",
-                "application/json", QueryallContentNegotiator.getResponseContentType(defaultAcceptHeader,
+                        + " : failed to return application/rdf+json when application/rdf+json was the preferred display content type",
+                "application/rdf+json", QueryallContentNegotiator.getResponseContentType(defaultAcceptHeader,
                         typicalUserAgent, this.testContentNegotiator, "text/fake"));
         
         this.testContentNegotiator = QueryallContentNegotiator.getContentNegotiator("application/ld+json");
