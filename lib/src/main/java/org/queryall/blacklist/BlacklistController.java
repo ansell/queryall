@@ -109,9 +109,9 @@ public class BlacklistController
         {
             if(BlacklistController.DEBUG)
             {
-                BlacklistController.log
-                        .debug("BlacklistController.accumulateBlacklist: going to accumulate entry for endpointUrl="
-                                + nextQueryObject.getActualEndpointUrl());
+                BlacklistController.log.debug(
+                        "BlacklistController.accumulateBlacklist: going to accumulate entry for endpointUrl={}",
+                        nextQueryObject.getActualEndpointUrl());
             }
             
             if(nextQueryObject.getActualEndpointUrl() != null)
@@ -123,9 +123,9 @@ public class BlacklistController
                     
                     if(BlacklistController.DEBUG)
                     {
-                        BlacklistController.log.debug("BlacklistController.accumulateBlacklist: There were "
-                                + previousCount + " previous instances on blacklist for endpointUrl="
-                                + nextQueryObject.getActualEndpointUrl());
+                        BlacklistController.log
+                                .debug("BlacklistController.accumulateBlacklist: There were {} previous instances on blacklist for endpointUrl={}",
+                                        previousCount, nextQueryObject.getActualEndpointUrl());
                     }
                     
                     previousCount.addErrorMessageForRunnable(nextQueryObject);
@@ -270,9 +270,9 @@ public class BlacklistController
         {
             if(BlacklistController.DEBUG)
             {
-                BlacklistController.log
-                        .debug("BlacklistController.accumulateQueryDebug: going to accumulate entry for clientIPAddress="
-                                + nextQueryObject.getClientIPAddress());
+                BlacklistController.log.debug(
+                        "BlacklistController.accumulateQueryDebug: going to accumulate entry for clientIPAddress={}",
+                        nextQueryObject.getClientIPAddress());
             }
             
             this.doBlacklistExpiry(blacklistResetPeriodMilliseconds, blacklistResetClientBlacklistWithEndpoints);
@@ -315,9 +315,8 @@ public class BlacklistController
             if(BlacklistController.DEBUG)
             {
                 BlacklistController.log
-                        .debug("BlacklistController.clearStatisticsUploadList: start of synchronized section start="
-                                + start + " internalStatisticsUploadList.size()="
-                                + this.internalStatisticsUploadList.size());
+                        .debug("BlacklistController.clearStatisticsUploadList: start of synchronized section start={} internalStatisticsUploadList.size()={}",
+                                start, this.internalStatisticsUploadList.size());
             }
             
             final Collection<HttpUrlQueryRunnableImpl> completedThreads = new ArrayList<HttpUrlQueryRunnableImpl>();
@@ -354,9 +353,8 @@ public class BlacklistController
             if(BlacklistController.DEBUG)
             {
                 BlacklistController.log
-                        .debug("BlacklistController.clearStatisticsUploadList: end of synchronized section start="
-                                + start + " numberRemoved=" + numberRemoved + " internalStatisticsUploadList.size()="
-                                + this.internalStatisticsUploadList.size());
+                        .debug("BlacklistController.clearStatisticsUploadList: end of synchronized section start={} numberRemoved={} internalStatisticsUploadList.size()={}",
+                                start, numberRemoved, this.internalStatisticsUploadList.size());
             }
         }
         
@@ -432,9 +430,9 @@ public class BlacklistController
                     // the trace level will not be used anyway
                     for(final String nextEndpointUrl : this.getAccumulatedBlacklistStatistics().keySet())
                     {
-                        BlacklistController.log
-                                .trace("BlacklistController: going to expire blacklist entry for endpointUrl="
-                                        + nextEndpointUrl);
+                        BlacklistController.log.trace(
+                                "BlacklistController: going to expire blacklist entry for endpointUrl={}",
+                                nextEndpointUrl);
                     }
                 }
             }
@@ -512,9 +510,9 @@ public class BlacklistController
                             
                             if(nextQueryDebugType == null)
                             {
-                                BlacklistController.log
-                                        .warn("Could not find query, assuming it is in robots.txt nextQueryDebugType="
-                                                + nextQueryDebugType);
+                                BlacklistController.log.warn(
+                                        "Could not find query, assuming it is in robots.txt nextQueryDebugType={}",
+                                        nextQueryDebugType);
                                 robotsTxtCount++;
                                 break;
                             }
@@ -523,8 +521,8 @@ public class BlacklistController
                                 if(BlacklistController.TRACE)
                                 {
                                     BlacklistController.log
-                                            .trace("BlacklistController: found query in robots.txt client=" + nextKey
-                                                    + " nextQueryDebugTitle=" + nextQueryDebugTitle);
+                                            .trace("BlacklistController: found query in robots.txt client={} nextQueryDebugTitle={}",
+                                                    nextKey, nextQueryDebugTitle);
                                 }
                                 
                                 robotsTxtCount++;
@@ -537,20 +535,16 @@ public class BlacklistController
                     
                     if(BlacklistController.TRACE)
                     {
-                        BlacklistController.log.trace("BlacklistController: results client=" + nextKey
-                                + " robotsTxtCount=" + robotsTxtCount + " overallCount=" + overallCount
-                                + " robotsPercentage=" + robotsPercentage);
+                        BlacklistController.log
+                                .trace("BlacklistController: results client={} robotsTxtCount={} overallCount={} robotsPercentage={}",
+                                        nextKey, robotsTxtCount, overallCount, robotsPercentage);
                     }
                     
                     if(robotsPercentage >= blacklistPercentageOfRobotTxtQueriesBeforeAutomatic)
                     {
                         BlacklistController.log
-                                .warn("BlacklistController: Found client performing too many robots.txt banned queries nextKey="
-                                        + nextKey
-                                        + " robotsTxtCount="
-                                        + robotsTxtCount
-                                        + " overallCount="
-                                        + overallCount + " robotsPercentage=" + robotsPercentage);
+                                .warn("BlacklistController: Found client performing too many robots.txt banned queries nextKey={} robotsTxtCount={} overallCount={} robotsPercentage={}",
+                                        nextKey, robotsTxtCount, overallCount, robotsPercentage);
                         
                         if(!this.isClientBlacklisted(nextKey))
                         {
@@ -563,16 +557,9 @@ public class BlacklistController
                         if(!this.isClientWhitelisted(nextKey))
                         {
                             BlacklistController.log
-                                    .warn("BlacklistController: Found client performing too many queries and banned them permanently for the lifetime of the servlet nextKey="
-                                            + nextKey
-                                            + " robotsTxtCount="
-                                            + robotsTxtCount
-                                            + " overallCount="
-                                            + overallCount
-                                            + " robotsPercentage="
-                                            + robotsPercentage
-                                            + " blacklistClientMaxQueriesPerPeriod="
-                                            + blacklistClientMaxQueriesPerPeriod);
+                                    .warn("BlacklistController: Found client performing too many queries and banned them permanently for the lifetime of the servlet nextKey={} robotsTxtCount={} overallCount={} robotsPercentage={} blacklistClientMaxQueriesPerPeriod={}",
+                                            nextKey, robotsTxtCount, overallCount, robotsPercentage,
+                                            blacklistClientMaxQueriesPerPeriod);
                             
                             this.permanentServletLifetimeIPBlacklist.add(nextKey);
                             this.permanentServletLifetimeIPBlacklistEvidence.put(nextKey, nextClientQueryList);
@@ -612,8 +599,9 @@ public class BlacklistController
     {
         if(blacklistedUrl == null || blacklistedUrl == "" || urlList == null)
         {
-            BlacklistController.log.error("BlacklistController.getAlternativeUrl: something was wrong blacklistedUrl="
-                    + blacklistedUrl + " urlList=" + urlList);
+            BlacklistController.log.error(
+                    "BlacklistController.getAlternativeUrl: something was wrong blacklistedUrl={} urlList={}",
+                    blacklistedUrl, urlList);
             
             return null;
         }
@@ -903,8 +891,9 @@ public class BlacklistController
         {
             if(BlacklistController.DEBUG)
             {
-                BlacklistController.log.debug("BlacklistController.isUrlBlacklisted: found blacklisted URL inputUrl="
-                        + url + " simple form=" + url.getProtocol() + "://" + url.getAuthority());
+                BlacklistController.log.debug(
+                        "BlacklistController.isUrlBlacklisted: found blacklisted URL inputUrl={} simple form={}://{}",
+                        url, url.getProtocol(), url.getAuthority());
             }
             
             return true;
@@ -939,16 +928,18 @@ public class BlacklistController
         
         if(BlacklistController.DEBUG)
         {
-            BlacklistController.log.debug("BlacklistController.persistStatistics: start of synchronized section start="
-                    + start + " internalStatisticsUploadList.size()=" + this.internalStatisticsUploadList.size());
+            BlacklistController.log
+                    .debug("BlacklistController.persistStatistics: start of synchronized section start={} internalStatisticsUploadList.size()={}",
+                            start, this.internalStatisticsUploadList.size());
         }
         
         this.internalStatisticsUploadList.addAll(runnableThreads);
         
         if(BlacklistController.DEBUG)
         {
-            BlacklistController.log.debug("BlacklistController.persistStatistics: end of synchronized section start="
-                    + start + " internalStatisticsUploadList.size()=" + this.internalStatisticsUploadList.size());
+            BlacklistController.log
+                    .debug("BlacklistController.persistStatistics: end of synchronized section start={} internalStatisticsUploadList.size()={}",
+                            start, this.internalStatisticsUploadList.size());
         }
         
         if(BlacklistController.DEBUG)
@@ -957,12 +948,13 @@ public class BlacklistController
             
             BlacklistController.log.debug(String.format("%s: timing=%10d", "BlacklistController.persistStatistics",
                     (end - start)));
+            
+            if(BlacklistController.TRACE)
+            {
+                BlacklistController.log.trace("BlacklistController.persistStatistics: returning...");
+            }
         }
         
-        if(BlacklistController.TRACE)
-        {
-            BlacklistController.log.trace("BlacklistController.persistStatistics: returning...");
-        }
     }
     
     public void removeEndpointsFromBlacklist(final Collection<RdfFetcherQueryRunnable> successfulQueries)
