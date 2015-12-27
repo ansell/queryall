@@ -7,7 +7,7 @@
 		<groupId>com.github.ansell.queryall</groupId>
 		<artifactId>queryall-parent</artifactId>
 		<version>1.4-SNAPSHOT</version>
-		<relativePath>..</relativePath>
+                <relativePath>../../../pom.xml</relativePath>
 	</parent>
 	<artifactId>queryall-ext-rule-xslt</artifactId>
 	<name>QueryAll Extension :: XSLT Rules</name>

@@ -7,6 +7,7 @@
 		<groupId>com.github.ansell.queryall</groupId>
 		<artifactId>queryall-parent</artifactId>
 		<version>1.4-SNAPSHOT</version>
+                <relativePath>../../../pom.xml</relativePath>
 	</parent>
 	<artifactId>queryall-ext-provider-http</artifactId>
 	<name>QueryAll Extension :: HTTP Provider</name>

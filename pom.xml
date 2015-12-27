@@ -21,7 +21,7 @@
 		<module>ext/provider/http</module>
 		<module>ext/provider/rdf</module>
 		<module>ext/rule/owl</module>
-		<module>ext/rule/spin</module>
+		<!-- module>ext/rule/spin</module -->
 		<module>ext/rule/xslt</module>
 		<module>ext/rule/sparql</module>
 		<module>ext/rule/regex</module>
@@ -64,14 +64,14 @@
 		</mailingList>
 	</mailingLists>
 	<properties>
-		<junit.version>4.11</junit.version>
+		<junit.version>4.12</junit.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<sesame.version>2.7.10</sesame.version>
-		<slf4j.version>1.7.5</slf4j.version>
+		<sesame.version>4.0.1</sesame.version>
+		<slf4j.version>1.7.13</slf4j.version>
 	</properties>
 	<prerequisites>
-		<maven>2.2.1</maven>
+		<maven>3.0.5</maven>
 	</prerequisites>
 	<dependencyManagement>
 		<dependencies>
@@ -178,23 +178,23 @@
 			</dependency>
 			<dependency>
 				<groupId>com.github.jsonld-java</groupId>
-				<artifactId>jsonld-java-sesame</artifactId>
-				<version>0.3</version>
+				<artifactId>jsonld-java</artifactId>
+				<version>0.7.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-core</artifactId>
-				<version>2.3.1</version>
+				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-annotations</artifactId>
-				<version>2.3.1</version>
+				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-databind</artifactId>
-				<version>2.3.1</version>
+				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.velocity</groupId>
